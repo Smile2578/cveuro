@@ -29,7 +29,7 @@ export default function CVGenPage() {
             mb: 4,
             backgroundColor: 'background.default',
             padding: { xs: 2, sm: 3 }, 
-            borderRadius: '8px',
+            borderRadius: '24px',
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             flexGrow: 1, 
             display: 'flex',

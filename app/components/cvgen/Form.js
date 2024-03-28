@@ -136,6 +136,7 @@ const initialValues = {
       endDate: '',
       responsibilities: [''],
     }],
+    noExperience: false,
     // Skills
     skills: [{
       skillName: '',
