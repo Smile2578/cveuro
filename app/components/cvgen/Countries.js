@@ -1,57 +1,3 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
-
-// Combined component with an optional prop to show phone prefix
-export default function CountrySelect({ onCountryChange, showPhonePrefix = false }) {
-  const defaultCountry = countries.find(country => country.code === '');
-
-  const [value, setValue] = React.useState(defaultCountry);
-
-  // Handle country change
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    if (onCountryChange) {
-      onCountryChange(newValue);
-    }
-  };
-
-  return (
-    <Autocomplete
-      id="country-select-demo"
-      sx={{ width: 300 }}
-      options={countries}
-      autoHighlight
-      getOptionLabel={(option) => option.label}
-      value={value}
-      onChange={handleChange}
-      renderOption={(props, option) => (
-        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
-          <img
-            loading="lazy"
-            width="20"
-            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-            alt=""
-          />
-          {showPhonePrefix ? `${option.label} (${option.code}) +${option.phone}` : `${option.label} (${option.code})`}
-        </Box>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Nationalité"
-          inputProps={{
-            ...params.inputProps,
-            autoComplete: 'new-password', // disable autocomplete and autofill
-          }}
-        />
-      )}
-    />
-  );
-}
-
 
 const countries = [
   { code: 'AD', label: 'Andorra', phone: '376' },
@@ -472,3 +418,6 @@ const countries = [
   { code: 'ZM', label: 'Zambia', phone: '260' },
   { code: 'ZW', label: 'Zimbabwe', phone: '263' },
 ];
+
+
+export default countries;

@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { fieldEncryption } from 'mongoose-field-encryption';
 const { Schema } = mongoose;
 
 
@@ -35,43 +34,15 @@ const CVSchema = new Schema({
     endDate: Date,
     responsibilities: [String],
   }],
-  certifications: [{
-    name: String,
-    issuedBy: String, // Issuing authority
-    dateIssued: Date,
-    expirationDate: Date, // Optional, if applicable
-  }],
-  projects: [{
-    title: String,
-    description: String,
-    technologies: [String], // Technologies used
-    link: String, // Optional, if there's a link to the project
-  }],
-  publications: [{
-    title: String,
-    publicationDate: Date,
-    publisher: String, // Optional
-    link: String, // Optional, if there's a link to the publication
-  }],
-  volunteerWork: [{
-    organization: String,
-    role: String,
-    startDate: Date,
-    endDate: Date,
-    description: String,
-  }],
-  awards: [{
-    title: String,
-    issuer: String, // Who awarded it
-    date: Date,
-  }],
   skills: [{
     skillName: String,
     level: String, // Consider defining what levels are possible (e.g., Beginner, Intermediate, Advanced)
   }],
   languages: [{
     language: String,
-    proficiency: String, // Consider defining what proficiencies are possible (e.g., Basic, Conversational, Fluent, Native)
+    proficiency: String, // A1, A2, B1, B2, C1, C2
+    testName: String, // Name of the language test taken
+    testScore: String, // Grade or score obtained in the language test
   }],
   hobbies: [String], // Simple array of strings might suffice
   references: [{
@@ -80,20 +51,5 @@ const CVSchema = new Schema({
   }],
 });
 
-
-const secret = process.env.FIELD_ENCRYPTION_KEY;
-
-function customSaltGenerator() {
-    // Generate a 16-byte salt
-    return crypto.randomBytes(16).toString('hex');
-  }
-  
-
-// Specify fields to encrypt and options
-CVSchema.plugin(fieldEncryption, {
-  fields: ['personalInfo', 'education', 'workExperience', 'certifications', 'projects', 'publications', 'volunteerWork', 'awards', 'skills', 'languages', 'references'], // Add all fields you want encrypted
-  secret: secret,
-  saltGenerator: customSaltGenerator,
-});
 
 export default mongoose.models.CV || mongoose.model('CV', CVSchema);
