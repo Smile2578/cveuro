@@ -41,6 +41,9 @@ function validatePersonalInfo(values) {
     if (!values.dateofBirth) {
       errors.dateofBirth = 'La date de naissance est obligatoire';
     }
+    if (!values.sex) { 
+      errors.sex = 'Le sexe est obligatoire';
+    }
     if (values.linkedIn && !/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.linkedIn)) {
       errors.linkedIn = 'L\'URL LinkedIn est invalide';
     }
@@ -116,6 +119,11 @@ const initialValues = {
     dateofBirth: '',
     linkedIn: '',
     personalWebsite: '',
+    sex: '',
+    placeOfBirth:'',
+    address: '',
+    city: '',
+    zip: '',
     // Professional Summary
     professionalSummary: '',
     // Education
@@ -125,6 +133,7 @@ const initialValues = {
       fieldOfStudy: '',
       startDate: '',
       endDate: '',
+      ongoing: false,
       achievements: [''],
     }],
     // Work Experience
@@ -134,6 +143,7 @@ const initialValues = {
       location: '',
       startDate: '',
       endDate: '',
+      ongoing: false,
       responsibilities: [''],
     }],
     noExperience: false,
@@ -186,7 +196,7 @@ const initialValues = {
         {({ isSubmitting, handleSubmit, values }) => (
           <FormikForm onSubmit={handleSubmit}>
             <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
-              {formSteps[currentStep].label}
+              <CombinedForm />
             </Typography>
             <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-4" />
   

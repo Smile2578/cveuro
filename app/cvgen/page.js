@@ -6,6 +6,7 @@ import Form from '../components/cvgen/Form';
 import NavBar from '../components/common/NavBar';
 import Footer from '../components/common/Footer';
 
+
 export default function CVGenPage() {
 
   return (

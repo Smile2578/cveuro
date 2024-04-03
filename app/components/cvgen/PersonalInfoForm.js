@@ -1,64 +1,131 @@
 import React from 'react';
-import { useFormikContext, useField } from 'formik';
-import { TextField, Grid, Select, MenuItem, InputLabel, FormControl, FormHelperText } from '@mui/material';
+import { useFormikContext, useField, Form } from 'formik';
+import {
+  TextField,
+  Grid,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  FormHelperText,
+  IconButton,
+  RadioGroup,
+  Box,
+  Radio,
+  FormControlLabel,
+  FormLabel,
+} from '@mui/material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import PhoneIcon from '@mui/icons-material/Phone';
+import HomeIcon from '@mui/icons-material/Home';
+import PublicIcon from '@mui/icons-material/Public';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import MaleIcon from '@mui/icons-material/Male';
+import FemaleIcon from '@mui/icons-material/Female';
+import LinkIcon from '@mui/icons-material/Link';
 import countries from './Countries'; // Ensure this import path is correct
+import styled from '@emotion/styled';
+import theme from '@/app/theme';
+
+
+
+const GenderBox = styled(FormControlLabel)(({ theme, selected }) => ({
+  border: `2px solid ${selected ? '#1976d2' : '#e0e0e0'}`, // Using hardcoded colors for demo
+  borderRadius: '4px', // Adjusted for a unified look
+  padding: theme.spacing(1),
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0px', 
+  marginRight: '8px', 
+  cursor: 'pointer',
+  height: '56px',
+  backgroundColor: selected ? '#bbdefb' : 'transparent', 
+  '&:last-child': {
+    marginRight: '0px', 
+  },
+  '& .MuiSvgIcon-root': { 
+    fill: selected ? '#1976d2' : '#757575', 
+  },
+  '& .MuiFormControlLabel-label': { 
+    color: 'black', 
+  },
+}));
+
+
 
 const PersonalInfoForm = () => {
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue, setFieldTouched } = useFormikContext();
+  const { values, errors, touched, handleChange, handleBlur, setFieldValue } = useFormikContext();
   const [nationalityField, nationalityMeta] = useField('nationality');
 
   return (
-    <Grid container spacing={2}>
-      {/* Firstname, Lastname, Email, Phone Number, and Date of Birth fields */}
-      <Grid item xs={12}>
+    <Grid container spacing={2} alignItems="flex-end">
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <AccountCircle />
+        </IconButton>
         <TextField
           name="firstname"
-          label="Prénom"
+          label="Prénom(s)"
           value={values.firstname}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.firstname && Boolean(errors.firstname)}
           helperText={touched.firstname && errors.firstname}
+          fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} sm={6}>
         <TextField
           name="lastname"
           label="Nom de famille"
           value={values.lastname}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.lastname && Boolean(errors.lastname)}
           helperText={touched.lastname && errors.lastname}
+          fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <EmailIcon />
+        </IconButton>
         <TextField
           name="email"
           label="Email"
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.email && Boolean(errors.email)}
           helperText={touched.email && errors.email}
+          fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <PhoneIcon />
+        </IconButton>
         <TextField
           name="phoneNumber"
           label="Numéro de téléphone"
           value={values.phoneNumber}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.phoneNumber && Boolean(errors.phoneNumber)}
           helperText={touched.phoneNumber && errors.phoneNumber}
+          fullWidth
         />
       </Grid>
-      <Grid item xs={12}>
+
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <DateRangeIcon />
+        </IconButton>
         <TextField
           name="dateofBirth"
           label="Date de naissance"
@@ -67,14 +134,101 @@ const PersonalInfoForm = () => {
           onChange={handleChange}
           onBlur={handleBlur}
           InputLabelProps={{ shrink: true }}
-          fullWidth
           error={touched.dateofBirth && Boolean(errors.dateofBirth)}
           helperText={touched.dateofBirth && errors.dateofBirth}
+          fullWidth
         />
       </Grid>
 
-      {/* Nationality */}
+
+      <Grid item xs={12} sm={6}>
+        <FormLabel component="legend">Sexe</FormLabel>
+        <RadioGroup row name="sex" value={values.sex} onChange={(event) => setFieldValue('sex', event.target.value)}>
+          <GenderBox
+            control={<Radio />}
+            label="Masculin"
+            value="M"
+            selected={values.sex === 'M'}
+            onClick={() => setFieldValue('sex', 'M')}
+            icon={<MaleIcon />}
+          />
+          <GenderBox
+            control={<Radio />}
+            label="Féminin"
+            value="F"
+            selected={values.sex === 'F'}
+            onClick={() => setFieldValue('sex', 'F')}
+            icon={<FemaleIcon />}
+          />
+        </RadioGroup>
+        {touched.sex && errors.sex && <FormHelperText error>{errors.sex}</FormHelperText>}
+      </Grid>
+
+
       <Grid item xs={12}>
+        <IconButton>
+          <HomeIcon />
+        </IconButton>
+        <TextField
+          name="address"
+          label="Adresse"
+          value={values.address}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          autoComplete='off'
+          error={touched.address && Boolean(errors.address)}
+          helperText={touched.address && errors.address}
+          fullWidth
+        />
+      </Grid>
+
+      {/* Combine Zip and City into a single row */}
+      <Grid item xs={6}>
+        <TextField
+          name="zip"
+          label="Code postal"
+          value={values.zip}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.zip && Boolean(errors.zip)}
+          helperText={touched.zip && errors.zip}
+          fullWidth
+        />
+      </Grid>
+
+      <Grid item xs={6}>
+        <TextField
+          name="city"
+          label="Ville"
+          value={values.city}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.city && Boolean(errors.city)}
+          helperText={touched.city && errors.city}
+          fullWidth
+        />
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <PublicIcon />
+        </IconButton>
+        <TextField
+          name="placeOfBirth"
+          label="Lieu de naissance (Ville)"
+          value={values.placeOfBirth}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          error={touched.placeOfBirth && Boolean(errors.placeOfBirth)}
+          helperText={touched.placeOfBirth && errors.placeOfBirth}
+          fullWidth
+        />
+      </Grid>
+
+      {/* Combine Sex and Nationality into a single row */}
+      
+
+      <Grid item xs={6}>
         <FormControl fullWidth error={nationalityMeta.touched && Boolean(nationalityMeta.error)}>
           <InputLabel id="nationality-label">Nationalité</InputLabel>
           <Select
@@ -84,65 +238,44 @@ const PersonalInfoForm = () => {
             onChange={(event) => {
               setFieldValue('nationality', event.target.value);
             }}
-            onBlur={nationalityField.onBlur} // Ensure the field is marked as touched on blur
-            renderValue={selected => selected ? (
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <img
-                  loading="lazy"
-                  width="20"
-                  src={`https://flagcdn.com/w20/${countries.find(c => c.label === selected)?.code.toLowerCase()}.png`}
-                  alt=""
-                  style={{ marginRight: 10 }}
-                />
-                {selected}
-              </div>
-            ) : <em>Choisissez une nationalité</em>}
+            onBlur={nationalityField.onBlur}
           >
             {countries.map((option) => (
               <MenuItem key={option.code} value={option.label}>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <img
-                    loading="lazy"
-                    width="20"
-                    src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                    alt=""
-                    style={{ marginRight: 10 }}
-                  />
-                  {option.label}
-                </div>
+                {option.label}
               </MenuItem>
             ))}
           </Select>
-          {nationalityMeta.touched && nationalityMeta.error && (
-            <FormHelperText>{nationalityMeta.error}</FormHelperText>
-          )}
+          {nationalityMeta.touched && nationalityMeta.error && <FormHelperText>{nationalityMeta.error}</FormHelperText>}
         </FormControl>
       </Grid>
-      {/* LinkedIn */}
-      <Grid item xs={12}>
+
+      <Grid item xs={12} sm={6}>
+        <IconButton>
+          <LinkIcon />
+        </IconButton>
         <TextField
           name="linkedIn"
           label="LinkedIn"
           value={values.linkedIn}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.linkedIn && Boolean(errors.linkedIn)}
           helperText={touched.linkedIn && errors.linkedIn}
+          fullWidth
         />
       </Grid>
 
-      {/* Personal Website */}
-      <Grid item xs={12}>
+      <Grid item xs={12} sm={6}>
         <TextField
           name="personalWebsite"
           label="Site Web Personnel"
           value={values.personalWebsite}
           onChange={handleChange}
           onBlur={handleBlur}
-          fullWidth
           error={touched.personalWebsite && Boolean(errors.personalWebsite)}
           helperText={touched.personalWebsite && errors.personalWebsite}
+          fullWidth
         />
       </Grid>
     </Grid>

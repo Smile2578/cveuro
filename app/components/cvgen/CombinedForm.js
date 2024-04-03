@@ -1,191 +1,305 @@
-import React from 'react';
-import { useFormikContext, FieldArray } from 'formik';
+import React, { useState } from 'react';
+import { useFormikContext } from 'formik';
 import {
   TextField,
   Grid,
+  Typography,
+  Divider,
+  IconButton,
+  Chip,
+  Box,
+  Select,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
   Button,
   FormControl,
   InputLabel,
-  Select,
-  MenuItem,
-  Typography,
-  Divider,
-  FormHelperText
+  InputAdornment,
+  FormHelperText,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import theme from '@/app/theme';
+import CancelIcon from '@mui/icons-material/Cancel';
 
-
-const proficiencyLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+const proficiencyLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Langue maternelle'];
 const skillLevels = {
   '1': 'Débutant',
-  '2': 'Capable',
-  '3': 'Intermédiaire',
-  '4': 'Efficace',
-  '5': 'Expérimenté',
-  '6': 'Avancé',
-  '7': 'Distingué',
-  '8': 'Maître',
+  '2': 'Intermédiaire',
+  '3': 'Expérimenté',
+  '4': 'Avancé',
+  '5': 'Maîtrise parfaite',
 };
+const testOptions = ['ETHS', 'TOEFL', 'IELTS', 'Cambridge', 'Autres'];
 
 const CombinedForm = () => {
-  const { values, setFieldValue, touched, errors } = useFormikContext();
+  const { values, setFieldValue } = useFormikContext();
+  const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
+  const [customTestName, setCustomTestName] = useState('');
+  const [currentLanguage, setCurrentLanguage] = useState({ language: '', proficiency: '', testName: '', testScore: '' });
+  const [newSkill, setNewSkill] = useState({ skillName: '', level: '' });
+  const [newHobby, setNewHobby] = useState('');
+  const [languageName, setLanguageName] = useState('');
+  const [errors, setErrors] = useState({ skills: {} });
 
-  const handleAddField = (fieldName, newItem) => {
-    setFieldValue(fieldName, [...values[fieldName], newItem]);
+
+  const handleDialogOpen = () => {
+    if (languageName && !languageDialogOpen) {
+      setCurrentLanguage({ language: languageName, proficiency: '', testName: '', testScore: '' });
+      setLanguageDialogOpen(true);
+    }
   };
 
-  const handleRemoveField = (fieldName, index) => {
+ const handleAddLanguage = () => {
+    if (currentLanguage.language && currentLanguage.proficiency) {
+      const newLanguages = [...values.languages, currentLanguage];
+      setFieldValue('languages', newLanguages);
+      setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' }); // Reset the language fields
+      setLanguageName(''); // Clear the TextField for language name
+      setLanguageDialogOpen(false); // Close the dialog
+    }
+  };
+  
+  // Handles the selection of a proficiency level or a language test
+  const handleSelectChange = (field, value) => {
+    setCurrentLanguage({ ...currentLanguage, [field]: value });
+
+    // If "Autres" is selected for test, prompt for custom test name
+    if (field === 'testName' && value === 'Autres') {
+      setLanguageDialogOpen(true);
+    }
+  };
+
+  // Handles adding a new skill or hobby
+  const handleNewItem = (e, item, setItem, fieldName) => {
+    e.preventDefault();
+    if (item.skillName && item.level) {
+      const updatedItems = [...values[fieldName], item];
+      setFieldValue(fieldName, updatedItems);
+      setItem({ skillName: '', level: '' }); // For skills
+    } else if (item.trim()) {
+      const updatedItems = [...values[fieldName], item];
+      setFieldValue(fieldName, updatedItems);
+      setItem(''); // For hobbies
+    }
+  };
+
+  // Opens the dialog to add a language with its details
+  const handleOpenLanguageDialog = () => {
+    setLanguageDialogOpen(true);
+  };
+
+  // Closes the dialog and resets the current language details
+  const handleCloseLanguageDialog = () => {
+    setLanguageDialogOpen(false);
+    setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' });
+    setCustomTestName('');
+  };
+
+
+  const handleAddSkill = () => {
+    // Check if both skillName and level have values before adding
+    if (newSkill.skillName && newSkill.level) {
+      const newSkills = [...values.skills, newSkill];
+      setFieldValue('skills', newSkills);
+      setNewSkill({ skillName: '', level: '' }); // Reset the skill input
+    }
+  };
+
+  const isSkillError = (field) => {
+    return Boolean(errors.skills && errors.skills[values.skills.length] && errors.skills[values.skills.length][field]);
+  };
+
+
+
+  // Removes an item from the languages, skills, or hobbies list
+  const handleRemoveItem = (fieldName, index) => {
     const updatedItems = values[fieldName].filter((_, i) => i !== index);
     setFieldValue(fieldName, updatedItems);
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} component="form" onSubmit={(e) => e.preventDefault()}>
       {/* Languages Section */}
       <Grid item xs={12}>
-        <Typography variant="h6" color={theme.palette.text.primary}>Langues</Typography>
-      </Grid>
-      <Grid item xs={12}><Divider /></Grid>
-      <FieldArray name="languages">
-        {() => (
-          <>
+        <Typography variant="h6">Langues</Typography>
+        <Divider style={{ margin: '20px 0' }} />
+        <Box display="flex" alignItems="center">
+          <TextField
+            label="Ajouter Langue"
+            variant="outlined"
+            size="small"
+            value={currentLanguage.language}
+            onChange={(e) => setCurrentLanguage({ ...currentLanguage, language: e.target.value })}
+            onKeyDown={(e) => e.key === 'Enter' && handleAddLanguage(e)}
+            style={{ width: '30%' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={handleAddLanguage} edge="end">
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Box display="flex" flexWrap="wrap" alignItems="center" ml={2}>
             {values.languages.map((language, index) => (
-              <React.Fragment key={index}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name={`languages[${index}].language`}
-                    label="Langue"
-                    value={language.language}
-                    onChange={(e) => setFieldValue(`languages[${index}].language`, e.target.value)}
-                    fullWidth
-                    error={touched.languages?.[index]?.language && Boolean(errors.languages?.[index]?.language)}
-                    helperText={touched.languages?.[index]?.language && errors.languages?.[index]?.language}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth error={touched.languages?.[index]?.proficiency && Boolean(errors.languages?.[index]?.proficiency)}>
-                    <InputLabel>Niveau de compétence</InputLabel>
-                    <Select
-                      name={`languages[${index}].proficiency`}
-                      value={language.proficiency}
-                      onChange={(e) => setFieldValue(`languages[${index}].proficiency`, e.target.value)}
-                      displayEmpty
-                    >
-                      {proficiencyLevels.map((level) => (
-                        <MenuItem key={level} value={level}>{level}</MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText>{touched.languages?.[index]?.proficiency && errors.languages?.[index]?.proficiency}</FormHelperText>
-                  </FormControl>
-                </Grid>
-                {values.languages.length > 1 && (
-                  <Grid item xs={12}>
-                    <Button onClick={() => handleRemoveField('languages', index)} startIcon={<RemoveCircleOutlineIcon />}>
-                      Supprimer la langue
-                    </Button>
-                  </Grid>
-                )}
-                <Grid item xs={12}>
-                  <Button onClick={() => handleAddField('languages', { language: '', proficiency: '' })} startIcon={<AddCircleOutlineIcon />}>
-                    Ajouter une langue
-                  </Button>
-                </Grid>
-              </React.Fragment>
+              <Chip
+                key={index}
+                label={`${language.language} (${language.proficiency}) ${language.testName ? `- ${language.testName}` : ''} ${language.testScore ? `: ${language.testScore}` : ''}`}
+                onDelete={() => handleRemoveItem('languages', index)}
+                deleteIcon={<CancelIcon />}
+                color="primary"
+                variant="outlined"
+                style={{ marginRight: '8px', marginBottom: '8px' }}
+              />
             ))}
-          </>
-        )}
-      </FieldArray>
-
-       {/* Skills Section */}
-       <Grid item xs={12}><Divider style={{ margin: '20px 0' }} /></Grid>
-      <Grid item xs={12}>
-        <Typography variant="h6" color={theme.palette.text.primary}>Compétences</Typography>
+          </Box>
+        </Box>
       </Grid>
-      <FieldArray name="skills">
-        {() => (
-          <>
+
+      {/* Dialog for Adding/Editing Languages */}
+      <Dialog open={languageDialogOpen} onClose={handleCloseLanguageDialog}>
+        <DialogTitle>Ajouter une langue</DialogTitle>
+        <DialogContent>
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Niveau de maîtrise</InputLabel>
+            <Select
+              value={currentLanguage.proficiency}
+              onChange={(e) => handleSelectChange('proficiency', e.target.value)}
+              label="Niveau de maîtrise"
+            >
+              {proficiencyLevels.map((level) => (
+                <MenuItem key={level} value={level}>{level}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl fullWidth margin="dense">
+            <InputLabel>Test</InputLabel>
+            <Select
+              value={currentLanguage.testName}
+              onChange={(e) => handleSelectChange('testName', e.target.value)}
+              label="Test"
+            >
+              {testOptions.map((option) => (
+                <MenuItem key={option} value={option}>{option}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {currentLanguage.testName === 'Autres' && (
+            <TextField
+              margin="dense"
+              label="Nom du Test Personnalisé"
+              type="text"
+              fullWidth
+              value={customTestName}
+              onChange={(e) => setCustomTestName(e.target.value)}
+            />
+          )}
+          <TextField
+            margin="dense"
+            label="Score du Test"
+            type="text"
+            fullWidth
+            value={currentLanguage.testScore}
+            onChange={(e) => setCurrentLanguage({ ...currentLanguage, testScore: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseLanguageDialog}>Annuler</Button>
+          <Button onClick={handleAddLanguage}>Sauvegarder</Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Skills Section */}
+      <Grid item xs={12}>
+        <Typography variant="h6">Compétences</Typography>
+        <Divider style={{ margin: '20px 0' }} />
+        <Box display="flex" alignItems="center">
+          <TextField
+            label="Compétence"
+            variant="outlined"
+            size="small"
+            value={newSkill.skillName}
+            onChange={(e) => setNewSkill({ ...newSkill, skillName: e.target.value })}
+            error={isSkillError('skillName')}
+            helperText={isSkillError('skillName') && errors.skills[values.skills.length].skillName}
+            style={{ width: '30%' }}
+          />
+          <FormControl variant="outlined" size="small" style={{ width: '30%', marginLeft: '10px' }} error={isSkillError('level')}>
+            <InputLabel>Niveau</InputLabel>
+            <Select
+              value={newSkill.level}
+              onChange={(e) => setNewSkill({ ...newSkill, level: e.target.value })}
+              label="Niveau"
+            >
+              {Object.entries(skillLevels).map(([key, value]) => (
+                <MenuItem key={key} value={key}>{value}</MenuItem>
+              ))}
+            </Select>
+            <FormHelperText>{isSkillError('level') && errors.skills[values.skills.length].level}</FormHelperText>
+          </FormControl>
+          <IconButton onClick={handleAddSkill} size="large">
+            <AddCircleOutlineIcon />
+          </IconButton>
+          <Box display="flex" flexWrap="wrap" alignItems="center" ml={2}>
             {values.skills.map((skill, index) => (
-              <React.Fragment key={index}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    name={`skills[${index}].skillName`}
-                    label="Compétence"
-                    value={skill.skillName}
-                    onChange={(e) => setFieldValue(`skills[${index}].skillName`, e.target.value)}
-                    fullWidth
-                    error={touched.skills?.[index]?.skillName && Boolean(errors.skills?.[index]?.skillName)}
-                    helperText={touched.skills?.[index]?.skillName && errors.skills?.[index]?.skillName}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth error={touched.skills?.[index]?.level && Boolean(errors.skills?.[index]?.level)}>
-                    <InputLabel>Niveau</InputLabel>
-                    <Select
-                      name={`skills[${index}].level`}
-                      value={skill.level}
-                      onChange={(e) => setFieldValue(`skills[${index}].level`, e.target.value)}
-                      displayEmpty
-                    >
-                      {Object.entries(skillLevels).map(([key, value]) => (
-                        <MenuItem key={key} value={value}>{value}</MenuItem>
-                      ))}
-                    </Select>
-                    <FormHelperText>{touched.skills?.[index]?.level && errors.skills?.[index]?.level}</FormHelperText>
-                  </FormControl>
-                </Grid>
-                {values.skills.length > 1 && (
-                  <Grid item xs={12}>
-                    <Button onClick={() => handleRemoveField('skills', index)} startIcon={<RemoveCircleOutlineIcon />}>
-                      Supprimer la compétence
-                    </Button>
-                  </Grid>
-                )}
-                <Grid item xs={12}>
-                  <Button onClick={() => handleAddField('skills', { skillName: '', level: '' })} startIcon={<AddCircleOutlineIcon />}>
-                    Ajouter une compétence
-                  </Button>
-                </Grid>
-              </React.Fragment>
+              <Chip
+                key={index}
+                label={`${skill.skillName} (${skillLevels[skill.level]})`}
+                onDelete={() => handleRemoveItem('skills', index)}
+                deleteIcon={<CancelIcon />}
+                color="primary"
+                variant="outlined"
+                style={{ marginRight: '8px', marginBottom: '8px' }}
+              />
             ))}
-          </>
-        )}
-      </FieldArray>
+          </Box>
+        </Box>
+      </Grid>
 
-       {/* Hobbies Section */}
-       <Grid item xs={12}><Divider style={{ margin: '20px 0' }} /></Grid>
+
+      {/* Hobbies Section */}
       <Grid item xs={12}>
-        <Typography variant="h6" color={theme.palette.text.primary}>Loisirs</Typography>
-      </Grid>
-      <FieldArray name="hobbies">
-        {() => (
-          <>
+        <Typography variant="h6">Loisirs</Typography>
+        <Divider style={{ margin: '20px 0' }} />
+        <Box display="flex" alignItems="center">
+          <TextField
+            label="Ajouter Loisir"
+            variant="outlined"
+            size="small"
+            value={newHobby}
+            onChange={(e) => setNewHobby(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleNewItem(e, newHobby, setNewHobby, 'hobbies')}
+            style={{ width: '30%' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={(e) => handleNewItem(e, newHobby, setNewHobby, 'hobbies')} edge="end">
+                    <AddCircleOutlineIcon />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Box display="flex" flexWrap="wrap" alignItems="center" ml={2}>
             {values.hobbies.map((hobby, index) => (
-              <Grid item xs={12} key={index}>
-                <TextField
-                  name={`hobbies[${index}]`}
-                  label="Loisir"
-                  value={hobby}
-                  onChange={(e) => setFieldValue(`hobbies[${index}]`, e.target.value)}
-                  fullWidth
-                />
-                {values.hobbies.length > 1 && (
-                  <Button onClick={() => handleRemoveField('hobbies', index)} startIcon={<RemoveCircleOutlineIcon />}>
-                    Supprimer le loisir
-                  </Button>
-                )}
-              </Grid>
+              <Chip
+                key={index}
+                label={hobby}
+                onDelete={() => handleRemoveItem('hobbies', index)}
+                deleteIcon={<CancelIcon />}
+                color="primary"
+                variant="outlined"
+                style={{ marginRight: '8px', marginBottom: '8px' }}
+              />
             ))}
-            <Grid item xs={12}>
-              <Button onClick={() => handleAddField('hobbies', '')} startIcon={<AddCircleOutlineIcon />}>
-                Ajouter un loisir
-              </Button>
-            </Grid>
-          </>
-        )}
-      </FieldArray>
+          </Box>
+        </Box>
       </Grid>
+    </Grid>
   );
 };
 

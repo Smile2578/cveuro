@@ -14,6 +14,11 @@ const CVSchema = new Schema({
     nationality: String,
     phoneNumber: String,
     dateofBirth: Date, 
+    sex: String,
+    placeofBirth: String,
+    address: String,
+    city: String,
+    zip: String,
     linkedIn: String, // Optional, can be useful
     personalWebsite: String, // Optional, for those who have a portfolio site
   },
