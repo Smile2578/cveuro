@@ -1,111 +1,107 @@
 import React, { useState } from 'react';
 import { useFormikContext } from 'formik';
 import {
-  TextField,
-  Grid,
-  Typography,
-  Divider,
-  IconButton,
-  Chip,
-  Box,
-  Select,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  FormControl,
-  InputLabel,
-  InputAdornment,
-  FormHelperText,
+  TextField, Grid, Typography, Divider, IconButton, Chip, Box, Select,
+  MenuItem, Dialog, DialogTitle, DialogContent, DialogActions, Button,
+  FormControl, InputLabel, InputAdornment, FormHelperText, Checkbox, FormControlLabel, useTheme, useMediaQuery,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CancelIcon from '@mui/icons-material/Cancel';
+import theme from '@/app/theme';
+
 
 const proficiencyLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Langue maternelle'];
-const skillLevels = {
-  '1': 'Débutant',
-  '2': 'Intermédiaire',
-  '3': 'Expérimenté',
-  '4': 'Avancé',
-  '5': 'Maîtrise parfaite',
-};
-const testOptions = ['ETHS', 'TOEFL', 'IELTS', 'Cambridge', 'Autres'];
+const skillLevels = { '1': 'Débutant', '2': 'Intermédiaire', '3': 'Expérimenté', '4': 'Avancé', '5': 'Maîtrise parfaite' };
+
 
 const CombinedForm = () => {
   const { values, setFieldValue } = useFormikContext();
-  const [languageDialogOpen, setLanguageDialogOpen] = useState(false);
-  const [customTestName, setCustomTestName] = useState('');
+  const [isTestTaken, setIsTestTaken] = useState(false);
+  const [testDialogOpen, setTestDialogOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState({ language: '', proficiency: '', testName: '', testScore: '' });
   const [newSkill, setNewSkill] = useState({ skillName: '', level: '' });
   const [newHobby, setNewHobby] = useState('');
-  const [languageName, setLanguageName] = useState('');
   const [errors, setErrors] = useState({ skills: {} });
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 
-  const handleDialogOpen = () => {
-    if (languageName && !languageDialogOpen) {
-      setCurrentLanguage({ language: languageName, proficiency: '', testName: '', testScore: '' });
-      setLanguageDialogOpen(true);
-    }
-  };
 
- const handleAddLanguage = () => {
-    if (currentLanguage.language && currentLanguage.proficiency) {
-      const newLanguages = [...values.languages, currentLanguage];
-      setFieldValue('languages', newLanguages);
-      setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' }); // Reset the language fields
-      setLanguageName(''); // Clear the TextField for language name
-      setLanguageDialogOpen(false); // Close the dialog
+  const addValidItem = (item, arrayName) => {
+    if (arrayName === 'languages') {
+      // Only check for language and proficiency for languages
+      if (item.language && item.proficiency) {
+        const newArray = [...values[arrayName], item];
+        setFieldValue(arrayName, newArray);
+        resetItemState(arrayName);
+      }
+    } else if (arrayName === 'skills') {
+      // Ensure both skillName and level are provided for skills
+      if (item.skillName && item.level) {
+        const newArray = [...values[arrayName], item];
+        setFieldValue(arrayName, newArray);
+        resetItemState(arrayName);
+      } else if (!item.level) {
+        setErrors({ skills: { ...errors.skills, level: 'Veuillez sélectionner un niveau' } });
+      }
+    } else if (arrayName === 'hobbies' && item.trim()) {
+      // For hobbies, just check if the item is not empty
+      const newArray = [...values[arrayName], item];
+      setFieldValue(arrayName, newArray);
+      resetItemState(arrayName);
     }
   };
   
-  // Handles the selection of a proficiency level or a language test
-  const handleSelectChange = (field, value) => {
-    setCurrentLanguage({ ...currentLanguage, [field]: value });
-
-    // If "Autres" is selected for test, prompt for custom test name
-    if (field === 'testName' && value === 'Autres') {
-      setLanguageDialogOpen(true);
+  const resetItemState = (arrayName) => {
+    if (arrayName === 'languages') {
+      setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' }); // Reset after adding
+      setCustomTestName(''); // Clear the custom test name as well
+    } else if (arrayName === 'skills') {
+      setNewSkill({ skillName: '', level: '' }); // Reset skill input fields
+      setErrors({ skills: {} }); // Clear skill errors
+    } else if (arrayName === 'hobbies') {
+      setNewHobby(''); // Reset the hobby input field
     }
   };
 
-  // Handles adding a new skill or hobby
-  const handleNewItem = (e, item, setItem, fieldName) => {
-    e.preventDefault();
-    if (item.skillName && item.level) {
-      const updatedItems = [...values[fieldName], item];
-      setFieldValue(fieldName, updatedItems);
-      setItem({ skillName: '', level: '' }); // For skills
-    } else if (item.trim()) {
-      const updatedItems = [...values[fieldName], item];
-      setFieldValue(fieldName, updatedItems);
-      setItem(''); // For hobbies
-    }
-  };
-
-  // Opens the dialog to add a language with its details
-  const handleOpenLanguageDialog = () => {
-    setLanguageDialogOpen(true);
-  };
-
-  // Closes the dialog and resets the current language details
-  const handleCloseLanguageDialog = () => {
-    setLanguageDialogOpen(false);
-    setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' });
-    setCustomTestName('');
-  };
 
 
-  const handleAddSkill = () => {
-    // Check if both skillName and level have values before adding
-    if (newSkill.skillName && newSkill.level) {
-      const newSkills = [...values.skills, newSkill];
-      setFieldValue('skills', newSkills);
-      setNewSkill({ skillName: '', level: '' }); // Reset the skill input
-    }
-  };
+const handleAddSkill = () => {
+  addValidItem(newSkill, 'skills');
+};
+
+const handleNewItem = (e, item, setItem, fieldName) => {
+  e.preventDefault();
+  addValidItem(item, fieldName);
+};
+
+const handleLanguageSubmit = () => {
+  if(isTestTaken) {
+    // Open the dialog to enter test details if the test checkbox is checked
+    setTestDialogOpen(true);
+  } else {
+    // Directly add the language if no test was taken
+    finalizeLanguageAddition();
+  }
+};
+
+const finalizeLanguageAddition = () => {
+  const newArray = [...values.languages, currentLanguage];
+  setFieldValue('languages', newArray);
+  resetLanguageForm();
+};
+
+const resetLanguageForm = () => {
+  setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' });
+  setIsTestTaken(false);
+  setTestDialogOpen(false);
+};
+
+const handleTestDialogSave = () => {
+  // Save the language along with test details
+  finalizeLanguageAddition();
+  setTestDialogOpen(false);
+};
+
 
   const isSkillError = (field) => {
     return Boolean(errors.skills && errors.skills[values.skills.length] && errors.skills[values.skills.length][field]);
@@ -120,55 +116,25 @@ const CombinedForm = () => {
   };
 
   return (
-    <Grid container spacing={2} component="form" onSubmit={(e) => e.preventDefault()}>
+    <Grid container spacing={2} onSubmit={(e) => e.preventDefault()}>
       {/* Languages Section */}
       <Grid item xs={12}>
-        <Typography variant="h6">Langues</Typography>
+        <Typography variant="h6" color={theme.palette.primary.main}>Langues</Typography>
         <Divider style={{ margin: '20px 0' }} />
-        <Box display="flex" alignItems="center">
+         <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
-            label="Ajouter Langue"
+            label="Langue"
             variant="outlined"
             size="small"
+            style={{ width: '30%' }}
             value={currentLanguage.language}
             onChange={(e) => setCurrentLanguage({ ...currentLanguage, language: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddLanguage(e)}
-            style={{ width: '30%' }}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={handleAddLanguage} edge="end">
-                    <AddCircleOutlineIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
           />
-          <Box display="flex" flexWrap="wrap" alignItems="center" ml={2}>
-            {values.languages.map((language, index) => (
-              <Chip
-                key={index}
-                label={`${language.language} (${language.proficiency}) ${language.testName ? `- ${language.testName}` : ''} ${language.testScore ? `: ${language.testScore}` : ''}`}
-                onDelete={() => handleRemoveItem('languages', index)}
-                deleteIcon={<CancelIcon />}
-                color="primary"
-                variant="outlined"
-                style={{ marginRight: '8px', marginBottom: '8px' }}
-              />
-            ))}
-          </Box>
-        </Box>
-      </Grid>
-
-      {/* Dialog for Adding/Editing Languages */}
-      <Dialog open={languageDialogOpen} onClose={handleCloseLanguageDialog}>
-        <DialogTitle>Ajouter une langue</DialogTitle>
-        <DialogContent>
-          <FormControl fullWidth margin="dense">
+          <FormControl size="small" style={{ width: '30%' }}>
             <InputLabel>Niveau de maîtrise</InputLabel>
             <Select
               value={currentLanguage.proficiency}
-              onChange={(e) => handleSelectChange('proficiency', e.target.value)}
+              onChange={(e) => setCurrentLanguage({ ...currentLanguage, proficiency: e.target.value })}
               label="Niveau de maîtrise"
             >
               {proficiencyLevels.map((level) => (
@@ -176,31 +142,42 @@ const CombinedForm = () => {
               ))}
             </Select>
           </FormControl>
-          <FormControl fullWidth margin="dense">
-            <InputLabel>Test</InputLabel>
-            <Select
-              value={currentLanguage.testName}
-              onChange={(e) => handleSelectChange('testName', e.target.value)}
-              label="Test"
-            >
-              {testOptions.map((option) => (
-                <MenuItem key={option} value={option}>{option}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          {currentLanguage.testName === 'Autres' && (
-            <TextField
-              margin="dense"
-              label="Nom du Test Personnalisé"
-              type="text"
-              fullWidth
-              value={customTestName}
-              onChange={(e) => setCustomTestName(e.target.value)}
-            />
-          )}
+          <FormControlLabel
+            control={<Checkbox checked={isTestTaken} onChange={(e) => setIsTestTaken(e.target.checked)} />}
+            label="J'ai passé un test pour cette langue"
+          />
+         <IconButton onClick={handleLanguageSubmit} size="large">
+            <AddCircleOutlineIcon />
+          </IconButton>
+        </Box>
+        {values.languages.map((language, index) => (
+          <Chip
+            key={index}
+            label={`${language.language} (${language.proficiency}) ${language.testName ? `- ${language.testName}` : ''} ${language.testScore ? `: ${language.testScore}` : ''}`}
+            onDelete={() => { handleRemoveItem('languages', index) }}
+            color="primary"
+            variant="outlined"
+            style={{ margin: '5px' }}
+          />
+        ))}
+      </Grid>
+
+      {/* Test Details Dialog */}
+      <Dialog open={testDialogOpen} onClose={() => setTestDialogOpen(false)}>
+        <DialogTitle>Test de compétence</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Nom du test"
+            type="text"
+            fullWidth
+            value={currentLanguage.testName}
+            onChange={(e) => setCurrentLanguage({ ...currentLanguage, testName: e.target.value })}
+          />
           <TextField
             margin="dense"
-            label="Score du Test"
+            label="Score du test"
             type="text"
             fullWidth
             value={currentLanguage.testScore}
@@ -208,27 +185,28 @@ const CombinedForm = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseLanguageDialog}>Annuler</Button>
-          <Button onClick={handleAddLanguage}>Sauvegarder</Button>
+          <Button onClick={() => setTestDialogOpen(false)}>Annuler</Button>
+          <Button onClick={handleTestDialogSave}>Sauvegarder</Button>
         </DialogActions>
       </Dialog>
-
+  
       {/* Skills Section */}
       <Grid item xs={12}>
-        <Typography variant="h6">Compétences</Typography>
         <Divider style={{ margin: '20px 0' }} />
-        <Box display="flex" alignItems="center">
+        <Typography variant="h6" color={theme.palette.primary.main}>Compétences</Typography>
+        <Divider style={{ margin: '10px 0 40px 0', width: '100px' }} />
+        <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
-            label="Compétence"
+            label="Compétence (ex: Word, Excel, Photoshop, etc.)"
             variant="outlined"
             size="small"
             value={newSkill.skillName}
             onChange={(e) => setNewSkill({ ...newSkill, skillName: e.target.value })}
             error={isSkillError('skillName')}
             helperText={isSkillError('skillName') && errors.skills[values.skills.length].skillName}
-            style={{ width: '30%' }}
+            style={{ width: '50%' }} // Adjust width accounting for the gap
           />
-          <FormControl variant="outlined" size="small" style={{ width: '30%', marginLeft: '10px' }} error={isSkillError('level')}>
+          <FormControl variant="outlined" size="small" style={{ width: 'calc(30% - 10px)' }} error={isSkillError('level')}>
             <InputLabel>Niveau</InputLabel>
             <Select
               value={newSkill.level}
@@ -260,20 +238,20 @@ const CombinedForm = () => {
         </Box>
       </Grid>
 
-
       {/* Hobbies Section */}
       <Grid item xs={12}>
-        <Typography variant="h6">Loisirs</Typography>
         <Divider style={{ margin: '20px 0' }} />
-        <Box display="flex" alignItems="center">
+        <Typography variant="h6" color={theme.palette.primary.main}>Loisirs</Typography>
+        <Divider style={{ margin: '10px 0 40px 0', width: '100px' }} />
+        <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
-            label="Ajouter Loisir"
+            label="Loisir(s) (ex: Lecture, Musique, Sport, etc.)"
             variant="outlined"
             size="small"
             value={newHobby}
             onChange={(e) => setNewHobby(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleNewItem(e, newHobby, setNewHobby, 'hobbies')}
-            style={{ width: '30%' }}
+            style={{ width: '50%' }}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">

@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { Formik, Form as FormikForm } from 'formik';
-import { Button, LinearProgress, Typography, Grid, Box } from '@mui/material';
+import { Button, LinearProgress, Typography, Grid} from '@mui/material';
 import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material';
-
-// Import form section components
+import Snackbar from '@mui/material/Snackbar';
 import PersonalInfoForm from './PersonalInfoForm'; 
 import EducationForm from './EducationForm'; 
 import WorkExperienceForm from './WorkExperienceForm'; 
-import CombinedForm from './CombinedForm'; // This component will include language, skills, hobbies, and references
+import CombinedForm from './CombinedForm'; 
 import { useTheme } from '@mui/material/styles';
+import { useRouter } from 'next/navigation';
 
 
-// Simplified form steps
+
 const formSteps = [
     { label: "Informations Personnelles", component: PersonalInfoForm, validationFunction: validatePersonalInfo },
     { label: "Éducation", component: EducationForm, validationFunction: validateEducation},
@@ -103,7 +103,7 @@ function validatePersonalInfo(values) {
       });
       if (languageErrors.some(e => Object.keys(e).length > 0)) errors.languages = languageErrors;
     }
-    // Hobbies and references can be optional based on your form requirements
+    
     return errors;
   }
   
@@ -147,47 +147,56 @@ const initialValues = {
       responsibilities: [''],
     }],
     noExperience: false,
-    // Skills
-    skills: [{
-      skillName: '',
-      level: '',
-    }],
-    // Languages
-    languages: [{
-      language: '',
-      proficiency: '',
-        testName: '',
-        testScore: '',
-    }],
-    // Hobbies
-    hobbies: [''],
-    // References
-    references: [{
-      name: '',
-      contactInformation: '',
-    }],
-  };
-  
+    // Combined Form
+    skills: [],
+    languages: [],
+    hobbies: [],
 
-  const Form = () => {
-    const [currentStep, setCurrentStep] = useState(0);
-    const theme = useTheme();
+};
+
   
-    const handleNext = async (values, actions) => {
-      const currentValidationFunc = formSteps[currentStep].validationFunction;
+const Form = () => {
+  // Your existing useState hooks
+  const [currentStep, setCurrentStep] = useState(0);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const theme = useTheme();
+  const router = useRouter();
+
+  // Your form validation functions remain unchanged
+
+  const handleNext = async (values, actions) => {
+      const currentValidationFunc = formSteps[currentStep]?.validationFunction;
       const errors = currentValidationFunc ? currentValidationFunc(values) : {};
-      if (Object.keys(errors).length === 0 && currentStep < formSteps.length - 1) {
-        setCurrentStep(currentStep + 1);
-      } else if (Object.keys(errors).length === 0) {
-        console.log("Final Form Submitted", values);
-        // Final form submission logic here
-      } else {
-        actions.setErrors(errors);
+
+      if (Object.keys(errors).length === 0) {
+          if (currentStep < formSteps.length - 1) {
+              setCurrentStep(currentStep + 1);
+          } else {
+              // Show the Snackbar immediately after the last step's successful validation
+              setOpenSnackbar(true);
+              
+              // Simulate form submission logic here
+              try {
+                  // Simulated delay for async operation (e.g., API call)
+                  setTimeout(() => {
+                      console.log("Form submission logic goes here.");
+                      
+                      // Assuming form submission is successful
+                      // Close the Snackbar and redirect
+                      setOpenSnackbar(false); // Close the Snackbar
+                      router.push('/cvedit'); // Redirect
+                  }, 2000); // Simulate async delay
+              } catch (error) {
+                  console.error('Submission error:', error);
+                  actions.setSubmitting(false);
+              }
+          }
       }
-      actions.setSubmitting(false);
-    };
-  
+  };
+
+
     return (
+      <>
       <Formik
         initialValues={initialValues}
         onSubmit={handleNext}
@@ -196,7 +205,7 @@ const initialValues = {
         {({ isSubmitting, handleSubmit, values }) => (
           <FormikForm onSubmit={handleSubmit}>
             <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
-              <CombinedForm />
+              {formSteps[currentStep].label}
             </Typography>
             <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-4" />
   
@@ -223,8 +232,16 @@ const initialValues = {
             </Grid>
             </Grid>
           </FormikForm>
+          
         )}
       </Formik>
+      <Snackbar
+                open={openSnackbar}
+                autoHideDuration={6000}
+                onClose={() => setOpenSnackbar(false)}
+                message="CV submitted successfully! Redirecting..."
+            />
+    </>
     );
   };
   

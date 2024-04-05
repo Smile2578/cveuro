@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 
 const CVSchema = new Schema({
-  userId: { // Assuming each CV is linked to a specific user
+  userId: { 
     type: String,
     required: true,
   },
@@ -22,7 +22,6 @@ const CVSchema = new Schema({
     linkedIn: String, // Optional, can be useful
     personalWebsite: String, // Optional, for those who have a portfolio site
   },
-  professionalSummary: String, // Brief summary or objective
   education: [{
     schoolName: String,
     degree: String,
@@ -50,10 +49,6 @@ const CVSchema = new Schema({
     testScore: String, // Grade or score obtained in the language test
   }],
   hobbies: [String], // Simple array of strings might suffice
-  references: [{
-    name: String,
-    contactInformation: String,
-  }],
 });
 
 
