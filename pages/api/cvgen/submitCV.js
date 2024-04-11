@@ -1,66 +1,81 @@
 import dbConnect from '../../../lib/dbConnect';
 import CV from '../../../models/CV';
 import { randomBytes } from 'crypto';
+import { parse, format } from 'date-fns';
 
 export default async function handler(req, res) {
-  console.log('API Method:', req.method); // Log the request method for debugging
+  await dbConnect();
 
   if (req.method === 'POST') {
+    let { userId, ...cvData } = req.body;
+
+    if (!userId) {
+      userId = randomBytes(16).toString('hex');
+    }
+
+    console.log('Received CV data:', cvData);
+    console.log('Received userId:', userId);
+
     try {
-      await dbConnect();
-      console.log('Database connected successfully.');
-
-      let cvData = req.body;
-      console.log('Received CV data:', JSON.stringify(cvData, null, 2)); // Log received data for verification, formatted
-
-      // Generate a unique userId if not provided
-      if (!cvData.userId) {
-        cvData.userId = generateUniqueUserId();
-        console.log('Generated new userId:', cvData.userId);
-      }
-
-      console.log('Preparing CV data for database insertion.');
-      // Re-structure cvData to encapsulate personal information within personalInfo object
-      cvData = {
-        ...cvData,
-        personalInfo: {
-          firstname: cvData.firstname,
-          lastname: cvData.lastname,
-          email: cvData.email,
-          nationality: cvData.nationality,
-          phoneNumber: cvData.phoneNumber,
-          dateofBirth: cvData.dateofBirth,
-          sex: cvData.sex,
-          placeOfBirth: cvData.placeOfBirth,
-          address: cvData.address,
-          city: cvData.city,
-          zip: cvData.zip,
-          linkedIn: cvData.linkedIn,
-          personalWebsite: cvData.personalWebsite,
-        },
-        // Note: These properties are not explicitly removed; they are omitted from the log for clarity
+      // Restructure the cvData to match the CV model, especially the personalInfo part
+      const personalInfo = {
+        firstname: cvData.firstname,
+        lastname: cvData.lastname,
+        email: cvData.email,
+        nationality: cvData.nationality,
+        phoneNumber: cvData.phoneNumber,
+        dateofBirth: cvData.dateofBirth, 
+        sex: cvData.sex,
+        placeofBirth: cvData.placeofBirth,
+        address: cvData.address,
+        city: cvData.city,
+        zip: cvData.zip,
+        linkedIn: cvData.linkedIn,
+        personalWebsite: cvData.personalWebsite,
       };
 
-      console.log('Final CV data to save:', JSON.stringify(cvData, null, 2)); // Log the final structured data
+      // Format date of birth to DD/MM/YYYY if necessary
+      if (personalInfo.dateofBirth) {
+        const dobParsed = parse(personalInfo.dateofBirth, 'yyyy-MM-dd', new Date());
+        personalInfo.dateofBirth = format(dobParsed, 'dd/MM/yyyy');
+      }
 
-      const newCV = new CV(cvData);
-      await newCV.save();
-      console.log('CV successfully saved', { cvId: newCV._id.toString(), userId: newCV.userId });
+      // Ensure education and workExperience dates are formatted correctly
+      // Convert your startDate and endDate formats as needed
+      ['education', 'workExperience'].forEach(section => {
+        cvData[section] = cvData[section].map(item => {
+          let startDateFormatted = item.startDate ? format(parse(item.startDate, 'yyyy-MM', new Date()), 'MM/yyyy') : undefined;
+          let endDateFormatted = item.ongoing ? "En cours" : item.endDate ? format(parse(item.endDate, 'yyyy-MM', new Date()), 'MM/yyyy') : undefined;
+          return { ...item, startDate: startDateFormatted, endDate: endDateFormatted };
+        });
+      });
 
-      // Respond with success message
-      res.status(201).json({ success: true, message: 'CV successfully submitted', cvId: newCV._id.toString(), userId: newCV.userId });
+      // Remove the flat personal info properties from cvData before saving
+      const { firstname, lastname, email, nationality, phoneNumber, dateofBirth, sex, placeOfBirth, address, city, zip, linkedIn, personalWebsite, ...restOfCvData } = cvData;
+
+      const finalData = {
+        userId,
+        personalInfo,
+        ...restOfCvData
+      };
+
+      const cv = await CV.create(finalData);
+
+      return res.status(201).json({
+        success: true,
+        message: 'CV successfully submitted',
+        data: { userId: cv.userId, cvId: cv._id },
+      });
     } catch (error) {
-      console.error('Error in API Route - Saving CV:', error);
-      // Respond with error message
-      res.status(500).json({ success: false, message: 'Failed to submit CV', error: error.message });
+      console.error('Error submitting CV:', error);
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to submit CV',
+        error: error.message,
+      });
     }
   } else {
-    console.log(`Method ${req.method} not allowed.`);
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
-
-function generateUniqueUserId() {
-  return randomBytes(16).toString('hex');
 }

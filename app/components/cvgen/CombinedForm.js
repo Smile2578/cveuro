@@ -11,7 +11,7 @@ import theme from '@/app/theme';
 
 
 const proficiencyLevels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Langue maternelle'];
-const skillLevels = { '1': 'Débutant', '2': 'Intermédiaire', '3': 'Expérimenté', '4': 'Avancé', '5': 'Maîtrise parfaite' };
+const skillLevels = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert', 'Maîtrise complète'];
 
 
 const CombinedForm = () => {

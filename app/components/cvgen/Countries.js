@@ -419,5 +419,6 @@ const countries = [
   { code: 'ZW', label: 'Zimbabwe', phone: '263' },
 ];
 
+const sortedCountries = countries.sort((a, b) => a.label.localeCompare(b.label));
 
 export default countries;

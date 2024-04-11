@@ -38,21 +38,19 @@ const WorkExperienceForm = ({ onNext }) => { // Assume onNext is passed correctl
     setFieldValue('workExperience', updatedWorkExperience);
   };
 
-  const handleNoExperience = () => {
-    setOpenConfirmDialog(true);
-  };
-
-  const confirmNoExperience = () => {
-    setFieldValue('noExperience', true); // Set the flag
-    onNext?.();
-    setOpenConfirmDialog(false);
-  };
-  
   return (
     <>
       <Grid container spacing={2}>
         {values.workExperience.map((exp, index) => (
           <React.Fragment key={index}>
+            <Button
+              variant="outlined"
+              startIcon={<AddCircleOutlineIcon />}
+              onClick={() => onNext({ skipWorkExperience: true })}
+              sx={{ m: 2 }}
+            >
+              Je n&apos;ai pas encore d&apos;expérience professionnelle
+            </Button>
             <Grid item xs={12} sm={6}>
               <TextField
                 name={`workExperience[${index}].companyName`}
@@ -148,37 +146,8 @@ const WorkExperienceForm = ({ onNext }) => { // Assume onNext is passed correctl
             Ajouter une expérience
           </Button>
         </Grid>
-        <Grid item xs={12}>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => setOpenConfirmDialog(true)} // Open confirmation dialog
-        >
-          Je n'ai pas encore d'expérience professionnelle
-        </Button>
-      </Grid>
       </Grid>
 
-      {/* Confirmation Dialog */}
-      <Dialog
-        open={openConfirmDialog}
-        onClose={() => setOpenConfirmDialog(false)}
-      >
-        <DialogTitle>
-          {"Confirmer l'absence d'expérience professionnelle"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Êtes-vous sûr de vouloir continuer sans ajouter d'expérience professionnelle ?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenConfirmDialog(false)}>Retour</Button>
-          <Button onClick={confirmNoExperience} autoFocus>
-            Confirmer
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   );
 };

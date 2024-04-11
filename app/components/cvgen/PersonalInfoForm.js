@@ -24,9 +24,9 @@ import DateRangeIcon from '@mui/icons-material/DateRange';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import LinkIcon from '@mui/icons-material/Link';
-import countries from './Countries'; // Ensure this import path is correct
+import sortedCountries from './Countries'; // Ensure this import path is correct
 import styled from '@emotion/styled';
-import theme from '@/app/theme';
+
 
 
 
@@ -143,14 +143,13 @@ const PersonalInfoForm = () => {
 
       <Grid item xs={12} sm={6}>
         <FormLabel component="legend">Sexe</FormLabel>
-        <RadioGroup row name="sex" value={values.sex} onChange={(event) => setFieldValue('sex', event.target.value)}>
+        <RadioGroup row name="sex" value={values.sex || ''}>
           <GenderBox
             control={<Radio />}
             label="Masculin"
             value="M"
             selected={values.sex === 'M'}
             onClick={() => setFieldValue('sex', 'M')}
-            icon={<MaleIcon />}
           />
           <GenderBox
             control={<Radio />}
@@ -158,7 +157,6 @@ const PersonalInfoForm = () => {
             value="F"
             selected={values.sex === 'F'}
             onClick={() => setFieldValue('sex', 'F')}
-            icon={<FemaleIcon />}
           />
         </RadioGroup>
         {touched.sex && errors.sex && <FormHelperText error>{errors.sex}</FormHelperText>}
@@ -214,41 +212,37 @@ const PersonalInfoForm = () => {
           <PublicIcon />
         </IconButton>
         <TextField
-          name="placeOfBirth"
+          name="placeofBirth"
           label="Lieu de naissance (Ville)"
-          value={values.placeOfBirth}
+          value={values.placeofBirth}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={touched.placeOfBirth && Boolean(errors.placeOfBirth)}
-          helperText={touched.placeOfBirth && errors.placeOfBirth}
+          error={touched.placeofBirth && Boolean(errors.placeofBirth)}
+          helperText={touched.placeofBirth && errors.placeofBirth}
           fullWidth
         />
       </Grid>
-
-      {/* Combine Sex and Nationality into a single row */}
       
 
       <Grid item xs={6}>
-        <FormControl fullWidth error={nationalityMeta.touched && Boolean(nationalityMeta.error)}>
-          <InputLabel id="nationality-label">Nationalité</InputLabel>
-          <Select
-            labelId="nationality-label"
-            {...nationalityField}
-            value={nationalityField.value}
-            onChange={(event) => {
-              setFieldValue('nationality', event.target.value);
-            }}
-            onBlur={nationalityField.onBlur}
-          >
-            {countries.map((option) => (
-              <MenuItem key={option.code} value={option.label}>
-                {option.label}
-              </MenuItem>
-            ))}
-          </Select>
-          {nationalityMeta.touched && nationalityMeta.error && <FormHelperText>{nationalityMeta.error}</FormHelperText>}
-        </FormControl>
-      </Grid>
+  <FormControl fullWidth error={nationalityMeta.touched && Boolean(nationalityMeta.error)}>
+    <InputLabel id="nationality-label">Nationalité</InputLabel>
+    <Select
+        labelId="nationality-label"
+        {...nationalityField}
+        value={nationalityField.value || ''}
+        onChange={(event) => setFieldValue('nationality', event.target.value)}
+        onBlur={nationalityField.onBlur}
+      >
+      {sortedCountries.map((option) => (
+        <MenuItem key={option.code} value={option.label}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </Select>
+    {nationalityMeta.touched && nationalityMeta.error && <FormHelperText>{nationalityMeta.error}</FormHelperText>}
+  </FormControl>
+</Grid>
 
       <Grid item xs={12} sm={6}>
         <IconButton>

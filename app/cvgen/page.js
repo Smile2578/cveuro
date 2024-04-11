@@ -34,6 +34,7 @@ export default function CVGenPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
             flexGrow: 1, 
             display: 'flex',
+            maxWidth: '90%',
             flexDirection: 'column',
             justifyContent: 'center', 
           }}

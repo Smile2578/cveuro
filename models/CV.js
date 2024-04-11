@@ -13,7 +13,7 @@ const CVSchema = new Schema({
     email: String,
     nationality: String,
     phoneNumber: String,
-    dateofBirth: Date, 
+    dateofBirth: String, 
     sex: String,
     placeofBirth: String,
     address: String,
@@ -26,16 +26,18 @@ const CVSchema = new Schema({
     schoolName: String,
     degree: String,
     fieldOfStudy: String,
-    startDate: Date,
-    endDate: Date,
+    startDate: String,
+    endDate: String,
+    ongoing: Boolean, // To indicate if the education is ongoing
     achievements: [String], // Optional, for notable achievements during education
   }],
   workExperience: [{
     companyName: String,
     position: String,
     location: String, // Optional, to specify where the job was located
-    startDate: Date,
-    endDate: Date,
+    startDate: String,
+    endDate: String,
+    ongoing: Boolean, // To indicate if the job is ongoing
     responsibilities: [String],
   }],
   skills: [{
@@ -49,6 +51,9 @@ const CVSchema = new Schema({
     testScore: String, // Grade or score obtained in the language test
   }],
   hobbies: [String], // Simple array of strings might suffice
+  template: {
+    type: String,
+  },
 });
 
 
