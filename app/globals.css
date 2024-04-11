@@ -30,7 +30,13 @@ body {
   ) rgb(var(--background-start-rgb));
 }
 
-/* Example utility class */
+.desktop-pdf {
+  display: grid;
+  grid-template-columns: 3fr 1fr 9fr;
+  grid-gap: 16px;
+} 
+
+
 .text-balance {
   text-wrap: balance;
 }

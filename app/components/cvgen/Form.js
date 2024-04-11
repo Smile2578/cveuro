@@ -88,9 +88,6 @@ function validatePersonalInfo(values) {
     if (!values.sex) { 
       errors.sex = 'Le sexe est obligatoire';
     }
-    if (values.linkedIn && !/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.linkedIn)) {
-      errors.linkedIn = 'L\'URL LinkedIn est invalide';
-    }
     if (values.personalWebsite && !/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.personalWebsite)) {
       errors.personalWebsite = 'L\'URL du site personnel est invalide';
     }

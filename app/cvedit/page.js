@@ -2,14 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/common/NavBar';
 import Footer from '../components/common/Footer';
-import TemplateSelection from '../components/cvedit/TemplateSelector';
 import CVEditor from '../components/cvedit/CVEditor'; // Assume this is your component for editing the CV
 import { CssBaseline, Container, ThemeProvider, Box } from '@mui/material';
 import theme from '../theme';
 
 const CVEdit = () => {
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [cvData, setCvData] = useState(null);
+const [cvData, setCvData] = useState(null);
 
   useEffect(() => {
     const fetchCVData = async () => {
@@ -20,7 +18,6 @@ const CVEdit = () => {
           if (!response.ok) throw new Error('Failed to fetch CV data');
           const data = await response.json();
           setCvData(data);
-          setSelectedTemplate(data.template); // Update this line to set the selected template
           console.log('CV data fetched:', data);
         } catch (error) {
           console.error("Error fetching CV data:", error.message);
@@ -63,11 +60,7 @@ const CVEdit = () => {
               justifyContent: 'center', 
             }}
           >
-            {!selectedTemplate ? (
-              <TemplateSelection onSelect={setSelectedTemplate} />
-            ) : (
-              <CVEditor cvData={cvData} template={selectedTemplate} />
-            )}
+            <CVEditor cvData={cvData} setCvData={setCvData} />
           </Container>
           <Footer />
         </Box>

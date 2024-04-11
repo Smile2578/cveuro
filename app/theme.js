@@ -12,6 +12,7 @@ palette: {
     // Define your color palette here
     primary: {
       main: '#1976d2', // Example primary color
+      alt: '#00BA88', // Example secondary color
     },
     background: {
       default: '#ffffff', // Light background color for contrast

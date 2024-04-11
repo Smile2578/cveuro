@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import {
   Accordion,
+  Button,
   AccordionSummary,
   AccordionDetails,
   Typography,
@@ -20,7 +21,39 @@ const CVInfos = ({ cvData, setCvData }) => {
   const [editField, setEditField] = useState({});
   const [editValues, setEditValues] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf'); // Default template
+
+  const onSelectTemplate = async (templatePath) => {
+    setSelectedTemplate(templatePath);
+    const updatedCvData = { ...cvData, template: templatePath };
+  
+    // API call to update the CV in the database
+    try {
+      const userId = localStorage.getItem('cvUserId'); // Ensure you have the correct way to retrieve the user ID
+      const response = await fetch(`/api/cvedit/updateCV?userId=${userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedCvData),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to update CV template');
+      }
+      // Optionally update local CV data state
+      setCvData(updatedCvData);
+      console.log('Template updated successfully');
+    } catch (error) {
+      console.error('Error updating template:', error);
+      // Handle error (e.g., show a notification)
+    }
+  };
+
+
   const theme = useTheme();
+
+  const templates = [
+    { id: 'template1', name: 'Template 1', path: 'template1.pdf' },
+  ];
 
   const formatDate = (date, isOngoing) => {
     if (isOngoing) return 'En Cours';
@@ -222,7 +255,8 @@ const CVInfos = ({ cvData, setCvData }) => {
           {cvData.skills.map((skill, index) =>
             <Box key={`skill-${index}`} sx={{ marginBottom: '8px' }}>
               <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
-                {skill}
+                {renderEditableField('skills', `${index}.skillName`, 'Compétence', skill.skillName)}
+                {renderEditableField('skills', `${index}.proficiency`, 'Niveau de maîtrise', skill.proficiency)}
               </Typography>
             </Box>
           )}
@@ -244,6 +278,26 @@ const CVInfos = ({ cvData, setCvData }) => {
             </Box>
           )}
           {/* Assuming hobbies are just a list of strings, if more detail is needed, adjust accordingly */}
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Template Selection Section */}
+     <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography variant="h6">Sélection de modèle</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+            {templates.map((template) => (
+              <Button
+                key={template.id}
+                variant={selectedTemplate === template.path ? 'outlined' : 'outlined'}
+                onClick={() => onSelectTemplate(template.path)}
+              >
+                {template.name}
+              </Button>
+            ))}
+          </Box>
         </AccordionDetails>
       </Accordion>
 
