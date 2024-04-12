@@ -58,9 +58,9 @@ const initialValues = {
 
 const formSteps = [
     { label: "Informations Personnelles", component: PersonalInfoForm, validationFunction: validatePersonalInfo },
-    { label: "Éducation", component: EducationForm, validationFunction: validateEducation},
-    { label: "Expérience Professionnelle", component: WorkExperienceForm, validationFunction: validateWorkExperience},
-    { label: "Langues, Compétences, Loisirs, Références", component: CombinedForm, validationFunction: validateCombinedForm},
+    { label: "Éducation (maximum 4)", component: EducationForm, validationFunction: validateEducation},
+    { label: "Expérience Professionnelle (maximum 4)", component: WorkExperienceForm, validationFunction: validateWorkExperience},
+    { label: "Langues, Compétences, Loisirs", component: CombinedForm, validationFunction: validateCombinedForm},
 ];
 
 function validatePersonalInfo(values) {

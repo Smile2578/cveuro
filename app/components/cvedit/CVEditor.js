@@ -5,61 +5,39 @@ import { Grid, Paper, Button, useTheme, Box } from '@mui/material';
 import CVInfos from './CVInfos';
 import LiveCV from './LiveCV';
 import { useRouter } from 'next/navigation';
-import { jsPDF } from "jspdf";
-import html2canvas from "html2canvas";
+
 
 
 const CVEditor = ({ cvData, setCvData }) => {
   const theme = useTheme();
 
   const router = useRouter();
-  const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf'); // Default template
+  const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf');
 
 
   const generatePDF = async () => {
-    const liveCV = document.getElementById('live-cv');
-    
-    // Apply desktop styles directly for PDF generation
-    const originalStyle = liveCV.getAttribute('style');
-      liveCV.style.width = '210mm';
-      liveCV.style.height = '297mm';
-      liveCV.style.position = 'relative';
-      liveCV.style.backgroundColor = '#FFFFFF';
-  
-      const scale = 2;
-  
-      const canvas = await html2canvas(liveCV, {
-        scale: scale,
-        useCORS: true,
-        onclone: (document) => {
-          // This callback runs after the element is cloned for rendering but before it is rendered
-          // Here you can perform any manipulations to the cloned element if necessary
-          const clonedLiveCV = document.getElementById('live-cv');
-          // Apply the styling necessary to make it look like the desktop version
-          clonedLiveCV.style.display = 'grid';
-          clonedLiveCV.style.gridTemplateColumns = '3fr 1fr 9fr';
-          clonedLiveCV.style.gap = '16px';
-          clonedLiveCV.style.overflow = 'hidden';
-        }
+    try {
+      const userId = localStorage.getItem('cvUserId'); // Assuming you store userId in localStorage
+      const response = await fetch('/api/cvedit/generatePdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
       });
-    
-      const imgData = canvas.toDataURL('image/png');
-    
-      // Create a PDF and add the image
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-    
-      // Adjust the width and height based on the scaling factor
-      pdf.addImage(imgData, 'PNG', 0, 0, 210 / scale, 297 / scale);
-    
-      pdf.save('cv.pdf');
-    
-      // Revert to the original style
-      liveCV.setAttribute('style', originalStyle);
-    };
+      if (!response.ok) throw new Error('PDF generation failed');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'cv.pdf'); // or any other extension
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+    } catch (error) {
+      console.error('Failed to generate PDF', error);
+    }
+  };
 
   const onSelectTemplate = (templateId) => {
     // Since all choices lead to template1.pdf, we ignore the templateId for now

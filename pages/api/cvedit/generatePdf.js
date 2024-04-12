@@ -1,122 +1,104 @@
-// pages/api/generatePdf.js
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument } from 'pdf-lib';
 import fs from 'fs';
 import path from 'path';
 import dbConnect from '../../../lib/dbConnect';
-import CV from '../../../models/CV'; // Update the path according to your project structure
+import CV from '../../../models/CV';
+
+
+const skillLevelLabels = {
+  '1': 'Débutant',
+  '2': 'Intermédiaire',
+  '3': 'Expérimenté',
+  '4': 'Avancé',
+  '5': 'Maîtrise parfaite',
+};
 
 export default async function handler(req, res) {
   await dbConnect();
 
   if (req.method !== 'POST') {
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+      return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
   const { userId } = req.body;
   if (!userId) {
-    return res.status(400).json({ error: 'Missing userId' });
+      return res.status(400).json({ error: 'Missing userId' });
   }
 
   try {
-    const cvData = await CV.findOne({ userId }).lean();
-    if (!cvData) {
-      return res.status(404).json({ error: 'CV not found' });
-    }
+      const cvData = await CV.findOne({ userId }).lean();
+      if (!cvData) {
+          return res.status(404).json({ error: 'CV not found' });
+      }
 
-    const templatePath = path.join(process.cwd(), 'public', 'template', cvData.template);
-    const templateBytes = fs.readFileSync(templatePath);
-    const pdfDoc = await PDFDocument.load(templateBytes);
-    const form = pdfDoc.getForm();
+      const templatePath = path.join(process.cwd(), 'public', 'template', 'template1.pdf');
+      const templateBytes = fs.readFileSync(templatePath);
+      const pdfDoc = await PDFDocument.load(templateBytes);
 
-    // Personal Information
-    form.getTextField('firstname').setText(cvData.personalInfo.firstname);
-    form.getTextField('lastname').setText(cvData.personalInfo.lastname);
-    form.getTextField('sex').setText(cvData.personalInfo.sex);
-    form.getTextField('email').setText(cvData.personalInfo.email);
-    form.getTextField('phoneNumber').setText(cvData.personalInfo.phoneNumber);
-    form.getTextField('nationality').setText(cvData.personalInfo.nationality);
+      console.log('PDF loaded, number of pages:', pdfDoc.getPages().length); // Debug: Check if PDF is loaded
+
+      const form = pdfDoc.getForm();
+
+    // Fill personal info
+    form.getTextField('Name').setText(`${cvData.personalInfo.firstname} ${cvData.personalInfo.lastname}`);
     form.getTextField('dateofBirth').setText(cvData.personalInfo.dateofBirth);
-    form.getTextField('placeofBirth').setText(cvData.personalInfo.placeofBirth);
-    form.getTextField('address').setText(cvData.personalInfo.address);
-    form.getTextField('city').setText(cvData.personalInfo.city);
-    form.getTextField('zip').setText(cvData.personalInfo.zip);
-    form.getTextField('linkedIn').setText(cvData.personalInfo.linkedIn);
-    form.getTextField('personalWebsite').setText(cvData.personalInfo.personalWebsite);
+    form.getTextField('sex').setText(cvData.personalInfo.sex);
+    form.getTextField('nationality').setText(cvData.personalInfo.nationality);
+    if (cvData.personalInfo.placeofBirth) form.getTextField('placeofBirth').setText(cvData.personalInfo.placeofBirth);
+    form.getTextField('email').setText(cvData.personalInfo.email);
+    form.getTextField('phone').setText(cvData.personalInfo.phoneNumber);
+    form.getTextField('adress').setText(`${cvData.personalInfo.address}, ${cvData.personalInfo.city}, ${cvData.personalInfo.zip}`);
+    if (cvData.personalInfo.linkedIn) form.getTextField('linkedIn').setText(cvData.personalInfo.linkedIn);
+    if (cvData.personalInfo.personalWebsite) form.getTextField('personalWebsite').setText(cvData.personalInfo.personalWebsite);
 
-   // Education
-    cvData.education.forEach((edu, index) => {
-        form.getTextField(`educationSchoolName${index + 1}`).setText(edu.schoolName);
-        form.getTextField(`educationDegree${index + 1}`).setText(edu.degree);
-        form.getTextField(`educationFieldOfStudy${index + 1}`).setText(edu.fieldOfStudy);
-        form.getTextField(`educationStartDate${index + 1}`).setText(edu.startDate);
-        form.getTextField(`educationEndDate${index + 1}`).setText(edu.ongoing ? "En cours" : edu.endDate);
-    
-        // Assuming there's a field to indicate if the education is ongoing and achievements are combined in a single field
-        const ongoingField = form.getCheckBox(`educationOngoing${index + 1}`);
-        if (edu.ongoing && ongoingField) {
-        ongoingField.check();
-        } else {
-        ongoingField?.uncheck();
-        }
-    
-        const achievementsText = edu.achievements.join(", ");
-        form.getTextField(`educationAchievements${index + 1}`).setText(achievementsText);
-    });
+        // Set styles for name
+        const nameField = form.getTextField('Name');
+        nameField.setFontSize(14); // Example size
+        // Fill languages
+        cvData.languages.forEach((lang, index) => {
+          if (index < 6) { // Assuming the template has up to 6 language fields
+            form.getTextField(`language${index + 1}`).setText(`${lang.language} - ${lang.proficiency}${lang.testName ? ` (${lang.testName} - ${lang.testScore})` : ''}`);
+          }
+        });
 
+        // Fill skills
+        cvData.skills.forEach((skill, index) => {
+          if (index < 4) { // Assuming the template has up to 4 skill fields
+            form.getTextField(`skills${index + 1}`).setText(`${skill.skillName} - ${skillLevelLabels[skill.level]}`);
+          }
+        });
 
-    // Work Experience
-    cvData.workExperience.forEach((work, index) => {
-    form.getTextField(`workCompanyName${index + 1}`).setText(work.companyName);
-    form.getTextField(`workPosition${index + 1}`).setText(work.position);
-    form.getTextField(`workLocation${index + 1}`).setText(work.location);
-    form.getTextField(`workStartDate${index + 1}`).setText(work.startDate);
-    form.getTextField(`workEndDate${index + 1}`).setText(work.ongoing ? "En cours" : work.endDate);
+        // Fill education
+        cvData.education.forEach((edu, index) => {
+          if (index < 4) {
+            form.getTextField(`education${index + 1}`).setText(
+              `${edu.schoolName}, ${edu.degree}, ${edu.fieldOfStudy}, ${edu.startDate} - ${edu.ongoing ? "En cours" : edu.endDate}${edu.achievements ? ", Achievements: " + edu.achievements.join(", ") : ""}`
+            );
+          }
+        });
 
-    // Assuming there's a field to indicate if the work is ongoing
-    const ongoingField = form.getCheckBox(`workOngoing${index + 1}`);
-    if (work.ongoing && ongoingField) {
-        ongoingField.check();
-    } else {
-        ongoingField?.uncheck();
-    }
+        // Fill work experience
+        cvData.workExperience.forEach((work, index) => {
+          if (index < 4) {
+            form.getTextField(`workExperience${index + 1}`).setText(
+              `${work.companyName}, ${work.position}, ${work.location}, ${work.startDate} - ${work.ongoing ? "En cours" : work.endDate}${work.responsibilities ? ", Responsibilities: " + work.responsibilities.join(", ") : ""}`
+            );
+          }
+        });
 
-    const responsibilitiesText = work.responsibilities.join(", ");
-    form.getTextField(`workResponsibilities${index + 1}`).setText(responsibilitiesText);
-    });
+        // Fill hobbies
 
-    // Skills
-    cvData.skills.forEach((skill, index) => {
-      form.getTextField(`skillName${index + 1}`).setText(skill.skillName);
-      form.getTextField(`skillLevel${index + 1}`).setText(skill.level);
-    });
-
-    // Languages
-    cvData.languages.forEach((lang, index) => {
-        form.getTextField(`languageName${index + 1}`).setText(lang.language);
-        form.getTextField(`languageProficiency${index + 1}`).setText(lang.proficiency);
-    
-        // Conditionally set test name and score if they exist
-        if (lang.testName && lang.testScore) {
-        form.getTextField(`languageTestName${index + 1}`).setText(lang.testName);
-        form.getTextField(`languageTestScore${index + 1}`).setText(lang.testScore);
-        } else {
-        // Optionally clear the fields if no data exists
-        form.getTextField(`languageTestName${index + 1}`).setText('');
-        form.getTextField(`languageTestScore${index + 1}`).setText('');
-        }
-    });
-    
-    // Hobbies - assuming a single field for all hobbies
-    const hobbiesString = cvData.hobbies.join(", ");
-    form.getTextField('hobbies').setText(hobbiesString);
+        form.getTextField('hobbies').setText(cvData.hobbies.join(', '));
 
     const pdfBytes = await pdfDoc.save();
 
+    console.log('PDF generated, byte length:', pdfBytes.length); // Debug: Check the byte length
+
     res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', 'attachment; filename=cv.pdf');
-    res.send(pdfBytes);
-  } catch (error) {
+    res.setHeader('Content-Disposition', `attachment; filename="${cvData.personalInfo.lastname}_CV.pdf"`);
+    res.send(Buffer.from(pdfBytes)); // Ensure the data is sent as a Buffer
+} catch (error) {
     console.error('Error generating PDF:', error);
     res.status(500).json({ error: 'Failed to generate PDF' });
-  }
+}
 }
