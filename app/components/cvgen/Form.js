@@ -156,14 +156,6 @@ function validatePersonalInfo(values) {
     const [formValues, setFormValues] = useState(initialValues);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
     const router = useRouter();
-  
-    useEffect(() => {
-      const userId = localStorage.getItem('cvUserId');
-      if (userId) {
-        fetchCVData(userId);
-      }
-    }, []);
-  
     const fetchCVData = async (userId) => {
       try {
         const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
@@ -178,6 +170,12 @@ function validatePersonalInfo(values) {
         setSnackbar({ open: true, message: 'Erreur lors de la récupération des données du CV.', severity: 'error' });
       }
     };
+    useEffect(() => {
+      const userId = localStorage.getItem('cvUserId');
+      if (userId) {
+        fetchCVData(userId);
+      }
+    }, []);
   
     const safeFormatDate = (dateString, outputFormat = "yyyy-MM-dd") => {
       if (!dateString) return '';
