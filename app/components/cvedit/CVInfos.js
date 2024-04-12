@@ -57,10 +57,26 @@ const CVInfos = ({ cvData, setCvData }) => {
 
   const formatDate = (date, isOngoing) => {
     if (isOngoing) return 'En Cours';
-    const [year, month] = date.split('-');
-    return `${month}/${year}`;
+    const parts = date.split('-');
+  
+    // Check how many parts the date has to handle different formats
+    if (parts.length === 3) {
+      // Assuming format is YYYY-MM-DD
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    } else if (parts.length === 2) {
+      // Assuming format is YYYY-MM
+      const [year, month] = parts;
+      return `${month}/${year}`;
+    } else if (parts.length === 1) {
+      // Assuming format is just YYYY or any single part
+      return parts[0];
+    } else {
+      // If date format is unexpected or empty
+      return date;
+    }
   };
-
+  
   const renderPeriodField = (section, index, startDate, endDate, ongoing) => {
     const period = `${formatDate(startDate, false)} - ${formatDate(endDate, ongoing)}`;
     return (
