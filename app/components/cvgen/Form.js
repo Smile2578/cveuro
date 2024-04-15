@@ -205,25 +205,26 @@ function validatePersonalInfo(values) {
       }
     }, []);
 
-    const safeFormatDate = (dateString, outputFormat = "yyyy-MM-dd") => {
+    const formatDate = (dateString) => {
       if (!dateString) return '';
     
-      // List of potential date formats your data might be in
-      const inputFormats = ["yyyy-MM-dd", "dd-MM-yyyy", "MM/yyyy"];
+      // Handling different date formats
+      let parts = dateString.includes('-') ? dateString.split('-') : dateString.split('/');
     
-      let parsedDate;
-      for (let format of inputFormats) {
-        parsedDate = parse(dateString, format, new Date());
-        if (!Number.isNaN(parsedDate.getTime())) {
-          break;
-        }
-      }
-    
-      if (Number.isNaN(parsedDate.getTime())) {
-        console.error(`Error formatting date: Invalid date: ${dateString}`);
-        return '';
+      if (parts.length === 3) {
+        // Depending on your expected output, adjust the order of day, month, and year
+        const [year, month, day] = parts; // Adjust based on your actual input format
+        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+      } else if (parts.length === 2) {
+        // This handles formats like "MM/YYYY" or "YYYY/MM"
+        const [year, month] = parts;
+        return `${month.padStart(2, '0')}/${year}`;
+      } else if (parts.length === 1) {
+        // Assuming format is just YYYY
+        return parts[0];
       } else {
-        return format(parsedDate, outputFormat);
+        console.error("Unexpected date format:", dateString);
+        return 'Invalid date'; // or any other error handling or fallback
       }
     };
   
@@ -240,18 +241,16 @@ function validatePersonalInfo(values) {
       };
     
       const adaptStartDateAndEndDate = (dateStr) => {
-        // If the date is "En cours", return as is to indicate ongoing.
-        if (dateStr === "En cours") return dateStr;
-    
-        // Otherwise, ensure the date is in the expected "YYYY-MM" format for the form inputs.
-        // This accounts for dates already in "YYYY-MM" format or empty.
-        const regex = /^\d{4}-\d{2}$/;
-        if (regex.test(dateStr) || dateStr === '') {
-          return dateStr;
+        // Normalize dateStr to ensure it is not "En cours" or undefined
+        if (dateStr === "En cours" || !dateStr) return dateStr;
+      
+        try {
+          const formattedDate = formatDate(dateStr);
+          return formattedDate;
+        } catch (error) {
+          console.error(`Error formatting date: ${dateStr}`, error);
+          return ''; // Return empty string or any fallback value
         }
-        // If the date does not match the expected formats, log an error or handle accordingly.
-        console.error(`Unexpected date format: ${dateStr}`);
-        return '';
       };
     
       return {
