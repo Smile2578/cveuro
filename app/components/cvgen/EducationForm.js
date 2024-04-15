@@ -1,32 +1,21 @@
-import React, { useState } from 'react';
+"use client";
+import React, { useState, useEffect } from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import {
-  TextField,
-  Grid,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  FormHelperText,
-  Divider
+  TextField, Grid, Button, FormControl, InputLabel, Select, MenuItem,
+  FormControlLabel, Checkbox, Dialog, DialogActions, DialogContent,
+  DialogTitle, IconButton, FormHelperText, Paper,
 } from '@mui/material';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import theme from '@/app/theme';
 
 const EducationForm = () => {
-    const { values, setFieldValue, touched, errors } = useFormikContext();
-    const [open, setOpen] = useState(false);
-    const [customDegree, setCustomDegree] = useState('');
-    const [customDegrees, setCustomDegrees] = useState([]);
+  const { values, setFieldValue, touched, errors } = useFormikContext();
+  const [open, setOpen] = useState(false);
+  const [customDegree, setCustomDegree] = useState('');
+  const [customDegrees, setCustomDegrees] = useState([]);
+
   
     const handleOpenCustomDegreeDialog = () => {
       setOpen(true);
@@ -42,6 +31,38 @@ const EducationForm = () => {
       }
     };
   
+    useEffect(() => {
+      const existingDegrees = values.education.map(edu => edu.degree).filter(degree => degree && !['Baccalauréat', 'Licence', 'Bachelor', 'Master', 'Doctorat'].includes(degree));
+      setCustomDegrees(existingDegrees);
+    }, [values.education]);
+  
+    const handleTextChange = (index, text) => {
+      const newText = text.endsWith('\n') ? text : `${text}\n`;
+      setFieldValue(`education[${index}].achievements`, newText.split('\n').filter(line => line.trim() !== ''));
+    };
+  
+    const handleFocus = (index) => {
+      const currentText = values.education[index].achievements.join('\n');
+      if (!currentText) {
+        setFieldValue(`education[${index}].achievements`, ['• ']);
+      }
+    };
+  
+    const handleBlur = (index) => {
+      const text = values.education[index].achievements.join('\n');
+      const cleanedText = text.replace(/\n•\s*$/, ''); // Remove the last bullet point if it's empty
+      setFieldValue(`education[${index}].achievements`, cleanedText.split('\n'));
+    };
+  
+    const handleKeyPress = (index, event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        let text = values.education[index].achievements.join('\n');
+        text += '\n• ';
+        setFieldValue(`education[${index}].achievements`, text.split('\n'));
+      }
+    };
+  
     const handleAddEducation = () => {
       const newEducation = {
         schoolName: '',
@@ -49,7 +70,7 @@ const EducationForm = () => {
         fieldOfStudy: '',
         startDate: '',
         endDate: '',
-        achievements: '',
+        achievements: [],
         ongoing: false,
       };
       setFieldValue('education', [...values.education, newEducation]);
@@ -60,16 +81,37 @@ const EducationForm = () => {
       setFieldValue('education', filteredEducations);
     };
 
+
   return (
     <FieldArray name="education">
       {() => (
-        <Grid container spacing={2}>
+        <Grid container spacing={2} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}> 
           {values.education.map((education, index) => (
             <React.Fragment key={index}>
-              <Grid item xs={12}>
+              <Paper 
+                    elevation={1} 
+                    style={{
+                      padding: 16, 
+                      margin: '8px', 
+                      position: 'relative',
+                      border: '3px solid #e0e0e0',  // Light grey border
+                      boxShadow: '3 2px 4px rgba(0,0,0,0.1)' 
+                    }}
+                  >
+                    {values.education.length > 1 && (
+                  <IconButton
+                    onClick={() => handleRemoveEducation(index)}
+                    color="error"
+                    style={{ position: 'absolute', right: -14, top: -14 }}
+                  >
+                    <RemoveCircleOutlineIcon />
+                  </IconButton>
+                    )}
+            <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
                 <TextField
                   name={`education[${index}].schoolName`}
-                  label="Nom de l'école"
+                  label="Nom de l'école*"
                   value={education.schoolName}
                   onChange={e => setFieldValue(`education[${index}].schoolName`, e.target.value)}
                   fullWidth
@@ -81,7 +123,7 @@ const EducationForm = () => {
               {/* Degree Selection with "Autres" option */}
               <Grid item xs={12}>
                 <FormControl fullWidth error={touched.education?.[index]?.degree && Boolean(errors.education?.[index]?.degree)}>
-                  <InputLabel>Diplôme</InputLabel>
+                  <InputLabel>Diplôme*</InputLabel>
                   <Select
                     name={`education[${index}].degree`}
                     value={education.degree}
@@ -127,7 +169,7 @@ const EducationForm = () => {
               <Grid item xs={12}>
                 <TextField
                   name={`education[${index}].fieldOfStudy`}
-                  label="Domaine d'étude"
+                  label="Domaine d'étude*"
                   value={education.fieldOfStudy}
                   onChange={e => setFieldValue(`education[${index}].fieldOfStudy`, e.target.value)}
                   fullWidth
@@ -139,7 +181,7 @@ const EducationForm = () => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   name={`education[${index}].startDate`}
-                  label="Date de début (MM/YYYY)"
+                  label="Date de début (MM/YYYY)*"
                   type="month"
                   value={education.startDate}
                   onChange={e => setFieldValue(`education[${index}].startDate`, e.target.value)}
@@ -177,33 +219,34 @@ const EducationForm = () => {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  name={`education[${index}].achievements`}
-                  label="Réalisations principales, distinctions, etc."
-                  value={education.achievements}
-                  onChange={e => setFieldValue(`education[${index}].achievements`, e.target.value)}
-                  fullWidth
-                  multiline
-                  error={touched.education?.[index]?.achievements && Boolean(errors.education?.[index]?.achievements)}
-                  helperText={touched.education?.[index]?.achievements && errors.education?.[index]?.achievements}
-                />
-              </Grid>
+              <Grid item xs={12} style={{marginLeft: 10}}>
+              <TextField
+                name={`education[${index}].achievements`}
+                label="Accomplissements et distinctions"
+                value={education.achievements.join('\n')}
+                onChange={e => handleTextChange(index, e.target.value)}
+                onFocus={() => handleFocus(index)}
+                onBlur={() => handleBlur(index)}
+                onKeyDown={e => handleKeyPress(index, e)}
+                multiline
+                fullWidth
+                variant="outlined"
 
-              {values.education.length > 1 && (
-                <Grid item xs={12} display="flex" justifyContent="flex-end">
-                  <IconButton onClick={() => handleRemoveEducation(index)} color="error">
-                    <RemoveCircleOutlineIcon />
-                  </IconButton>
-                </Grid>
-              )}
-            </React.Fragment>
+              />
+              </Grid>
+            </Grid>
+            </Paper>
+              </React.Fragment>
           ))}
-          <Grid item xs={12} display="flex" justifyContent="flex-start">
-            <Button onClick={handleAddEducation} startIcon={<AddCircleOutlineIcon />}>
-              Ajouter un diplôme
-            </Button>
-          </Grid>
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button
+            onClick={handleAddEducation}
+            startIcon={<AddCircleOutlineIcon />}
+            disabled={values.education.length >= 4}
+          >
+            Ajouter un diplôme
+          </Button>
+        </Grid>
         </Grid>
       )}
     </FieldArray>

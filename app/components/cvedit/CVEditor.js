@@ -52,24 +52,25 @@ const CVEditor = ({ cvData, setCvData }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={6}>
-        <Paper elevation={3} sx={{ p: 2, minHeight: '100vh' }}>
+      <Grid item xs={12} md={6} >
+      <Grid item xs={12} sx={{ mb: 4, display: 'flex', justifyContent: 'center' }}>
+        <Button variant="outlined" onClick={handleGoBack}>Retourner sur le formulaire</Button>
+      </Grid>
+        <Paper elevation={3} sx={{ p: 2, minHeight: '100vh'}}>
           <CVInfos cvData={cvData} setCvData={setCvData} onSelectTemplate={onSelectTemplate}/>
         </Paper>
       </Grid>
       <Grid item xs={12} md={6}>
-      <Paper elevation={3} sx={{ p: 2, minHeight: '100vh' }}>
-        <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData} />
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 4 }}>
           <Button variant="outlined" color="primary" onClick={generatePDF}>
             Enregistrer le CV
           </Button>
         </Box>
+      <Paper elevation={3} sx={{p: 2, minHeight: '100vh' }}>
+        <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData} />
       </Paper>
       </Grid>
-      <Grid item xs={12} sx={{ mt: 2, display: 'flex', justifyContent: 'space-between' }}>
-        <Button variant="outlined" onClick={handleGoBack}>Précédent</Button>
-      </Grid>
+      
     </Grid>
   );
 };

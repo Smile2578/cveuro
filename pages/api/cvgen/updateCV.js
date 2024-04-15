@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const { method } = req;
 
   await dbConnect();
-
+ ;
   if (method === 'PUT') {
     try {
       const { userId } = req.query; // Assuming you're passing the userId as a query parameter
@@ -17,6 +17,8 @@ export default async function handler(req, res) {
       if (!cvUpdate) {
         return res.status(404).json({ success: false, message: 'CV not found' });
       }
+
+      console.log('Updated CV:', cvUpdate);
 
       return res.status(200).json({ success: true, data: cvUpdate });
     } catch (error) {

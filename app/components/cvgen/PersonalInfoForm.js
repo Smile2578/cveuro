@@ -67,7 +67,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="firstname"
-          label="Prénom(s)"
+          label="Prénom(s)*"
           value={values.firstname}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -80,7 +80,7 @@ const PersonalInfoForm = () => {
       <Grid item xs={12} sm={6}>
         <TextField
           name="lastname"
-          label="Nom de famille"
+          label="Nom de famille*"
           value={values.lastname}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -96,7 +96,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="email"
-          label="Email"
+          label="Email*"
           value={values.email}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -112,7 +112,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="phoneNumber"
-          label="Numéro de téléphone"
+          label="Numéro de téléphone*"
           value={values.phoneNumber}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -128,7 +128,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="dateofBirth"
-          label="Date de naissance"
+          label="Date de naissance*"
           type="date"
           value={values.dateofBirth}
           onChange={handleChange}
@@ -142,7 +142,7 @@ const PersonalInfoForm = () => {
 
 
       <Grid item xs={12} sm={6}>
-        <FormLabel component="legend">Sexe</FormLabel>
+        <FormLabel component="legend">Sexe*</FormLabel>
         <RadioGroup row name="sex" value={values.sex || ''}>
           <GenderBox
             control={<Radio />}
@@ -169,7 +169,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="address"
-          label="Adresse"
+          label="Adresse*"
           value={values.address}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -184,7 +184,7 @@ const PersonalInfoForm = () => {
       <Grid item xs={6}>
         <TextField
           name="zip"
-          label="Code postal"
+          label="Code postal*"
           value={values.zip}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -197,7 +197,7 @@ const PersonalInfoForm = () => {
       <Grid item xs={6}>
         <TextField
           name="city"
-          label="Ville"
+          label="Ville*"
           value={values.city}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -226,7 +226,7 @@ const PersonalInfoForm = () => {
 
       <Grid item xs={6}>
   <FormControl fullWidth error={nationalityMeta.touched && Boolean(nationalityMeta.error)}>
-    <InputLabel id="nationality-label">Nationalité</InputLabel>
+    <InputLabel id="nationality-label">Nationalité*</InputLabel>
     <Select
         labelId="nationality-label"
         {...nationalityField}

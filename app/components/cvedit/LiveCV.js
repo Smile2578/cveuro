@@ -26,10 +26,11 @@ import useMediaQuery from '@mui/material/useMediaQuery';
   };
 
   // Renders a chip for skill level
-  const renderSkillChip = (skill) => {
+  const renderSkillChip = (skill, index) => {
     const label = skillLevelLabels[skill.level] || 'Non défini';
     return (
       <Chip
+        key={index}
         label={`${skill.skillName}: ${label}`}
         size="small"
         variant="outlined"
@@ -38,19 +39,38 @@ import useMediaQuery from '@mui/material/useMediaQuery';
     );
   };
 
-  // Renders a chip for language proficiency
-  const renderLanguageChip = (lang) => {
+  const renderLanguageChip = (lang, index) => {
     let additionalText = lang.testName ? ` (${lang.testName} - ${lang.testScore})` : '';
     return (
-      <Chip
-        label={`${lang.language}: ${lang.proficiency}${additionalText}`}
-        color="primary"
-        variant="outlined"
-        size="small"
-        sx={{ margin: '5px' }}
-      />
+        <Chip
+            key={index}  // Key should be added here if it's the top component in the map function
+            label={`${lang.language}: ${lang.proficiency}${additionalText}`}
+            color="primary"
+            variant="outlined"
+            size="small"
+            sx={{ margin: '5px' }}
+        />
     );
-  };
+};
+const formatDate = (dateStr) => {
+  if (!dateStr || dateStr === "En cours") return dateStr;
+
+  const parts = dateStr.split("/");
+
+  if (parts.length === 3) {
+      // DD/MM/YYYY
+      const [day, month, year] = parts;
+      return `${day}/${month}/${year}`;
+  } else if (parts.length === 2) {
+      // MM/YYYY
+      const [month, year] = parts;
+      return `${month}/${year}`;
+  } else {
+      // Single part or undefined format
+      return "Invalid date";
+  }
+};
+
 
 const sex = {
   'M': 'Homme',
@@ -72,7 +92,9 @@ const LiveCV = ({ cvData }) => {
 
 
   return (
-    <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 1000, flexGrow: 1}} id="live-cv">
+
+    <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 1000, flexGrow: 1, minHeight: 1000}} id="live-cv">
+      
       {/* Top Bar */}
       <Grid container spacing={2} alignItems="center">
       <Grid item xs={12} md={4}>
@@ -163,23 +185,23 @@ const LiveCV = ({ cvData }) => {
        <Grid item xs={12} md={3}>
           <Box sx={{ paddingRight: 2 }}>
             {/* Languages */}
-            <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>Langues</Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {cvData.languages.map(renderLanguageChip)}
+            <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Langues</Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            {cvData.languages.map((lang, index) => renderLanguageChip(lang, index))}
             </Box>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2, mb: 5, mt: 5}} />
 
             {/* Skills */}
-            <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>Compétences</Typography>
+            <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Compétences</Typography>
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {cvData.skills.map(renderSkillChip)}
+            {cvData.skills.map((skills, index) => renderSkillChip(skills, index))}
             </Box>
 
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 2, mb: 5, mt: 5 }} />
 
             {/* Hobbies */}
-            <Typography variant="h6" sx={{ color: theme.palette.primary.main }}>Loisirs</Typography>
+            <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Loisirs</Typography>
             <Typography>{cvData.hobbies.join(', ')}</Typography>
           </Box>
         </Grid>
@@ -191,20 +213,20 @@ const LiveCV = ({ cvData }) => {
         <Grid item xs={12} md={9} sx={{ overflow: 'hidden', paddingLeft: isMobile ? 0 : 2 }}>
           <Box sx={{ overflow: 'hidden', paddingLeft: 2 }}>
             {/* Education */}
-            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main }}>Éducation</Typography>
+            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 3 }}>Éducation</Typography>
             {cvData.education.map((edu, index) => (
               <List key={`edu-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative' }}>
+                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 3 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
                   <Box>
                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{edu.schoolName}</Typography>
                     <Typography variant="body2">{edu.degree} en {edu.fieldOfStudy}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{edu.startDate} - {edu.ongoing ? "En cours" : edu.endDate}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'light' }}> {formatDate(edu.startDate)} - {edu.ongoing ? "En cours" : formatDate(edu.endDate)} </Typography>
                   </Box>
                 </ListItem>
-                <Divider sx={{ marginLeft: 4}} />
+                <Divider sx={{ marginLeft: 4, mb: 3}} />
               </List>
             ))}
 
@@ -212,17 +234,17 @@ const LiveCV = ({ cvData }) => {
             <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 2 }}>Expérience Professionnelle</Typography>
             {cvData.workExperience.map((work, index) => (
               <List key={`work-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative' }}>
+                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 3 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
                   <Box>
                     <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{work.companyName}, {work.location}</Typography>
                     <Typography variant="body2">{work.position}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{work.startDate} - {work.ongoing ? "En cours" : work.endDate}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(work.startDate)} - {work.ongoing ? "En cours" : formatDate(work.endDate)}</Typography>
                   </Box>
                 </ListItem>
-                <Divider sx={{ marginLeft: 4 }} />
+                <Divider sx={{ marginLeft: 4, mb: 3 }} />
               </List>
             ))}
           </Box>

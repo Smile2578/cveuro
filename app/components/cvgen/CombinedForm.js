@@ -75,11 +75,12 @@ const handleNewItem = (e, item, setItem, fieldName) => {
 };
 
 const handleLanguageSubmit = () => {
-  if(isTestTaken) {
-    // Open the dialog to enter test details if the test checkbox is checked
-    setTestDialogOpen(true);
+  if (!currentLanguage.language || !currentLanguage.proficiency) {
+    setErrors({
+      ...errors,
+      languages: 'La langue et le niveau de maîtrise sont obligatoires',
+    });
   } else {
-    // Directly add the language if no test was taken
     finalizeLanguageAddition();
   }
 };
@@ -88,6 +89,7 @@ const finalizeLanguageAddition = () => {
   const newArray = [...values.languages, currentLanguage];
   setFieldValue('languages', newArray);
   resetLanguageForm();
+  setErrors({...errors, languages: ''});
 };
 
 const resetLanguageForm = () => {
@@ -119,16 +121,24 @@ const handleTestDialogSave = () => {
     <Grid container spacing={2} onSubmit={(e) => e.preventDefault()}>
       {/* Languages Section */}
       <Grid item xs={12}>
-        <Typography variant="h6" color={theme.palette.primary.main}>Langues</Typography>
-        <Divider style={{ margin: '20px 0' }} />
+        <Typography variant="h6" color={theme.palette.primary.main}>Langues* (min. 1)</Typography>
+        <Divider style={{ margin: '1px 0 40px 0', width: '180px' }} />
          <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
             label="Langue"
             variant="outlined"
             size="small"
             style={{ width: '30%' }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                handleLanguageSubmit(); // Add language
+              }
+            }}
             value={currentLanguage.language}
             onChange={(e) => setCurrentLanguage({ ...currentLanguage, language: e.target.value })}
+            error={Boolean(errors.languages)}
+            helperText={errors.languages}
           />
           <FormControl size="small" style={{ width: '30%' }}>
             <InputLabel>Niveau de maîtrise</InputLabel>
@@ -136,18 +146,22 @@ const handleTestDialogSave = () => {
               value={currentLanguage.proficiency}
               onChange={(e) => setCurrentLanguage({ ...currentLanguage, proficiency: e.target.value })}
               label="Niveau de maîtrise"
+              error={Boolean(errors.languages)}
+              style={{ width: '105%' }}
             >
               {proficiencyLevels.map((level) => (
                 <MenuItem key={level} value={level}>{level}</MenuItem>
               ))}
             </Select>
+            <FormHelperText>{errors.languages}</FormHelperText>
           </FormControl>
           <FormControlLabel
-            control={<Checkbox checked={isTestTaken} onChange={(e) => setIsTestTaken(e.target.checked)} />}
+            control={<Checkbox checked={isTestTaken} onChange={(e) => { setIsTestTaken(e.target.checked); setTestDialogOpen(e.target.checked); }} />}
             label="J'ai passé un test pour cette langue"
           />
-         <IconButton onClick={handleLanguageSubmit} size="large">
-            <AddCircleOutlineIcon />
+         <IconButton onClick={handleLanguageSubmit} size="small">
+            Ajouter la langue
+            <AddCircleOutlineIcon  style={{ marginLeft: '10px' }}/>
           </IconButton>
         </Box>
         {values.languages.map((language, index) => (
@@ -194,13 +208,19 @@ const handleTestDialogSave = () => {
       <Grid item xs={12}>
         <Divider style={{ margin: '20px 0' }} />
         <Typography variant="h6" color={theme.palette.primary.main}>Compétences</Typography>
-        <Divider style={{ margin: '10px 0 40px 0', width: '100px' }} />
+        <Divider style={{ margin: '1px 0 40px 0', width: '140px' }} />
         <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
             label="Compétence (ex: Word, Excel, Photoshop, etc.)"
             variant="outlined"
             size="small"
             value={newSkill.skillName}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+                handleAddSkill(); // Add the skill
+              }
+            }}
             onChange={(e) => setNewSkill({ ...newSkill, skillName: e.target.value })}
             error={isSkillError('skillName')}
             helperText={isSkillError('skillName') && errors.skills[values.skills.length].skillName}
@@ -219,8 +239,9 @@ const handleTestDialogSave = () => {
             </Select>
             <FormHelperText>{isSkillError('level') && errors.skills[values.skills.length].level}</FormHelperText>
           </FormControl>
-          <IconButton onClick={handleAddSkill} size="large">
-            <AddCircleOutlineIcon />
+          <IconButton onClick={handleAddSkill} size="small">
+            Ajouter la compétence
+            <AddCircleOutlineIcon style={{ marginLeft: '10px' }}/>
           </IconButton>
           <Box display="flex" flexWrap="wrap" alignItems="center" ml={2}>
             {values.skills.map((skill, index) => (
@@ -242,7 +263,7 @@ const handleTestDialogSave = () => {
       <Grid item xs={12}>
         <Divider style={{ margin: '20px 0' }} />
         <Typography variant="h6" color={theme.palette.primary.main}>Loisirs</Typography>
-        <Divider style={{ margin: '10px 0 40px 0', width: '100px' }} />
+        <Divider style={{ margin: '1px 0 40px 0', width: '70px' }} />
         <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
           <TextField
             label="Loisir(s) (ex: Lecture, Musique, Sport, etc.)"

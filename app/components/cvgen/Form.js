@@ -1,14 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Formik, Form as FormikForm } from 'formik';
-import { Button, LinearProgress, Typography, Grid, Snackbar, Alert} from '@mui/material';
-import { ArrowBackIosNew, ArrowForwardIos } from '@mui/icons-material';
+import { Button, Box, LinearProgress, Typography, Grid, Snackbar, Alert, Stepper, Step, StepLabel} from '@mui/material';
+import { ArrowBackIos, ArrowForwardIos  } from '@mui/icons-material';
 import PersonalInfoForm from './PersonalInfoForm'; 
 import EducationForm from './EducationForm'; 
 import WorkExperienceForm from './WorkExperienceForm'; 
 import CombinedForm from './CombinedForm'; 
 import { useRouter } from 'next/navigation';
-import { format, parse, parseISO } from 'date-fns';
+import { format, parse } from 'date-fns';
 import theme from '@/app/theme';
 
 
@@ -27,8 +27,6 @@ const initialValues = {
   address: '',
   city: '',
   zip: '',
-  // Professional Summary
-  professionalSummary: '',
   // Education
   education: [{
     schoolName: '',
@@ -58,8 +56,8 @@ const initialValues = {
 
 const formSteps = [
     { label: "Informations Personnelles", component: PersonalInfoForm, validationFunction: validatePersonalInfo },
-    { label: "Éducation (maximum 4)", component: EducationForm, validationFunction: validateEducation},
-    { label: "Expérience Professionnelle (maximum 4)", component: WorkExperienceForm, validationFunction: validateWorkExperience},
+    { label: "Éducation (max. 4)", component: EducationForm, validationFunction: validateEducation},
+    { label: "Expérience Professionnelle (max. 4)", component: WorkExperienceForm, validationFunction: validateWorkExperience},
     { label: "Langues, Compétences, Loisirs", component: CombinedForm, validationFunction: validateCombinedForm},
 ];
 
@@ -76,6 +74,15 @@ function validatePersonalInfo(values) {
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
       errors.email = 'L\'email est invalide';
     }
+    if (!values.address) {
+      errors.address = 'L\'adresse est obligatoire';
+    }
+    if (!values.city) {
+      errors.city = 'La ville est obligatoire';
+    }
+    if (!values.zip) {
+      errors.zip = 'Le code postal est obligatoire';
+    }
     if (!values.nationality) {
       errors.nationality = 'La nationalité est obligatoire';
     }
@@ -87,9 +94,6 @@ function validatePersonalInfo(values) {
     }
     if (!values.sex) { 
       errors.sex = 'Le sexe est obligatoire';
-    }
-    if (values.personalWebsite && !/^https?:\/\/[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(values.personalWebsite)) {
-      errors.personalWebsite = 'L\'URL du site personnel est invalide';
     }
     return errors;
   }
@@ -135,19 +139,17 @@ function validatePersonalInfo(values) {
   }
   
   function validateCombinedForm(values) {
-    let errors = {};
+    const errors = {};
     if (!values.languages || values.languages.length === 0) {
       errors.languages = 'Au moins une langue est obligatoire';
     } else {
-      const languageErrors = values.languages.map(lang => {
-        const langErrors = {};
-        if (!lang.language) langErrors.language = 'La langue est obligatoire';
-        if (!lang.proficiency) langErrors.proficiency = 'La compétence linguistique est obligatoire';
-        return langErrors;
+      // Further validation to check each language entry
+      values.languages.forEach(lang => {
+        if (!lang.language || !lang.proficiency) {
+          errors.languages = 'Toutes les langues doivent inclure le nom et le niveau de maîtrise';
+        }
       });
-      if (languageErrors.some(e => Object.keys(e).length > 0)) errors.languages = languageErrors;
     }
-    
     return errors;
   }
   
@@ -156,27 +158,53 @@ function validatePersonalInfo(values) {
     const [formValues, setFormValues] = useState(initialValues);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
     const router = useRouter();
-    const fetchCVData = async (userId) => {
-      try {
-        const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
-        if (!response.ok) throw new Error('Failed to fetch CV data');
-        const data = await response.json();
-        console.log('CV data fetched:', data);
-        const adaptedData = adaptFormData(data);
-        console.log('CV adapteddata fetched:', adaptedData);
-        setFormValues(adaptedData);
-      } catch (error) {
-        console.error("Error fetching CV data:", error);
-        setSnackbar({ open: true, message: 'Erreur lors de la récupération des données du CV.', severity: 'error' });
-      }
+
+
+
+
+    const saveFormDataToLocalStorage = (formData) => {
+      localStorage.setItem('formData', JSON.stringify(formData));
     };
+    
+    const getFormDataFromLocalStorage = () => {
+      const data = localStorage.getItem('formData');
+      return data ? JSON.parse(data) : null;
+    };
+
+
     useEffect(() => {
       const userId = localStorage.getItem('cvUserId');
       if (userId) {
-        fetchCVData(userId);
+        const fetchData = async () => {
+          try {
+            const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
+            if (response.ok) {
+              const data = await response.json();
+              setFormValues(adaptFormData(data));  // Assuming data needs to be adapted as per your existing function
+              console.log('CV data fetched and adapted from the server:', data);
+            } else {
+              throw new Error('Failed to fetch CV data');
+            }
+          } catch (error) {
+            console.error("Error fetching CV data:", error);
+            const localData = getFormDataFromLocalStorage(); // Fallback to local storage if fetch fails
+            if (localData) {
+              setFormValues(localData);
+              console.log('CV data loaded from local storage:', localData);
+            }
+          }
+        };
+    
+        fetchData();
+      } else {
+        const localData = getFormDataFromLocalStorage();
+        if (localData) {
+          setFormValues(localData);
+          console.log('CV data loaded from local storage:', localData);
+        }
       }
     }, []);
-  
+
     const safeFormatDate = (dateString, outputFormat = "yyyy-MM-dd") => {
       if (!dateString) return '';
     
@@ -198,7 +226,7 @@ function validatePersonalInfo(values) {
         return format(parsedDate, outputFormat);
       }
     };
-    
+  
     const adaptFormData = (data) => {
       const convertDateToYYYYMMDD = (dateStr) => {
         if (!dateStr) return '';
@@ -250,6 +278,12 @@ function validatePersonalInfo(values) {
       let userId = localStorage.getItem('cvUserId');
       const method = userId ? 'PUT' : 'POST';
       const url = userId ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV';
+      console.log('Submitting CV data:', values);
+      const formErrors = validateCombinedForm(values);
+        if (Object.keys(formErrors).length > 0) {
+          actions.setErrors(formErrors);
+          return; 
+        }
     
       try {
         const response = await fetch(url, {
@@ -283,84 +317,149 @@ function validatePersonalInfo(values) {
       }
     };
     
-
-
-
-    const handleNext = async (values, actions, skipWorkExperience = false) => {
-      if (skipWorkExperience) {
-        values.skipWorkExperience = true;
+    const handleNext = async (values, actions) => {
+      let validationErrors = {};
+      
+      // Validate only the current step unless it's the last step
+      if (currentStep < formSteps.length - 1) {
+        const currentValidationFunc = formSteps[currentStep]?.validationFunction;
+        validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
+      } else {
+        // Validate the entire form before submitting
+        validationErrors = validateCombinedForm(values);
       }
-    
-      const currentValidationFunc = formSteps[currentStep]?.validationFunction;
-      const validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
     
       actions.setErrors(validationErrors);
     
       if (Object.keys(validationErrors).length === 0) {
         if (currentStep < formSteps.length - 1) {
+          saveFormDataToLocalStorage(values);
           setCurrentStep(currentStep + 1);
         } else {
           await handleSubmitForm(values, actions);
         }
+      } else {
+        setSnackbar({
+          open: true,
+          message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+          severity: 'error'
+        });
       }
     };
+    
+
+const handleBack = () => {
+  saveFormDataToLocalStorage(formValues);
+  setCurrentStep(currentStep - 1);
+};
 
 
-    return (
-      <>
-      <Formik
-        initialValues={formValues}
-        onSubmit={handleNext}
-        enableReinitialize
-      >
-        {({ isSubmitting, handleSubmit, values, setErrors}) => (
-          <FormikForm onSubmit={handleSubmit}>
-            <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
-              {formSteps[currentStep].label}
-            </Typography>
-            <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-4" />
-  
-            {React.createElement(formSteps[currentStep].component, { 
-                onNext: (data) => handleNext(values, { setErrors }, data.skipWorkExperience),
-                values 
-            })}
-  
-            <Grid container justifyContent="space-between" spacing={2} className="mt-4">
-              {currentStep > 0 && (
-                <Grid item>
-                  <Button startIcon={<ArrowBackIosNew />} onClick={() => setCurrentStep(currentStep - 1)} disabled={isSubmitting}>
-                    Précédent
-                  </Button>
+
+return (
+  <>
+  <Formik
+      initialValues={formValues}
+      onSubmit={handleNext}
+      validate={(values) => {
+        if (currentStep === formSteps.length - 1) {
+          return validateCombinedForm(values);
+        }
+        return {};
+  }}
+      enableReinitialize
+  >
+      {({ isSubmitting, handleSubmit, values, setErrors, errors }) => {
+          const handleStepClick = (step) => {
+              if (step > currentStep && !validateSteps(step, values, setErrors)) {
+                  setSnackbar({
+                      open: true,
+                      message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+                      severity: 'warning'
+                  });
+              } else {
+                  setCurrentStep(step);
+              }
+          };
+
+          // Declare validateSteps here
+          const validateSteps = (targetStep, values, setErrors) => {
+              let isValid = true;
+              for (let i = 0; i <= targetStep; i++) {
+                  const stepErrors = formSteps[i].validationFunction(values);
+                  if (Object.keys(stepErrors).length > 0) {
+                      setErrors(stepErrors);
+                      isValid = false;
+                      break;
+                  }
+              }
+              return isValid;
+          };
+
+          return (
+            <FormikForm onSubmit={handleSubmit}>
+                <Box sx={{ overflowX: 'auto' }}> 
+                  <Stepper activeStep={currentStep} alternativeLabel sx={{
+                    '.MuiStep-root': {
+                      minWidth: '100px', // Ensure each step has a minimum width
+                      padding: '0 4px', // Reduce lateral padding between steps
+                    }
+                  }}>
+                    {formSteps.map((step, index) => (
+                      <Step key={step.label} onClick={() => handleStepClick(index)}>
+                        <StepLabel style={{ cursor: 'pointer' }}>
+                          {step.label}
+                        </StepLabel>
+                      </Step>
+                    ))}
+                  </Stepper>
+                </Box>
+                <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-10" />
+                <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
+                  {formSteps[currentStep].label}
+                </Typography>
+                <Typography variant="body2" style={{ color: theme.palette.primary.alt, marginBottom: 7 }}>* : champs requis</Typography>
+      
+                {React.createElement(formSteps[currentStep].component, { 
+                    onNext: (data) => handleNext(values, { setErrors }, data.skipWorkExperience),
+                    values 
+                })}
+      
+                <Grid container justifyContent="space-between" spacing={2} className="mt-4">
+                    {currentStep > 0 && (
+                      <Button onClick={handleBack} disabled={isSubmitting} startIcon={<ArrowBackIos/>}>
+                        Précédent
+                      </Button>
+                    )}
+                    <Grid item style={{ marginLeft: 'auto' }}>
+                        {currentStep === formSteps.length - 1 && <Typography style={{ color: theme.palette.primary.main }}>{errors.languages}</Typography>}
+                        <Button
+                            endIcon={<ArrowForwardIos />}
+                            type="submit"
+                            variant="contained"
+                            style={{ backgroundColor: theme.palette.primary.main, color: '#FFFFFF' }}
+                            disabled={isSubmitting}
+                        >
+                            {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
+                        </Button>
+                    </Grid>
+                    
                 </Grid>
-              )}
-              <Grid item style={{ marginLeft: 'auto' }}>
-              <Button
-                endIcon={<ArrowForwardIos />}
-                type="submit"
-                variant="contained"
-                style={{ backgroundColor: theme.palette.primary.main, color: '#FFFFFF' }}
-                disabled={isSubmitting}
-              >
-                {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
-              </Button>
-            </Grid>
-            </Grid>
-          </FormikForm>
-          
-        )}
-      </Formik>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-      >
-        <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </>
-    );
-  };
-  
-  export default Form;
+            </FormikForm>
+        );
+    }}
+</Formik>
+<Snackbar
+  open={snackbar.open}
+  autoHideDuration={4000}
+  onClose={() => setSnackbar({ ...snackbar, open: false })}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
+    {snackbar.message}
+  </Alert>
+</Snackbar>
+</>
+);
+}
+
+export default Form;

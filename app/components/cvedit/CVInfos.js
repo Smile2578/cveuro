@@ -17,11 +17,23 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 
+
+
+
 const CVInfos = ({ cvData, setCvData }) => {
   const [editField, setEditField] = useState({});
   const [editValues, setEditValues] = useState({});
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf'); // Default template
+
+
+  const skillLevelMapping = {
+    '1': 'Débutant',
+    '2': 'Intermédiaire',
+    '3': 'Avancé',
+    '4': 'Expert',
+    '5': 'Maîtrise complète'
+  };
 
   const onSelectTemplate = async (templatePath) => {
     setSelectedTemplate(templatePath);
@@ -96,6 +108,7 @@ const CVInfos = ({ cvData, setCvData }) => {
     const value = editValues[`${section}.${key}`];
     // Prepare updated data for submission
     let updatedSectionData = cvData[section];
+    
     if (section === 'personalInfo') {
       updatedSectionData = { ...cvData.personalInfo, [key]: value };
     } else {
@@ -128,6 +141,12 @@ const CVInfos = ({ cvData, setCvData }) => {
   const renderEditableField = (section, key, label, value, isDate = false) => {
     const fieldKey = `${section}.${key}`;
   
+    let displayValue = value;
+    if (section === 'skills' && key.endsWith('.level')) {
+      displayValue = skillLevelMapping[value] || 'Non défini';
+    }
+  
+  
     // Function to handle saving or closing the field on blur
     const handleBlur = () => {
       // Use a timeout to delay execution until after the save button click is processed
@@ -141,14 +160,16 @@ const CVInfos = ({ cvData, setCvData }) => {
   
     return (
       <Box key={fieldKey} sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px', '&:hover svg': { visibility: 'visible' } }}>
-        <Typography variant="body1" sx={{ minWidth: '150px', color: theme.palette.text.primary }}>{label}:</Typography>
-        {editField[fieldKey] ? (
+        <Typography component="div" variant="body1" sx={{ minWidth: '150px', color: theme.palette.text.primary }}>
+          {label}:
+        </Typography>
+        {editField[`${section}.${key}`] ? (
           <TextField
             fullWidth
             variant="outlined"
             type={isDate ? 'date' : 'text'}
-            value={editValues[fieldKey]}
-            onChange={(e) => setEditValues({ ...editValues, [fieldKey]: e.target.value })}
+            value={editValues[`${section}.${key}`] || ''}
+            onChange={(e) => setEditValues({...editValues, [`${section}.${key}`]: e.target.value})}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault(); // Prevent form submission on enter
@@ -160,7 +181,7 @@ const CVInfos = ({ cvData, setCvData }) => {
             autoFocus
           />
         ) : (
-          <Typography variant="body1" sx={{ flexGrow: 1, color: theme.palette.primary.main }}>{value}</Typography>
+          <Typography component="div" variant="body1" sx={{ flexGrow: 1, color: theme.palette.primary.main }}>{displayValue}</Typography>
         )}
         <IconButton
           size="small"
@@ -189,10 +210,11 @@ const CVInfos = ({ cvData, setCvData }) => {
 
   return (
     <Box>
+      <Typography component="div" variant="h4" sx={{ textAlign: 'center', marginBottom: '16px', color: theme.palette.primary.main }}>Éditer les informations du CV</Typography>
       {/* Personal Information Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Informations Personnelles</Typography>
+          <Typography component="div" variant="h6">Informations Personnelles</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {renderEditableField('personalInfo', 'firstname', 'Prénom', cvData.personalInfo.firstname)}
@@ -206,7 +228,7 @@ const CVInfos = ({ cvData, setCvData }) => {
           {renderEditableField('personalInfo', 'zip', 'Code Postal', cvData.personalInfo.zip)}
           {renderEditableField('personalInfo', 'email', 'Email', cvData.personalInfo.email)}  
           {renderEditableField('personalInfo', 'phoneNumber', 'Téléphone', cvData.personalInfo.phoneNumber)}
-          {renderEditableField('personalInfo', 'linkedin', 'LinkedIn', cvData.personalInfo.linkedin)}
+          {renderEditableField('personalInfo', 'linkedin', 'LinkedIn', cvData.personalInfo.linkedIn)}
           {renderEditableField('personalInfo', 'personalWebsite', 'Site Web', cvData.personalInfo.personalWebsite)}
         </AccordionDetails>
       </Accordion>
@@ -214,7 +236,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Education Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Éducation</Typography>
+          <Typography component="div" variant="h6">Éducation</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.education.map((edu, index) => (
@@ -232,7 +254,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Work Experience Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Expérience Professionnelle</Typography>
+          <Typography component="div" variant="h6">Expérience Professionnelle</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.workExperience.map((work, index) =>
@@ -250,7 +272,7 @@ const CVInfos = ({ cvData, setCvData }) => {
    {/* Languages Section */}
    <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Langues</Typography>
+          <Typography component="div" variant="h6">Langues</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.languages.map((lang, index) =>
@@ -265,14 +287,14 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Skills Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Compétences</Typography>
+          <Typography component="div" variant="h6">Compétences</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.skills.map((skill, index) =>
             <Box key={`skill-${index}`} sx={{ marginBottom: '8px' }}>
-              <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
+              <Typography component="div" variant="body1" sx={{ color: theme.palette.primary.main }}>
                 {renderEditableField('skills', `${index}.skillName`, 'Compétence', skill.skillName)}
-                {renderEditableField('skills', `${index}.proficiency`, 'Niveau de maîtrise', skill.proficiency)}
+                {renderEditableField('skills', `${index}.level`, 'Niveau de maîtrise', skill.level)}
               </Typography>
             </Box>
           )}
@@ -283,12 +305,12 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Hobbies Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Loisirs</Typography>
+          <Typography component="div" variant="h6">Loisirs</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.hobbies.map((hobby, index) =>
             <Box key={`hobby-${index}`} sx={{ marginBottom: '8px' }}>
-              <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
+              <Typography component="div" variant="body1" sx={{ color: theme.palette.primary.main }}>
                 {hobby}
               </Typography>
             </Box>
@@ -300,7 +322,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Template Selection Section */}
      <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="h6">Sélection de modèle</Typography>
+          <Typography component="div" variant="h6">Sélection de modèle</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
