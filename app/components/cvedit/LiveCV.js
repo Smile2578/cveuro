@@ -1,6 +1,5 @@
-import React from 'react';
-import { Box, Grid, Paper, Typography, Divider, List, ListItem, ListItemIcon, ListItemText, Chip  } from '@mui/material';
-import Image from 'next/image';
+import {useState} from 'react';
+import { Box, Grid, Paper, Typography, Divider, List, ListItem, ListItemIcon, ListItemText, IconButton  } from '@mui/material';
 import theme from '@/app/theme';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import EmailIcon from '@mui/icons-material/Email';
@@ -13,10 +12,19 @@ import WcIcon from '@mui/icons-material/Wc';
 import PublicIcon from '@mui/icons-material/Public';
 import PlaceIcon from '@mui/icons-material/Place';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
 
-  // Maps skill level numbers to labels
+// Function to move an item in an array from one index to another
+  const moveItem = (arr, from, to) => {
+  const newArr = [...arr];
+  const item = newArr.splice(from, 1)[0];
+  newArr.splice(to, 0, item);
+  return newArr;
+};
+
   const skillLevelLabels = {
     '1': 'Débutant',
     '2': 'Intermédiaire',
@@ -75,12 +83,24 @@ const formatUrl = (url) => {
   return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
 };
 
-const LiveCV = ({ cvData }) => {
-
+const LiveCV = ({ cvData, setCvData }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const handleMoveUp = (index, type) => {
+    if (index === 0) return; // Can't move up the first item
+    const newArr = moveItem(cvData[type], index, index - 1);
+    setCvData({ ...cvData, [type]: newArr });
+  };
+
+  const handleMoveDown = (index, type) => {
+    if (index === cvData[type].length - 1) return; // Can't move down the last item
+    const newArr = moveItem(cvData[type], index, index + 1);
+    setCvData({ ...cvData, [type]: newArr });
+  };
 
   if (!cvData || !cvData.personalInfo) {
-    return <Typography>Chargement...</Typography>; // or any other loading state you prefer
+    return <Typography>Chargement...</Typography>;
   }
 
 
@@ -205,53 +225,72 @@ const LiveCV = ({ cvData }) => {
         {/* Right Content for Education & Work Experience */}
         <Grid item xs={12} md={9} sx={{ overflow: 'hidden', paddingLeft: isMobile ? 0 : 2 }}>
           <Box sx={{ overflow: 'hidden', paddingLeft: 2 }}>
-            {/* Education Section */}
+          {/* Education Section */}
             <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 0.5 }}>Éducation</Typography>
             {cvData.education.map((edu, index) => (
-              <List key={`edu-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 2 }}>
+              <Box key={`edu-${index}`}>
+                <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
-                  <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{edu.schoolName}</Typography>
-                    <Typography variant="body2">{edu.degree} - {edu.fieldOfStudy}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(edu.startDate)} - {edu.ongoing ? "En cours" : formatDate(edu.endDate)}</Typography>
-                    <div>
-                      {edu.achievements.map((achievement, idx) => (
-                        <p key={idx} style={{ margin: 0 }}>{achievement}</p>
-                      ))}
-                    </div>
-                  </Box>
-                </ListItem>
-                <Divider sx={{ marginLeft: 4, mb: 1 }} />
-              </List>
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{edu.schoolName}</Typography>
+                      <Typography variant="body2">{edu.degree} - {edu.fieldOfStudy}</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(edu.startDate)} - {edu.ongoing ? "En cours" : formatDate(edu.endDate)}</Typography>
+                      <div>
+                        {edu.achievements.map((achievement, idx) => (
+                          <p key={idx} style={{ margin: 0 }}>{achievement}</p>
+                        ))}
+                      </div>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'education')} size="small" sx={{ mb: 1 }}>
+                        <ArrowUpwardIcon />
+                      </IconButton>
+                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'education')} size="small">
+                        <ArrowDownwardIcon />
+                      </IconButton>
+                    </Box>
+                  </ListItem>
+                </List>
+                <Divider sx={{ width: '100%', mb: 1 }} />
+              </Box>
             ))}
 
-
-                        {/* Work Experience Section */}
+            {/* Work Experience Section */}
             <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 0.5 }}>Expérience Professionnelle</Typography>
             {cvData.workExperience.map((work, index) => (
-              <List key={`work-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 2 }}>
+              <Box key={`work-${index}`}>
+                <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
-                  <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{work.companyName} - {work.location}</Typography>
-                    <Typography variant="body2">{work.position}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(work.startDate)} - {work.ongoing ? "En cours" : formatDate(work.endDate)}</Typography>
-                    <div>
-                      {work.responsibilities.map((responsibility, idx) => (
-                        <p key={idx} style={{ margin: 0 }}>{responsibility}</p>
-                      ))}
-                    </div>
-                  </Box>
-                </ListItem>
-                <Divider sx={{ marginLeft: 4, mb: 1 }} />
-              </List>
-            ))
-            }
+                    <Box sx={{ flexGrow: 1 }}>
+                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{work.companyName} - {work.location}</Typography>
+                      <Typography variant="body2">{work.position}</Typography>
+                      <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(work.startDate)} - {work.ongoing ? "En cours" : formatDate(work.endDate)}</Typography>
+                      <div>
+                        {work.responsibilities.map((responsibility, idx) => (
+                          <p key={idx} style={{ margin: 0 }}>{responsibility}</p>
+                        ))}
+                      </div>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
+                        <ArrowUpwardIcon />
+                      </IconButton>
+                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'workExperience')} size="small">
+                        <ArrowDownwardIcon />
+                      </IconButton>
+                    </Box>
+                  </ListItem>
+                </List>
+                <Divider sx={{ width: '100%', mb: 1 }} />
+              </Box>
+            ))}
+
           </Box>
         </Grid>
       </Grid>

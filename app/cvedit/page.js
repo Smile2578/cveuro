@@ -8,6 +8,7 @@ import theme from '../theme';
 
 const CVEdit = () => {
 const [cvData, setCvData] = useState(null);
+const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     const fetchCVData = async () => {
@@ -60,7 +61,7 @@ const [cvData, setCvData] = useState(null);
               justifyContent: 'center', 
             }}
           >
-            <CVEditor cvData={cvData} setCvData={setCvData} />
+            <CVEditor cvData={cvData} setCvData={setCvData} setIsGeneratingPDF={setIsGeneratingPDF} />
           </Container>
           <Footer />
         </Box>

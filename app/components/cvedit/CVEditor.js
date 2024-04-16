@@ -26,7 +26,7 @@ const CVEditor = ({ cvData, setCvData }) => {
       </Grid>
       <Grid item xs={12} md={6}>
         <Paper elevation={3} sx={{p: 2, minHeight: '100vh' }}>
-          <LiveCV id="live-cv" cvData={cvData} />
+          <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData}/>
         </Paper>
       </Grid>
     </Grid>
