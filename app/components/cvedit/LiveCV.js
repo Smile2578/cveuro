@@ -55,18 +55,14 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
   const formatDate = (dateStr) => {
     if (!dateStr || dateStr === "En cours") return dateStr;
   
-    let parts = dateStr.split("/");
-    if (parts.length === 3) {
-      // Convert DD/MM/YYYY to MM/YYYY for display
-      const [day, month, year] = parts;
-      return `${month}/${year}`;
-    } else if (parts.length === 2) {
-      // Already in MM/YYYY, return as is
-      return dateStr;
-    } else {
-      // Undefined or unknown format
-      return "Invalid date";
+    // This matches the format YYYY-MM, which is expected for startDate and endDate
+    if (/^\d{4}-\d{2}$/.test(dateStr)) {
+      const [year, month] = dateStr.split("-");
+      return `${month}/${year}`;  // Convert to MM/YYYY for display
     }
+  
+    // Default return for any unrecognized format
+    return dateStr;  // This ensures that dateOfBirth or any correctly formatted date is not altered
   };
   
 
