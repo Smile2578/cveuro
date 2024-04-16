@@ -150,7 +150,7 @@ const WorkExperienceForm = ({ onNext }) => {
             <Grid item xs={12} sm={6}>
               <TextField
                 name={`workExperience[${index}].location`}
-                label="Lieu (ville ou adresse)"
+                label="Lieu (ville, pays)"
                 value={exp.location}
                 onChange={e => setFieldValue(`workExperience[${index}].location`, e.target.value)}
                 fullWidth

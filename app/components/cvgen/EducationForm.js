@@ -111,7 +111,7 @@ const EducationForm = () => {
             <Grid item xs={12} sm={6}>
                 <TextField
                   name={`education[${index}].schoolName`}
-                  label="Nom de l'école*"
+                  label="Nom de l'établissement, Ville/Pays*"
                   value={education.schoolName}
                   onChange={e => setFieldValue(`education[${index}].schoolName`, e.target.value)}
                   fullWidth

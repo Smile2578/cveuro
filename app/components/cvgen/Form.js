@@ -159,9 +159,6 @@ function validatePersonalInfo(values) {
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
     const router = useRouter();
 
-
-
-
     const saveFormDataToLocalStorage = (formData) => {
       localStorage.setItem('formData', JSON.stringify(formData));
     };
@@ -207,31 +204,24 @@ function validatePersonalInfo(values) {
 
     const formatDate = (dateString) => {
       if (!dateString) return '';
-    
-      // Handling different date formats
       let parts = dateString.includes('-') ? dateString.split('-') : dateString.split('/');
-    
       if (parts.length === 3) {
-        // Depending on your expected output, adjust the order of day, month, and year
-        const [year, month, day] = parts; // Adjust based on your actual input format
+        const [year, month, day] = parts; 
         return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
       } else if (parts.length === 2) {
-        // This handles formats like "MM/YYYY" or "YYYY/MM"
         const [year, month] = parts;
         return `${month.padStart(2, '0')}/${year}`;
       } else if (parts.length === 1) {
-        // Assuming format is just YYYY
         return parts[0];
       } else {
         console.error("Unexpected date format:", dateString);
-        return 'Invalid date'; // or any other error handling or fallback
+        return 'Invalid date'; 
       }
     };
   
     const adaptFormData = (data) => {
       const convertDateToYYYYMMDD = (dateStr) => {
         if (!dateStr) return '';
-        // Expected input format: DD/MM/YYYY
         const parts = dateStr.split('/');
         if (parts.length === 3) {
           const [day, month, year] = parts;
@@ -240,91 +230,84 @@ function validatePersonalInfo(values) {
         return '';
       };
     
-      const adaptStartDateAndEndDate = (dateStr) => {
-        // Normalize dateStr to ensure it is not "En cours" or undefined
-        if (dateStr === "En cours" || !dateStr) return dateStr;
-      
-        try {
-          const formattedDate = formatDate(dateStr);
-          return formattedDate;
-        } catch (error) {
-          console.error(`Error formatting date: ${dateStr}`, error);
-          return ''; // Return empty string or any fallback value
+      const convertDateToYYYYMM = (dateStr) => {
+        if (!dateStr || dateStr.toLowerCase() === "en cours") return '';
+        const parts = dateStr.split('/');
+        if (parts.length === 2) {
+            const [month, year] = parts;
+            return `${year}-${month.padStart(2, '0')}`;
         }
-      };
-    
-      return {
+        return dateStr; // In case the date is already in the correct format or different handling is needed
+    };
+
+    return {
         ...data.personalInfo,
         placeofBirth: data.personalInfo.placeofBirth || '',
         dateofBirth: convertDateToYYYYMMDD(data.personalInfo.dateofBirth),
         education: data.education.map(edu => ({
-          ...edu,
-          startDate: adaptStartDateAndEndDate(edu.startDate),
-          endDate: edu.ongoing ? '' : adaptStartDateAndEndDate(edu.endDate),
+            ...edu,
+            startDate: convertDateToYYYYMM(edu.startDate),
+            endDate: edu.ongoing ? '' : convertDateToYYYYMM(edu.endDate),
         })),
         workExperience: data.workExperience.map(exp => ({
-          ...exp,
-          startDate: adaptStartDateAndEndDate(exp.startDate),
-          endDate: exp.ongoing ? '' : adaptStartDateAndEndDate(exp.endDate),
+            ...exp,
+            startDate: convertDateToYYYYMM(exp.startDate),
+            endDate: exp.ongoing ? '' : convertDateToYYYYMM(exp.endDate),
         })),
         skills: data.skills,
         languages: data.languages,
         hobbies: data.hobbies,
-      };
     };
+};
 
     const handleSubmitForm = async (values, { setSubmitting }) => {
       let userId = localStorage.getItem('cvUserId');
-      const method = userId ? 'PUT' : 'POST';
-      const url = userId ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV';
-      console.log('Submitting CV data:', values);
-      const formErrors = validateCombinedForm(values);
-        if (Object.keys(formErrors).length > 0) {
-          actions.setErrors(formErrors);
-          return; 
-        }
-    
+      const isUpdate = userId ? true : false; 
       try {
-        const response = await fetch(url, {
-          method,
+        const response = await fetch(isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV', {
+          method: isUpdate ? 'PUT' : 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(values),
         });
     
-        if (!response.ok) throw new Error('Failed to submit CV');
         const responseData = await response.json();
-        
-        console.log('Server response:', responseData); // Log the entire server response
     
-        // Assuming the server response structure matches what's been shown
+        if (!response.ok) {
+          if (response.status === 404 && isUpdate) { 
+            console.error('Création nouveau CV');
+            localStorage.removeItem('cvUserId'); 
+            return handleSubmitForm(values, { setSubmitting });
+          }
+          throw new Error(responseData.message || 'Failed to submit CV');
+        }
+    
+        
         if (!userId && responseData.data && responseData.data.userId) {
           userId = responseData.data.userId;
           localStorage.setItem('cvUserId', userId);
-          console.log('New userId stored:', userId); // Confirm the userId is captured and stored
+          console.log('New userId stored:', userId);
         }
     
         setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
-        setSubmitting(false);
-        console.log('CV submitted successfully', values, 'userId:', userId);
         router.push('/cvedit');
       } catch (error) {
         console.error('Error submitting CV:', error);
         setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
+      } finally {
         setSubmitting(false);
       }
     };
     
+    
+    
     const handleNext = async (values, actions) => {
       let validationErrors = {};
-      
-      // Validate only the current step unless it's the last step
       if (currentStep < formSteps.length - 1) {
         const currentValidationFunc = formSteps[currentStep]?.validationFunction;
         validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
       } else {
-        // Validate the entire form before submitting
         validationErrors = validateCombinedForm(values);
       }
     
@@ -399,8 +382,8 @@ return (
                 <Box sx={{ overflowX: 'auto' }}> 
                   <Stepper activeStep={currentStep} alternativeLabel sx={{
                     '.MuiStep-root': {
-                      minWidth: '100px', // Ensure each step has a minimum width
-                      padding: '0 4px', // Reduce lateral padding between steps
+                      minWidth: '100px', 
+                      padding: '0 4px', 
                     }
                   }}>
                     {formSteps.map((step, index) => (

@@ -25,51 +25,44 @@ import useMediaQuery from '@mui/material/useMediaQuery';
     '5': 'Maîtrise parfaite',
   };
 
-  // Renders a chip for skill level
   const renderSkillChip = (skill, index) => {
     const label = skillLevelLabels[skill.level] || 'Non défini';
     return (
-      <Chip
-        key={index}
-        label={`${skill.skillName}: ${label}`}
-        size="small"
-        variant="outlined"
-        sx={{ marginRight: '5px', marginBottom: '5px' }}
-      />
+      <div key={index} className="chip-green">
+        {`${skill.skillName}: ${label}`}
+      </div>
     );
   };
-
+  
   const renderLanguageChip = (lang, index) => {
     let additionalText = lang.testName ? ` (${lang.testName} - ${lang.testScore})` : '';
     return (
-        <Chip
-            key={index}  // Key should be added here if it's the top component in the map function
-            label={`${lang.language}: ${lang.proficiency}${additionalText}`}
-            color="primary"
-            variant="outlined"
-            size="small"
-            sx={{ margin: '5px' }}
-        />
+      <div key={index} className="chip-blue">
+        {`${lang.language}: ${lang.proficiency}${additionalText}`}
+      </div>
     );
-};
-const formatDate = (dateStr) => {
-  if (!dateStr || dateStr === "En cours") return dateStr;
+  };
 
-  const parts = dateStr.split("/");
 
-  if (parts.length === 3) {
-      // DD/MM/YYYY
-      const [day, month, year] = parts;
-      return `${day}/${month}/${year}`;
-  } else if (parts.length === 2) {
-      // MM/YYYY
-      const [month, year] = parts;
-      return `${month}/${year}`;
-  } else {
-      // Single part or undefined format
-      return "Invalid date";
-  }
-};
+  const formatDate = (dateStr) => {
+    if (!dateStr || dateStr === "En cours") return dateStr;
+  
+    const parts = dateStr.split("-");
+  
+    if (parts.length === 2) {
+        // YYYY-MM
+        const [year, month] = parts;
+        return `${month}/${year}`;  // Switch to MM/YYYY for display
+    } else if (parts.length === 3) {
+        // YYYY-MM-DD (if any date is stored this way, adjust accordingly)
+        const [year, month, day] = parts;
+        return `${day}/${month}/${year}`; // Convert to DD/MM/YYYY for display
+    } else {
+        // Single part or undefined format
+        return "Invalid date";
+    }
+  };
+  
 
 
 const sex = {
@@ -133,7 +126,7 @@ const LiveCV = ({ cvData }) => {
 
         <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'center' }}>
           {/* Logo */}
-          <Image src="/logo.png" alt="GEDS Logo" width={150} height={150} />
+          <img src="/logo.png" alt="GEDS Logo" className="logo-print" width="100" height="100" />
         </Grid>
 
          {/* Contact Section with Icons */}
@@ -182,7 +175,7 @@ const LiveCV = ({ cvData }) => {
 
       <Grid container spacing={2} direction={isMobile ? 'column-reverse' : 'row'} wrap="nowrap">
        {/* Left Sidebar for Languages, Skills, & Hobbies */}
-       <Grid item xs={12} md={3}>
+       <Grid item xs={12} md={3} marginRight={3}>
           <Box sx={{ paddingRight: 2 }}>
             {/* Languages */}
             <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Langues</Typography>
@@ -212,41 +205,53 @@ const LiveCV = ({ cvData }) => {
         {/* Right Content for Education & Work Experience */}
         <Grid item xs={12} md={9} sx={{ overflow: 'hidden', paddingLeft: isMobile ? 0 : 2 }}>
           <Box sx={{ overflow: 'hidden', paddingLeft: 2 }}>
-            {/* Education */}
-            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 3 }}>Éducation</Typography>
+            {/* Education Section */}
+            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 0.5 }}>Éducation</Typography>
             {cvData.education.map((edu, index) => (
               <List key={`edu-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 3 }}>
+                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
                   <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{edu.schoolName}</Typography>
-                    <Typography variant="body2">{edu.degree} en {edu.fieldOfStudy}</Typography>
-                    <Typography variant="body2" sx={{ fontWeight: 'light' }}> {formatDate(edu.startDate)} - {edu.ongoing ? "En cours" : formatDate(edu.endDate)} </Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{edu.schoolName}</Typography>
+                    <Typography variant="body2">{edu.degree} - {edu.fieldOfStudy}</Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(edu.startDate)} - {edu.ongoing ? "En cours" : formatDate(edu.endDate)}</Typography>
+                    <div>
+                      {edu.achievements.map((achievement, idx) => (
+                        <p key={idx} style={{ margin: 0 }}>{achievement}</p>
+                      ))}
+                    </div>
                   </Box>
                 </ListItem>
-                <Divider sx={{ marginLeft: 4, mb: 3}} />
+                <Divider sx={{ marginLeft: 4, mb: 1 }} />
               </List>
             ))}
 
-            {/* Work Experience */}
-            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 2 }}>Expérience Professionnelle</Typography>
+
+                        {/* Work Experience Section */}
+            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 0.5 }}>Expérience Professionnelle</Typography>
             {cvData.workExperience.map((work, index) => (
               <List key={`work-${index}`}>
-                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 3 }}>
+                <ListItem sx={{ paddingLeft: 4, position: 'relative', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
                   <Box>
-                    <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{work.companyName}, {work.location}</Typography>
+                    <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{work.companyName} - {work.location}</Typography>
                     <Typography variant="body2">{work.position}</Typography>
                     <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(work.startDate)} - {work.ongoing ? "En cours" : formatDate(work.endDate)}</Typography>
+                    <div>
+                      {work.responsibilities.map((responsibility, idx) => (
+                        <p key={idx} style={{ margin: 0 }}>{responsibility}</p>
+                      ))}
+                    </div>
                   </Box>
                 </ListItem>
-                <Divider sx={{ marginLeft: 4, mb: 3 }} />
+                <Divider sx={{ marginLeft: 4, mb: 1 }} />
               </List>
-            ))}
+            ))
+            }
           </Box>
         </Grid>
       </Grid>

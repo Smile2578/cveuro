@@ -194,6 +194,9 @@ const handleTestDialogSave = () => {
             label="Score du test"
             type="text"
             fullWidth
+            onKeyDown={(e) => { if (e.key === 'Enter') 
+            { e.preventDefault();
+              handleTestDialogSave(); }}}
             value={currentLanguage.testScore}
             onChange={(e) => setCurrentLanguage({ ...currentLanguage, testScore: e.target.value })}
           />

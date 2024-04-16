@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import NavBar from '../components/common/NavBar';
 import Footer from '../components/common/Footer';
-import CVEditor from '../components/cvedit/CVEditor'; // Assume this is your component for editing the CV
+import CVEditor from '../components/cvedit/CVEditor';
 import { CssBaseline, Container, ThemeProvider, Box } from '@mui/material';
 import theme from '../theme';
 

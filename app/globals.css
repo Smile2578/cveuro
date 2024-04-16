@@ -4,8 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
@@ -30,13 +28,51 @@ body {
   ) rgb(var(--background-start-rgb));
 }
 
-.desktop-pdf {
-  display: grid;
-  grid-template-columns: 3fr 1fr 9fr;
-  grid-gap: 16px;
-} 
-
-
 .text-balance {
   text-wrap: balance;
+}
+
+.chip-blue, .chip-green {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  border-radius: 16px;
+  padding-bottom: 10px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  font-size: 0.75rem;
+  background-color: white;
+  height: 24px;
+  box-sizing: border-box;
+  line-height: 1;
+}
+
+.chip-blue {
+  border-color: #1976d2;
+}
+
+.chip-green {
+  border-color: #4caf50;
+}
+
+.logo-print {
+  width: 80px;
+  height: auto;
+}
+
+/* Print styles for chips to ensure the text is centered */
+@media print {
+  .chip-blue, .chip-green {
+    font-size: 9px !important;
+    line-height:50px !important;
+    padding: 4px 8px !important;
+    vertical-align: middle !important;
+  }
+  .logo-print {
+    width: 80px !important;
+    height: auto !important;
+  }
 }
