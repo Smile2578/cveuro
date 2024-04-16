@@ -307,29 +307,26 @@ function validatePersonalInfo(values) {
     
     
     
-    const handleNext = async (values, actions, additionalData) => {
+    const handleNext = async (values, actions, additionalData = {}) => {
       let validationErrors = {};
-      if (currentStep < formSteps.length - 1) {
-          const currentValidationFunc = formSteps[currentStep]?.validationFunction;
-          validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
-      } else {
-          validationErrors = validateCombinedForm(values);
+      const { setErrors } = actions;
+    
+      // Check for additional data
+      if (additionalData.skipWorkExperience) {
+          values.skipWorkExperience = true; // Mark work experience as skipped
+          setCurrentStep(currentStep + 1);
+          return; // Early return to skip validation and steps
       }
-  
-      // Update to handle skipWorkExperience logic
-      if (additionalData && additionalData.skipWorkExperience) {
-          values.skipWorkExperience = true; // Update the state to reflect skipping
-      }
-  
-      actions.setErrors(validationErrors);
-  
+    
+      // Proceed with validation if not skipping
+      const currentValidationFunc = formSteps[currentStep]?.validationFunction;
+      validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
+    
+      setErrors(validationErrors);
+    
       if (Object.keys(validationErrors).length === 0) {
           saveFormDataToLocalStorage(values);
-          if (currentStep < formSteps.length - 1) {
-              setCurrentStep(currentStep + 1);
-          } else {
-              await handleSubmitForm(values, actions);
-          }
+          setCurrentStep(currentStep + 1);
       } else {
           setSnackbar({
               open: true,
@@ -337,7 +334,8 @@ function validatePersonalInfo(values) {
               severity: 'error'
           });
       }
-  };
+    };
+    
   
     
 

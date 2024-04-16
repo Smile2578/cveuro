@@ -56,11 +56,11 @@ const WorkExperienceForm = ({ onNext }) => {
     setOpenConfirmDialog(true);
 };
 
-    const handleConfirmSkip = () => {
-        setOpenConfirmDialog(false);
-        setFieldValue('noExperience', true);
-        onNext();
-    };
+const handleConfirmSkip = () => {
+  setOpenConfirmDialog(false);
+  onNext({ skipWorkExperience: true }); // Pass this object correctly
+};
+
 
     const handleCloseDialog = () => {
         setOpenConfirmDialog(false);
@@ -108,7 +108,8 @@ const WorkExperienceForm = ({ onNext }) => {
               <Button
                 variant="outlined"
                 startIcon={<AddCircleOutlineIcon />}
-                onClick={handleSkipConfirmation}
+                onClick={() => handleNext(formik.values, formikBag, { skipWorkExperience: true })}
+                disabled={isSubmitting}
                 sx={{ m: 2 }}
               >
                 Je n&apos;ai pas encore d&apos;expérience professionnelle
