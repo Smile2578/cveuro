@@ -20,7 +20,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
 const WorkExperienceForm = ({ onNext }) => { 
-  const { values, setFieldValue, touched, errors } = useFormikContext();
+  const { values, setFieldValue, touched, errors, isSubmitting } = useFormikContext();
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ const handleConfirmSkip = () => {
               <Button
                 variant="outlined"
                 startIcon={<AddCircleOutlineIcon />}
-                onClick={() => handleNext(formik.values, formikBag, { skipWorkExperience: true })}
+                onClick={handleSkipConfirmation}
                 disabled={isSubmitting}
                 sx={{ m: 2 }}
               >
