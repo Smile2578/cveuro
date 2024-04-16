@@ -52,19 +52,27 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
   };
 
 
-  const formatDate = (dateStr) => {
-    if (!dateStr || dateStr === "En cours") return dateStr;
+  const formatDate = (date, isOngoing) => {
+    if (isOngoing) return 'En Cours';
+    const parts = date.split('-');
   
-    // This matches the format YYYY-MM, which is expected for startDate and endDate
-    if (/^\d{4}-\d{2}$/.test(dateStr)) {
-      const [year, month] = dateStr.split("-");
-      return `${month}/${year}`;  // Convert to MM/YYYY for display
+    // Check how many parts the date has to handle different formats
+    if (parts.length === 3) {
+      // Assuming format is YYYY-MM-DD
+      const [year, month, day] = parts;
+      return `${day}/${month}/${year}`;
+    } else if (parts.length === 2) {
+      // Assuming format is YYYY-MM
+      const [year, month] = parts;
+      return `${month}/${year}`;
+    } else if (parts.length === 1) {
+      // Assuming format is just YYYY or any single part
+      return parts[0];
+    } else {
+      // If date format is unexpected or empty
+      return date;
     }
-  
-    // Default return for any unrecognized format
-    return dateStr;  // This ensures that dateOfBirth or any correctly formatted date is not altered
   };
-  
 
 
 const sex = {
@@ -252,38 +260,49 @@ const LiveCV = ({ cvData, setCvData }) => {
               </Box>
             ))}
 
-            {/* Work Experience Section */}
-            <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 0.5 }}>Expérience Professionnelle</Typography>
-            {cvData.workExperience.map((work, index) => (
-              <Box key={`work-${index}`}>
-                <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
-                    <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
-                  </ListItemIcon>
-                    <Box sx={{ flexGrow: 1 }}>
-                      <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>{work.companyName} - {work.location}</Typography>
-                      <Typography variant="body2">{work.position}</Typography>
-                      <Typography variant="body2" sx={{ fontWeight: 'light' }}>{formatDate(work.startDate)} - {work.ongoing ? "En cours" : formatDate(work.endDate)}</Typography>
-                      <div>
-                        {work.responsibilities.map((responsibility, idx) => (
-                          <p key={idx} style={{ margin: 0 }}>{responsibility}</p>
-                        ))}
-                      </div>
-                    </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
-                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
-                        <ArrowUpwardIcon />
-                      </IconButton>
-                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'workExperience')} size="small">
-                        <ArrowDownwardIcon />
-                      </IconButton>
-                    </Box>
-                  </ListItem>
-                </List>
-                <Divider sx={{ width: '100%', mb: 1 }} />
-              </Box>
-            ))}
+                        {/* Work Experience Section */}
+            {cvData.workExperience && cvData.workExperience.length > 0 && (
+                <>
+                    <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 0.5 }}>
+                        Expérience Professionnelle
+                    </Typography>
+                    {cvData.workExperience.map((work, index) => (
+                        <Box key={`work-${index}`}>
+                            <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
+                                    <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
+                                        <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
+                                    </ListItemIcon>
+                                    <Box sx={{ flexGrow: 1 }}>
+                                        <Typography variant="body1" sx={{ fontWeight: 'bold', color: theme.palette.primary.alt }}>
+                                            {work.companyName} - {work.location}
+                                        </Typography>
+                                        <Typography variant="body2">{work.position}</Typography>
+                                        <Typography variant="body2" sx={{ fontWeight: 'light' }}>
+                                            {formatDate(work.startDate, work.ongoing)} - {work.ongoing ? "En cours" : formatDate(work.endDate, work.ongoing)}
+                                        </Typography>
+                                        <div>
+                                            {work.responsibilities.map((responsibility, idx) => (
+                                                <p key={idx} style={{ margin: 0 }}>{responsibility}</p>
+                                            ))}
+                                        </div>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                                        <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
+                                            <ArrowUpwardIcon />
+                                        </IconButton>
+                                        <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'workExperience')} size="small">
+                                            <ArrowDownwardIcon />
+                                        </IconButton>
+                                    </Box>
+                                </ListItem>
+                            </List>
+                            <Divider sx={{ width: '100%', mb: 1 }} />
+                        </Box>
+                    ))}
+                </>
+            )}
+
 
           </Box>
         </Grid>

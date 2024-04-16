@@ -54,17 +54,17 @@ const WorkExperienceForm = ({ onNext }) => {
 
   const handleSkipConfirmation = () => {
     setOpenConfirmDialog(true);
-  };
+};
 
-  const handleConfirmSkip = () => {
+const handleConfirmSkip = () => {
     setOpenConfirmDialog(false);
-    onNext({ skipWorkExperience: true });
-    setFieldValue('skipWorkExperience', true); // Make sure this state is correctly updated
-  };
+    setFieldValue('noExperience', true);
+    onNext();
+};
 
-  const handleCloseDialog = () => {
+const handleCloseDialog = () => {
     setOpenConfirmDialog(false);
-  };
+};
 
 
   const handleTextChange = (index, event) => {

@@ -141,17 +141,22 @@ function validatePersonalInfo(values) {
   function validateCombinedForm(values) {
     const errors = {};
     if (!values.languages || values.languages.length === 0) {
-      errors.languages = 'Au moins une langue est obligatoire';
+        errors.languages = 'Au moins une langue est obligatoire';
     } else {
-      // Further validation to check each language entry
-      values.languages.forEach(lang => {
-        if (!lang.language || !lang.proficiency) {
-          errors.languages = 'Toutes les langues doivent inclure le nom et le niveau de maîtrise';
+        const languageErrors = values.languages.map(lang => {
+            if (!lang.language || !lang.proficiency) {
+                return 'Toutes les langues doivent inclure le niveau de maîtrise';
+            }
+            return '';
+        }).filter(error => error !== '');
+
+        if (languageErrors.length > 0) {
+            errors.languages = languageErrors.join(', ');
         }
-      });
     }
     return errors;
-  }
+}
+
   
   const Form = () => {
     const [currentStep, setCurrentStep] = useState(0);
@@ -352,15 +357,7 @@ return (
   >
       {({ isSubmitting, handleSubmit, values, setErrors, errors }) => {
           const handleStepClick = (step) => {
-              if (step > currentStep && !validateSteps(step, values, setErrors)) {
-                  setSnackbar({
-                      open: true,
-                      message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
-                      severity: 'warning'
-                  });
-              } else {
-                  setCurrentStep(step);
-              }
+            setCurrentStep(step);
           };
 
           // Declare validateSteps here
