@@ -308,22 +308,22 @@ function validatePersonalInfo(values) {
     
     
     const handleNext = async (values, actions, additionalData = {}) => {
-      let validationErrors = {};
       const { setErrors } = actions;
-    
-      // Check for additional data
+      
+      // If we're skipping work experience, update values and proceed without validation
       if (additionalData.skipWorkExperience) {
           values.skipWorkExperience = true; // Mark work experience as skipped
+          saveFormDataToLocalStorage(values);
           setCurrentStep(currentStep + 1);
-          return; // Early return to skip validation and steps
+          return; // Exit early to skip the rest of the function
       }
-    
-      // Proceed with validation if not skipping
+  
+      // Regular validation and step advancement if not skipping
+      let validationErrors = {};
       const currentValidationFunc = formSteps[currentStep]?.validationFunction;
       validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
-    
+  
       setErrors(validationErrors);
-    
       if (Object.keys(validationErrors).length === 0) {
           saveFormDataToLocalStorage(values);
           setCurrentStep(currentStep + 1);
@@ -334,7 +334,8 @@ function validatePersonalInfo(values) {
               severity: 'error'
           });
       }
-    };
+  };
+  
     
   
     

@@ -58,7 +58,7 @@ const WorkExperienceForm = ({ onNext }) => {
 
 const handleConfirmSkip = () => {
   setOpenConfirmDialog(false);
-  onNext({ skipWorkExperience: true }); // Pass this object correctly
+  onNext({ skipWorkExperience: true });
 };
 
 
