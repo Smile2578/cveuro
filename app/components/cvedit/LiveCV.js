@@ -53,22 +53,19 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
   const formatDate = (dateStr) => {
-    if (!dateStr) return "Invalid date";
     if (!dateStr || dateStr === "En cours") return dateStr;
   
-    const parts = dateStr.split("-");
-  
-    if (parts.length === 2) {
-        // YYYY-MM
-        const [year, month] = parts;
-        return `${month}/${year}`;  // Switch to MM/YYYY for display
-    } else if (parts.length === 3) {
-        // YYYY-MM-DD (if any date is stored this way, adjust accordingly)
-        const [year, month, day] = parts;
-        return `${day}/${month}/${year}`; // Convert to DD/MM/YYYY for display
+    let parts = dateStr.split("/");
+    if (parts.length === 3) {
+      // Convert DD/MM/YYYY to MM/YYYY for display
+      const [day, month, year] = parts;
+      return `${month}/${year}`;
+    } else if (parts.length === 2) {
+      // Already in MM/YYYY, return as is
+      return dateStr;
     } else {
-        // Single part or undefined format
-        return "Invalid date";
+      // Undefined or unknown format
+      return "Invalid date";
     }
   };
   
