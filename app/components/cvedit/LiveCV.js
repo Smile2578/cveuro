@@ -53,6 +53,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 
 
   const formatDate = (dateStr) => {
+    if (!dateStr) return "Invalid date";
     if (!dateStr || dateStr === "En cours") return dateStr;
   
     const parts = dateStr.split("-");
