@@ -206,23 +206,6 @@ function validatePersonalInfo(values) {
         }
       }
     }, []);
-
-    const formatDate = (dateString) => {
-      if (!dateString) return '';
-      let parts = dateString.includes('-') ? dateString.split('-') : dateString.split('/');
-      if (parts.length === 3) {
-        const [year, month, day] = parts; 
-        return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
-      } else if (parts.length === 2) {
-        const [year, month] = parts;
-        return `${month.padStart(2, '0')}/${year}`;
-      } else if (parts.length === 1) {
-        return parts[0];
-      } else {
-        console.error("Unexpected date format:", dateString);
-        return 'Invalid date'; 
-      }
-    };
   
     const adaptFormData = (data) => {
       const convertDateToYYYYMMDD = (dateStr) => {
@@ -265,78 +248,81 @@ function validatePersonalInfo(values) {
     };
 };
 
-    const handleSubmitForm = async (values, { setSubmitting }) => {
-      let userId = localStorage.getItem('cvUserId');
-      const isUpdate = userId ? true : false; 
-      try {
-        const response = await fetch(isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV', {
-          method: isUpdate ? 'PUT' : 'POST',
+const handleSubmitForm = async (values, { setSubmitting }) => {
+  let userId = localStorage.getItem('cvUserId');
+  const isUpdate = Boolean(userId); // Check if it's an update operation
+  const endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV';
+  const method = isUpdate ? 'PUT' : 'POST';
+
+  try {
+      setSubmitting(true); // Set submitting state before async operation
+      const response = await fetch(endpoint, {
+          method: method,
           headers: {
-            'Content-Type': 'application/json',
+              'Content-Type': 'application/json',
           },
           body: JSON.stringify(values),
-        });
-    
-        const responseData = await response.json();
-    
-        if (!response.ok) {
-          if (response.status === 404 && isUpdate) { 
-            console.error('Création nouveau CV');
-            localStorage.removeItem('cvUserId'); 
-            return handleSubmitForm(values, { setSubmitting });
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+          if (response.status === 404 && isUpdate) {
+              // Handle specific case where update may fall through
+              console.error('Creating new CV entry');
+              localStorage.removeItem('cvUserId'); // Remove outdated userId
+              return handleSubmitForm(values, { setSubmitting }); // Recursive call as a new submission
           }
           throw new Error(responseData.message || 'Failed to submit CV');
-        }
-    
-        
-        if (!userId && responseData.data && responseData.data.userId) {
-          userId = responseData.data.userId;
-          localStorage.setItem('cvUserId', userId);
+      }
+
+      if (!userId && responseData.data && responseData.data.userId) {
+          userId = responseData.data.userId; // Set new userId if received
+          localStorage.setItem('cvUserId', userId); // Store new userId in localStorage
           console.log('New userId stored:', userId);
-        }
-    
-        setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
-        router.push('/cvedit');
-      } catch (error) {
-        console.error('Error submitting CV:', error);
-        setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
-      } finally {
-        setSubmitting(false);
       }
-    };
+
+      setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
+      router.push('/cvedit'); // Redirect on success
+  } catch (error) {
+      console.error('Error submitting CV:', error);
+      setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
+  } finally {
+      setSubmitting(false); // Reset submitting state after operation
+  }
+};
+
     
     
     
-    const handleNext = async (values, actions, additionalData = {}) => {
-      const { setErrors } = actions;
-      
-      // If we're skipping work experience, update values and proceed without validation
-      if (additionalData.skipWorkExperience) {
-          values.skipWorkExperience = true; // Mark work experience as skipped
-          saveFormDataToLocalStorage(values);
+const handleNext = async (values, actions, additionalData = {}) => {
+  const { setErrors } = actions;
+  if (additionalData.skipWorkExperience) {
+      values.skipWorkExperience = true;
+      saveFormDataToLocalStorage(values);
+      if (currentStep + 1 < formSteps.length) {
           setCurrentStep(currentStep + 1);
-          return; // Exit early to skip the rest of the function
       }
-  
-      // Regular validation and step advancement if not skipping
-      let validationErrors = {};
-      const currentValidationFunc = formSteps[currentStep]?.validationFunction;
-      validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
-  
-      setErrors(validationErrors);
-      if (Object.keys(validationErrors).length === 0) {
-          saveFormDataToLocalStorage(values);
+      return;
+  }
+
+  let validationErrors = formSteps[currentStep]?.validationFunction ? formSteps[currentStep].validationFunction(values) : {};
+  setErrors(validationErrors);
+
+  if (Object.keys(validationErrors).length === 0) {
+      saveFormDataToLocalStorage(values);
+      if (currentStep + 1 < formSteps.length) {
           setCurrentStep(currentStep + 1);
       } else {
-          setSnackbar({
-              open: true,
-              message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
-              severity: 'error'
-          });
+          handleSubmitForm(values, actions); // Consider adding a final submission handling here
       }
-  };
-  
-    
+  } else {
+      setSnackbar({
+          open: true,
+          message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+          severity: 'error'
+      });
+  }
+};
   
     
 
@@ -349,101 +335,62 @@ const handleBack = () => {
 
 return (
   <>
-  <Formik
+    <Formik
       initialValues={formValues}
-      onSubmit={handleNext}
-      validate={(values) => {
-        if (currentStep === formSteps.length - 1) {
-          return validateCombinedForm(values);
-        }
-        return {};
-  }}
+      onSubmit={(values, actions) => handleNext(values, actions)}
       enableReinitialize
-  >
-      {({ isSubmitting, handleSubmit, values, setErrors, errors }) => {
-          const handleStepClick = (step) => {
-            setCurrentStep(step);
-          };
+    >
+      {({ isSubmitting, handleSubmit, values, setErrors }) => (
+        <FormikForm onSubmit={handleSubmit}>
+          <Box sx={{ overflowX: 'auto' }}>
+            <Stepper activeStep={currentStep} alternativeLabel>
+              {formSteps.map((step, index) => (
+                <Step key={step.label} onClick={() => setCurrentStep(index)}>
+                  <StepLabel>{step.label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+          </Box>
+          <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-10" />
+          <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
+            {formSteps[currentStep].label}
+          </Typography>
+          <Typography variant="body2" style={{ color: theme.palette.primary.alt, marginBottom: 7 }}>* : champs requis</Typography>
+          {React.createElement(formSteps[currentStep].component, { onNext: handleNext, values })}
 
-          // Declare validateSteps here
-          const validateSteps = (targetStep, values, setErrors) => {
-              let isValid = true;
-              for (let i = 0; i <= targetStep; i++) {
-                  const stepErrors = formSteps[i].validationFunction(values);
-                  if (Object.keys(stepErrors).length > 0) {
-                      setErrors(stepErrors);
-                      isValid = false;
-                      break;
-                  }
-              }
-              return isValid;
-          };
-
-          return (
-            <FormikForm onSubmit={handleSubmit}>
-                <Box sx={{ overflowX: 'auto' }}> 
-                  <Stepper activeStep={currentStep} alternativeLabel sx={{
-                    '.MuiStep-root': {
-                      minWidth: '100px', 
-                      padding: '0 4px', 
-                    }
-                  }}>
-                    {formSteps.map((step, index) => (
-                      <Step key={step.label} onClick={() => handleStepClick(index)}>
-                        <StepLabel style={{ cursor: 'pointer' }}>
-                          {step.label}
-                        </StepLabel>
-                      </Step>
-                    ))}
-                  </Stepper>
-                </Box>
-                <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-10" />
-                <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
-                  {formSteps[currentStep].label}
-                </Typography>
-                <Typography variant="body2" style={{ color: theme.palette.primary.alt, marginBottom: 7 }}>* : champs requis</Typography>
-      
-                {React.createElement(formSteps[currentStep].component, { 
-                    onNext: (data) => handleNext(values, { setErrors }, data.skipWorkExperience),
-                    values 
-                })}
-      
-                <Grid container justifyContent="space-between" spacing={2} className="mt-4">
-                    {currentStep > 0 && (
-                      <Button onClick={handleBack} disabled={isSubmitting} startIcon={<ArrowBackIos/>}>
-                        Précédent
-                      </Button>
-                    )}
-                    <Grid item style={{ marginLeft: 'auto' }}>
-                        {currentStep === formSteps.length - 1 && <Typography style={{ color: theme.palette.primary.main }}>{errors.languages}</Typography>}
-                        <Button
-                            endIcon={<ArrowForwardIos />}
-                            type="submit"
-                            variant="contained"
-                            style={{ backgroundColor: theme.palette.primary.main, color: '#FFFFFF' }}
-                            disabled={isSubmitting}
-                        >
-                            {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
-                        </Button>
-                    </Grid>
-                    
-                </Grid>
-            </FormikForm>
-        );
-    }}
-</Formik>
-<Snackbar
-  open={snackbar.open}
-  autoHideDuration={4000}
-  onClose={() => setSnackbar({ ...snackbar, open: false })}
-  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
->
-  <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
-    {snackbar.message}
-  </Alert>
-</Snackbar>
-</>
+          <Grid container justifyContent="space-between" spacing={2} className="mt-4">
+            {currentStep > 0 && (
+              <Button onClick={handleBack} disabled={isSubmitting} startIcon={<ArrowBackIos />}>
+                Précédent
+              </Button>
+            )}
+            <Grid item style={{ marginLeft: 'auto' }}>
+              <Button
+                endIcon={<ArrowForwardIos />}
+                type="submit"
+                variant="contained"
+                style={{ backgroundColor: theme.palette.primary.main, color: '#FFFFFF' }}
+                disabled={isSubmitting}
+              >
+                {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
+              </Button>
+            </Grid>
+          </Grid>
+        </FormikForm>
+      )}
+    </Formik>
+    <Snackbar
+      open={snackbar.open}
+      autoHideDuration={4000}
+      onClose={() => setSnackbar({ ...snackbar, open: false })}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+    >
+      <Alert onClose={() => setSnackbar({ ...snackbar, open: false })} severity={snackbar.severity} sx={{ width: '100%' }}>
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
+  </>
 );
-}
+};
 
 export default Form;
