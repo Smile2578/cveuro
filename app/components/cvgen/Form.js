@@ -307,32 +307,38 @@ function validatePersonalInfo(values) {
     
     
     
-    const handleNext = async (values, actions) => {
+    const handleNext = async (values, actions, additionalData) => {
       let validationErrors = {};
       if (currentStep < formSteps.length - 1) {
-        const currentValidationFunc = formSteps[currentStep]?.validationFunction;
-        validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
+          const currentValidationFunc = formSteps[currentStep]?.validationFunction;
+          validationErrors = currentValidationFunc ? currentValidationFunc(values) : {};
       } else {
-        validationErrors = validateCombinedForm(values);
+          validationErrors = validateCombinedForm(values);
       }
-    
+  
+      // Update to handle skipWorkExperience logic
+      if (additionalData && additionalData.skipWorkExperience) {
+          values.skipWorkExperience = true; // Update the state to reflect skipping
+      }
+  
       actions.setErrors(validationErrors);
-    
+  
       if (Object.keys(validationErrors).length === 0) {
-        if (currentStep < formSteps.length - 1) {
           saveFormDataToLocalStorage(values);
-          setCurrentStep(currentStep + 1);
-        } else {
-          await handleSubmitForm(values, actions);
-        }
+          if (currentStep < formSteps.length - 1) {
+              setCurrentStep(currentStep + 1);
+          } else {
+              await handleSubmitForm(values, actions);
+          }
       } else {
-        setSnackbar({
-          open: true,
-          message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
-          severity: 'error'
-        });
+          setSnackbar({
+              open: true,
+              message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+              severity: 'error'
+          });
       }
-    };
+  };
+  
     
 
 const handleBack = () => {
