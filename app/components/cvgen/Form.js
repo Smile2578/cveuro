@@ -268,48 +268,59 @@ function validatePersonalInfo(values) {
 const handleSubmitForm = async (values, { setSubmitting, setErrors }) => {
   let userId = localStorage.getItem('cvUserId');
   const isUpdate = Boolean(userId);
-  const endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : `/api/cvgen/submitCV`;
-  const method = isUpdate ? 'PUT' : 'POST';
+  let endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : `/api/cvgen/submitCV`;
+  let method = isUpdate ? 'PUT' : 'POST';
 
-  // Log the complete values object to verify `hasWorkExp` is included
   console.log("Final submission values:", values);
 
-  // Perform validation before submitting
   let validationErrors = formSteps[currentStep]?.validationFunction(values);
   if (Object.keys(validationErrors).length !== 0) {
-      console.log("Validation errors:", validationErrors);
-      setErrors(validationErrors);
-      setSnackbar({ open: true, message: 'Veuillez corriger les erreurs avant de soumettre.', severity: 'error' });
-      setSubmitting(false);
-      return; // Prevent submission if there are errors
+    console.log("Validation errors:", validationErrors);
+    setErrors(validationErrors);
+    setSnackbar({ open: true, message: 'Veuillez corriger les erreurs avant de soumettre.', severity: 'error' });
+    setSubmitting(false);
+    return;
   }
+
+  const fetchOptions = {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(values),
+  };
 
   try {
-      setSubmitting(true);
-      const response = await fetch(endpoint, {
-          method: method,
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
-      });
-      const responseData = await response.json();
+    setSubmitting(true);
+    let response = await fetch(endpoint, fetchOptions);
+    if (!response.ok) {
+      // If PUT failed and it was an update attempt, try POST instead
+      if (isUpdate) {
+        console.log('PUT failed, attempting POST');
+        endpoint = `/api/cvgen/submitCV`;
+        method = 'POST';
+        response = await fetch(endpoint, { ...fetchOptions, method });
+      }
+      // Re-throw the error if it's still not OK
       if (!response.ok) {
-          throw new Error(responseData.message || 'Failed to submit CV');
+        const responseData = await response.json();
+        throw new Error(responseData.message || 'Failed to submit CV');
       }
-
-      if (!userId && responseData.data && responseData.data.userId) {
-          userId = responseData.data.userId;
-          localStorage.setItem('cvUserId', userId);
-      }
-      setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
-      console.log('CV submitted successfully:', responseData.data);
-      router.push('/cvedit');
+    }
+    const responseData = await response.json();
+    if (!userId && responseData.data && responseData.data.userId) {
+      userId = responseData.data.userId;
+      localStorage.setItem('cvUserId', userId);
+    }
+    setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
+    console.log('CV submitted successfully:', responseData.data);
+    router.push('/cvedit');
   } catch (error) {
-      console.error('Error submitting CV:', error);
-      setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
+    console.error('Error submitting CV:', error);
+    setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
   } finally {
-      setSubmitting(false);
+    setSubmitting(false);
   }
 };
+
 
 
     
