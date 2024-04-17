@@ -15,18 +15,17 @@ const skillLevels = ['Débutant', 'Intermédiaire', 'Avancé', 'Expert', 'Maîtr
 
 
 const CombinedForm = () => {
-  const { values, setFieldValue } = useFormikContext();
+  const { values, setFieldValue, errors, setErrors } = useFormikContext();
   const [isTestTaken, setIsTestTaken] = useState(false);
   const [testDialogOpen, setTestDialogOpen] = useState(false);
   const [currentLanguage, setCurrentLanguage] = useState({ language: '', proficiency: '', testName: '', testScore: '' });
   const [newSkill, setNewSkill] = useState({ skillName: '', level: '' });
   const [newHobby, setNewHobby] = useState('');
-  const [errors, setErrors] = useState({ skills: {} });
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
 
 
-  const addValidItem = (item, arrayName) => {
+const addValidItem = (item, arrayName) => {
     if (arrayName === 'languages') {
       // Only check for language and proficiency for languages
       if (item.language && item.proficiency) {
@@ -49,9 +48,9 @@ const CombinedForm = () => {
       setFieldValue(arrayName, newArray);
       resetItemState(arrayName);
     }
-  };
+};
   
-  const resetItemState = (arrayName) => {
+const resetItemState = (arrayName) => {
     if (arrayName === 'languages') {
       setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' }); // Reset after adding
       setCustomTestName(''); // Clear the custom test name as well
@@ -61,7 +60,7 @@ const CombinedForm = () => {
     } else if (arrayName === 'hobbies') {
       setNewHobby(''); // Reset the hobby input field
     }
-  };
+};
 
 
 
@@ -76,12 +75,13 @@ const handleNewItem = (e, item, setItem, fieldName) => {
 
 const handleLanguageSubmit = () => {
   if (!currentLanguage.language || !currentLanguage.proficiency) {
-    setErrors({
-      ...errors,
-      languages: 'La langue et le niveau de maîtrise sont obligatoires',
-    });
+      
+        setErrors({ languages: { global: 'Chaque langue doit avoir un nom et un niveau de maîtrise' } });
+     
   } else {
-    finalizeLanguageAddition();
+      const newArray = [...values.languages, currentLanguage];
+      setFieldValue('languages', newArray);
+      setCurrentLanguage({ language: '', proficiency: '', testName: '', testScore: '' }); // Reset after adding
   }
 };
 
@@ -105,17 +105,17 @@ const handleTestDialogSave = () => {
 };
 
 
-  const isSkillError = (field) => {
+const isSkillError = (field) => {
     return Boolean(errors.skills && errors.skills[values.skills.length] && errors.skills[values.skills.length][field]);
-  };
+};
 
 
 
   // Removes an item from the languages, skills, or hobbies list
-  const handleRemoveItem = (fieldName, index) => {
+const handleRemoveItem = (fieldName, index) => {
     const updatedItems = values[fieldName].filter((_, i) => i !== index);
     setFieldValue(fieldName, updatedItems);
-  };
+};
 
   return (
     <Grid container spacing={2} onSubmit={(e) => e.preventDefault()}>
@@ -124,40 +124,37 @@ const handleTestDialogSave = () => {
         <Typography variant="h6" color={theme.palette.primary.main}>Langues* (min. 1)</Typography>
         <Divider style={{ margin: '1px 0 40px 0', width: '180px' }} />
          <Box flexDirection={isMobile ? 'column' : 'row'} display="flex" gap={2} alignItems="center">
-          <TextField
-            label="Langue"
-            variant="outlined"
-            size="small"
-            style={{ width: '30%' }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent form submission
-                handleLanguageSubmit(); // Add language
-              }
-            }}
-            value={currentLanguage.language}
-            onChange={(e) => setCurrentLanguage({ ...currentLanguage, language: e.target.value })}
-            error={Boolean(errors.languages)}
-            helperText={errors.languages}
+         <TextField
+              label="Langue"
+              variant="outlined"
+              size="small"
+              style={{ width: '30%' }}
+              value={currentLanguage.language}
+              onChange={(e) => setCurrentLanguage({ ...currentLanguage, language: e.target.value })}
+              error={Boolean(errors.languages?.global)}
+              helperText={errors.languages?.global}
           />
-          <FormControl size="small" style={{ width: '30%' }}>
-            <InputLabel>Niveau de maîtrise</InputLabel>
-            <Select
-              value={currentLanguage.proficiency}
-              onChange={(e) => setCurrentLanguage({ ...currentLanguage, proficiency: e.target.value })}
-              label="Niveau de maîtrise"
-              error={Boolean(errors.languages)}
-              style={{ width: '105%' }}
-            >
-              {proficiencyLevels.map((level) => (
-                <MenuItem key={level} value={level}>{level}</MenuItem>
-              ))}
-            </Select>
-            <FormHelperText>{errors.languages}</FormHelperText>
+
+              <FormControl error={Boolean(errors.languages?.global)} size="small" style={{ width: '30%' }}>
+              <InputLabel>Niveau</InputLabel>
+              <Select
+                  value={currentLanguage.proficiency}
+                  onChange={(e) => setCurrentLanguage({ ...currentLanguage, proficiency: e.target.value })}
+                  label="Niveau de maîtrise"
+                  style={{ width: '105%' }}
+            
+              >
+                  {proficiencyLevels.map((level) => (
+                      <MenuItem key={level} value={level}>{level}</MenuItem>
+                  ))}
+              </Select>
+              <FormHelperText>{errors.languages?.global}</FormHelperText>
           </FormControl>
+
           <FormControlLabel
             control={<Checkbox checked={isTestTaken} onChange={(e) => { setIsTestTaken(e.target.checked); setTestDialogOpen(e.target.checked); }} />}
             label="J'ai passé un test pour cette langue"
+            style={{ marginLeft: '5px' }}
           />
          <IconButton onClick={handleLanguageSubmit} size="small">
             Ajouter la langue

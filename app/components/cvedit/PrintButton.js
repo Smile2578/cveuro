@@ -6,49 +6,56 @@ const PrintButton = () => {
   const generatePDF = async () => {
     const input = document.getElementById('live-cv');
 
-    // Clone your element and apply A4 layout styles
+    // Ensure styles are suitable for printing
     const clonedInput = input.cloneNode(true);
-    clonedInput.style.maxWidth = '1000';
-    clonedInput.style.minHeight = '1000';
-    clonedInput.style.margin = '2 auto';
+    clonedInput.style.width = '210mm'; // A4 width
+    clonedInput.style.minHeight = '297mm'; // A4 minimum height to accommodate single page content
+    clonedInput.style.margin = '0 auto';
     clonedInput.classList.add('a4-layout');
 
-    // Replace the input with the clonedInput in the DOM temporarily
-    input.parentNode.replaceChild(clonedInput, input);
+    document.body.appendChild(clonedInput); // Append to the body to capture it
 
-    const canvas = await html2canvas(clonedInput, { // Make sure to pass clonedInput here
-      scale: 2,
+    // Generate canvas from the cloned element
+    const canvas = await html2canvas(clonedInput, {
+      scale: 2, // Higher scale factor to enhance quality
       useCORS: true,
+      logging: true,
+      scrollY: -window.scrollY, // Adjust for any current scroll
       onclone: (document) => {
-        // Apply transformation to the specific text elements
         const textElements = document.querySelectorAll('.MuiTypography-root, .MuiListItemText-root');
         textElements.forEach(el => {
           el.style.transform = 'translateY(-4px)';
         });
-        // Apply transformation to the chips text as well
         const chipTextElements = document.querySelectorAll('.chip-blue, .chip-green');
         chipTextElements.forEach(el => {
           el.style.padding = '0 4px 10px 4px';
         });
       }
     });
-
-    // Once captured, put the original input back in place
-    clonedInput.parentNode.replaceChild(input, clonedInput);
+    document.body.removeChild(clonedInput); // Clean up by removing the cloned element
 
     const imgData = canvas.toDataURL('image/png');
-
     const pdf = new jsPDF({
       orientation: 'portrait',
-      unit: 'px',
+      unit: 'mm',
       format: 'a4'
     });
 
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    // Calculate the number of pages
+    const imgHeight = canvas.height * 210 / canvas.width; // Scale the canvas height to A4 width
+    let heightLeft = imgHeight;
+    let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    // Add image to each page
+    while (heightLeft >= 0) {
+      pdf.addImage(imgData, 'PNG', 0, position, 210, imgHeight);
+      heightLeft -= 297; // A4 height in mm
+      position -= 297;
+      if (heightLeft > 0) {
+        pdf.addPage();
+      }
+    }
+
     pdf.save('LiveCV.pdf');
   };
 

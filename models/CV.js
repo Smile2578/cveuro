@@ -31,6 +31,9 @@ const CVSchema = new Schema({
     ongoing: Boolean, // To indicate if the education is ongoing
     achievements: [String], // Optional, for notable achievements during education
   }],
+  hasWorkExp: {
+    type: Boolean,
+  },
   workExperience: [{
     companyName: String,
     position: String,

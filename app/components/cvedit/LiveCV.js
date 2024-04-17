@@ -52,8 +52,7 @@ import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
   };
 
 
-  const formatDate = (date, isOngoing) => {
-    if (isOngoing) return 'En Cours';
+  const formatDate = (date) => {
     const parts = date.split('-');
   
     // Check how many parts the date has to handle different formats
@@ -86,8 +85,9 @@ const formatUrl = (url) => {
 };
 
 const LiveCV = ({ cvData, setCvData }) => {
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm')) && !isGeneratingPDF;
+  
 
   const handleMoveUp = (index, type) => {
     if (index === 0) return; // Can't move up the first item
@@ -103,6 +103,10 @@ const LiveCV = ({ cvData, setCvData }) => {
 
   if (!cvData || !cvData.personalInfo) {
     return <Typography>Chargement...</Typography>;
+  }
+
+  if (isGeneratingPDF) {
+    return <Typography>Génération du PDF...</Typography>;
   }
 
 
@@ -246,7 +250,7 @@ const LiveCV = ({ cvData, setCvData }) => {
                         ))}
                       </div>
                     </Box>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                    <Box sx={{ display: isGeneratingPDF ? 'none' : 'flex', flexDirection: 'column', ml: 2 }}>
                       <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'education')} size="small" sx={{ mb: 1 }}>
                         <ArrowUpwardIcon />
                       </IconButton>
@@ -261,7 +265,7 @@ const LiveCV = ({ cvData, setCvData }) => {
             ))}
 
                         {/* Work Experience Section */}
-            {cvData.workExperience && cvData.workExperience.length > 0 && (
+                        {cvData.hasWorkExp && (
                 <>
                     <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, marginTop: 0.5 }}>
                         Expérience Professionnelle
@@ -287,7 +291,7 @@ const LiveCV = ({ cvData, setCvData }) => {
                                             ))}
                                         </div>
                                     </Box>
-                                    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 2 }}>
+                                    <Box sx={{ display: isGeneratingPDF ? 'none' : 'flex', flexDirection: 'column', ml: 2 }}>
                                         <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
                                             <ArrowUpwardIcon />
                                         </IconButton>

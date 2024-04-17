@@ -250,7 +250,7 @@ const PersonalInfoForm = () => {
         </IconButton>
         <TextField
           name="linkedIn"
-          label="LinkedIn"
+          label="LinkedIn (sans https://www.linkedin.com/in/)"
           value={values.linkedIn}
           onChange={handleChange}
           onBlur={handleBlur}
@@ -263,7 +263,7 @@ const PersonalInfoForm = () => {
       <Grid item xs={12} sm={6}>
         <TextField
           name="personalWebsite"
-          label="Site Web Personnel"
+          label="Site Web Personnel (sans https://)"
           value={values.personalWebsite}
           onChange={handleChange}
           onBlur={handleBlur}

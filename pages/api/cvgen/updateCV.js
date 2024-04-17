@@ -3,12 +3,12 @@ import CV from '../../../models/CV';
 
 export default async function handler(req, res) {
   const { method } = req;
-
   await dbConnect();
- ;
+
   if (method === 'PUT') {
     try {
-      const { userId } = req.query; // Assuming you're passing the userId as a query parameter
+      const { userId } = req.query;
+      console.log('Received update data:', req.body); // Log the entire incoming data
       const cvUpdate = await CV.findOneAndUpdate({ userId }, req.body, {
         new: true,
         runValidators: true,
@@ -19,7 +19,6 @@ export default async function handler(req, res) {
       }
 
       console.log('Updated CV:', cvUpdate);
-
       return res.status(200).json({ success: true, data: cvUpdate });
     } catch (error) {
       res.status(400).json({ success: false, message: 'Failed to update CV', error: error.message });

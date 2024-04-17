@@ -72,6 +72,13 @@ body {
 
 /* Print styles for chips to ensure the text is centered */
 @media print {
+  body {
+    width: 210mm; 
+  }
+  .a4-layout {
+    width: 100%;
+    min-height: 297mm;
+  }
   .chip-blue, .chip-green {
     font-size: 9px !important;
     line-height:50px !important;

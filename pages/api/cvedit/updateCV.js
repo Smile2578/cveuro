@@ -19,7 +19,7 @@ export default async function handler(req, res) {
             });
 
             // Assuming other fields are at the root level and not nested under personalInfo
-            ['education', 'workExperience', 'skills', 'languages', 'hobbies'].forEach(field => {
+            ['education', 'workExperience', 'skills', 'languages', 'hobbies', 'hasWorkExp'].forEach(field => {
                 updateData[field] = req.body[field];
             });
 

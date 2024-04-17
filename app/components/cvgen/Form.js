@@ -1,14 +1,13 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Formik, Form as FormikForm } from 'formik';
-import { Button, Box, LinearProgress, Typography, Grid, Snackbar, Alert, Stepper, Step, StepLabel} from '@mui/material';
+import { Button, Box, LinearProgress, Typography, Grid, Snackbar, Alert, Stepper, Step, StepLabel, StepButton} from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos  } from '@mui/icons-material';
 import PersonalInfoForm from './PersonalInfoForm'; 
 import EducationForm from './EducationForm'; 
 import WorkExperienceForm from './WorkExperienceForm'; 
 import CombinedForm from './CombinedForm'; 
 import { useRouter } from 'next/navigation';
-import { format, parse } from 'date-fns';
 import theme from '@/app/theme';
 
 
@@ -27,6 +26,7 @@ const initialValues = {
   address: '',
   city: '',
   zip: '',
+  hasWorkExp: true,
   // Education
   education: [{
     schoolName: '',
@@ -34,7 +34,7 @@ const initialValues = {
     fieldOfStudy: '',
     startDate: '',
     endDate: '',
-    ongoing: false,
+    ongoing: true,
     achievements: [''],
   }],
   // Work Experience
@@ -44,10 +44,9 @@ const initialValues = {
     location: '',
     startDate: '',
     endDate: '',
-    ongoing: false,
+    ongoing: true,
     responsibilities: [''],
   }],
-  noExperience: false,
   // Combined Form
   skills: [],
   languages: [],
@@ -120,48 +119,65 @@ function validatePersonalInfo(values) {
   
   function validateWorkExperience(values) {
     let errors = {};
-    if (values.skipWorkExperience) {
-      return errors;
-    }
-    if (values.workExperience && values.workExperience.length > 0) {
-      const workExperienceErrors = values.workExperience.map(exp => {
-        const expErrors = {};
-        if (!exp.companyName) expErrors.companyName = 'Le nom de l\'entreprise est obligatoire';
-        if (!exp.position) expErrors.position = 'Le poste est obligatoire';
-        if (!exp.startDate) expErrors.startDate = 'La date de début est obligatoire';
-        if (exp.endDate && new Date(exp.endDate) < new Date(exp.startDate)) expErrors.endDate = 'La date de fin doit être après la date de début';
-
-        return expErrors;
+    if (values.hasWorkExp) { // Only validate if hasWorkExp is true
+      values.workExperience.forEach((exp, index) => {
+        let expErrors = {};
+        if (!exp.companyName) {
+          expErrors.companyName = 'Le nom de l\'entreprise est obligatoire';
+        }
+        if (!exp.position) {
+          expErrors.position = 'Le poste est obligatoire';
+        }
+        if (!exp.startDate) {
+          expErrors.startDate = 'La date de début est obligatoire';
+        }
+        if (exp.endDate && new Date(exp.endDate) < new Date(exp.startDate)) {
+          expErrors.endDate = 'La date de fin doit être après la date de début';
+        }
+        if (Object.keys(expErrors).length) {
+          if (!errors.workExperience) errors.workExperience = [];
+          errors.workExperience[index] = expErrors;
+        }
       });
-      if (workExperienceErrors.some(e => Object.keys(e).length > 0)) errors.workExperience = workExperienceErrors;
     }
-    return errors;
+    return errors; // Return an empty object if hasWorkExp is false
   }
+  
+  
+
   
   function validateCombinedForm(values) {
     const errors = {};
     if (!values.languages || values.languages.length === 0) {
-        errors.languages = 'Au moins une langue est obligatoire';
+        errors.languages = { global: 'Au moins une langue est obligatoire' };
     } else {
         const languageErrors = values.languages.map(lang => {
-            if (!lang.language || !lang.proficiency) {
-                return 'Toutes les langues doivent inclure le niveau de maîtrise';
+            const langErrors = {};
+            if (!lang.language) {
+                langErrors.language = 'Le nom de la langue est obligatoire';
             }
-            return '';
-        }).filter(error => error !== '');
+            if (!lang.proficiency) {
+                langErrors.proficiency = 'Le niveau de maîtrise est obligatoire';
+            }
+            return langErrors;
+        }).filter(langError => Object.keys(langError).length > 0);
 
         if (languageErrors.length > 0) {
-            errors.languages = languageErrors.join(', ');
+            errors.languages = languageErrors;
         }
     }
     return errors;
 }
+
+
+
 
   
   const Form = () => {
     const [currentStep, setCurrentStep] = useState(0);
     const [formValues, setFormValues] = useState(initialValues);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+    const [stepStatus, setStepStatus] = useState(formSteps.map(() => ({ validated: false, error: false })));
     const router = useRouter();
 
     const saveFormDataToLocalStorage = (formData) => {
@@ -245,86 +261,110 @@ function validatePersonalInfo(values) {
         skills: data.skills,
         languages: data.languages,
         hobbies: data.hobbies,
+        hasWorkExp: data.workExperience.length > 0,
     };
 };
 
-const handleSubmitForm = async (values, { setSubmitting }) => {
+const handleSubmitForm = async (values, { setSubmitting, setErrors }) => {
   let userId = localStorage.getItem('cvUserId');
-  const isUpdate = Boolean(userId); // Check if it's an update operation
-  const endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : '/api/cvgen/submitCV';
+  const isUpdate = Boolean(userId);
+  const endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : `/api/cvgen/submitCV`;
   const method = isUpdate ? 'PUT' : 'POST';
 
+  // Log the complete values object to verify `hasWorkExp` is included
+  console.log("Final submission values:", values);
+
+  // Perform validation before submitting
+  let validationErrors = formSteps[currentStep]?.validationFunction(values);
+  if (Object.keys(validationErrors).length !== 0) {
+      console.log("Validation errors:", validationErrors);
+      setErrors(validationErrors);
+      setSnackbar({ open: true, message: 'Veuillez corriger les erreurs avant de soumettre.', severity: 'error' });
+      setSubmitting(false);
+      return; // Prevent submission if there are errors
+  }
+
   try {
-      setSubmitting(true); // Set submitting state before async operation
+      setSubmitting(true);
       const response = await fetch(endpoint, {
           method: method,
-          headers: {
-              'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values),
       });
-
       const responseData = await response.json();
       if (!response.ok) {
-          if (response.status === 404 && isUpdate) {
-              // Handle specific case where update may fall through
-              console.error('Creating new CV entry');
-              localStorage.removeItem('cvUserId'); // Remove outdated userId
-              return handleSubmitForm(values, { setSubmitting }); // Recursive call as a new submission
-          }
           throw new Error(responseData.message || 'Failed to submit CV');
       }
 
       if (!userId && responseData.data && responseData.data.userId) {
-          userId = responseData.data.userId; // Set new userId if received
-          localStorage.setItem('cvUserId', userId); // Store new userId in localStorage
-          console.log('New userId stored:', userId);
+          userId = responseData.data.userId;
+          localStorage.setItem('cvUserId', userId);
       }
-
       setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
-      router.push('/cvedit'); // Redirect on success
+      console.log('CV submitted successfully:', responseData.data);
+      router.push('/cvedit');
   } catch (error) {
       console.error('Error submitting CV:', error);
       setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
   } finally {
-      setSubmitting(false); // Reset submitting state after operation
+      setSubmitting(false);
   }
 };
 
+
     
-    
-    
-const handleNext = async (values, actions, additionalData = {}) => {
-  const { setErrors } = actions;
-  if (additionalData.skipWorkExperience) {
-      values.skipWorkExperience = true;
-      saveFormDataToLocalStorage(values);
-      if (currentStep + 1 < formSteps.length) {
-          setCurrentStep(currentStep + 1);
-      }
-      return;
+const handleNext = async (values, actions) => {
+  if (!actions) {
+    console.error('Formik actions are not passed to handleNext function.');
+    return;
   }
 
-  let validationErrors = formSteps[currentStep]?.validationFunction ? formSteps[currentStep].validationFunction(values) : {};
+  const { setErrors } = actions;
+  saveFormDataToLocalStorage(values); // Save current form state to local storage
+
+  let validationErrors = {};
+
+  // Skip validation for work experience if hasWorkExp is false
+  if (currentStep === formSteps.findIndex(step => step.label === "Expérience Professionnelle (max. 4)")) {
+    if (values.hasWorkExp) {
+      validationErrors = formSteps[currentStep]?.validationFunction(values);
+    } else {
+      // Clear any existing errors if skipping
+      setErrors({});
+    }
+  } else {
+    validationErrors = formSteps[currentStep]?.validationFunction(values);
+  }
+
   setErrors(validationErrors);
 
   if (Object.keys(validationErrors).length === 0) {
-      saveFormDataToLocalStorage(values);
-      if (currentStep + 1 < formSteps.length) {
-          setCurrentStep(currentStep + 1);
-      } else {
-          handleSubmitForm(values, actions); // Consider adding a final submission handling here
-      }
+    if (currentStep + 1 < formSteps.length) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      handleSubmitForm(values, actions);
+    }
   } else {
-      setSnackbar({
-          open: true,
-          message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
-          severity: 'error'
-      });
+    setSnackbar({
+      open: true,
+      message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+      severity: 'error'
+    });
   }
 };
-  
-    
+
+
+
+
+
+
+const handleStepClick = (index) => {
+  if (index <= currentStep) {
+    setCurrentStep(index);
+  }
+};
+
+
 
 const handleBack = () => {
   saveFormDataToLocalStorage(formValues);
@@ -342,21 +382,30 @@ return (
     >
       {({ isSubmitting, handleSubmit, values, setErrors }) => (
         <FormikForm onSubmit={handleSubmit}>
-          <Box sx={{ overflowX: 'auto' }}>
-            <Stepper activeStep={currentStep} alternativeLabel>
-              {formSteps.map((step, index) => (
-                <Step key={step.label} onClick={() => setCurrentStep(index)}>
-                  <StepLabel>{step.label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
+          <Box sx={{ overflow: 'hidden' }}>
+          <Stepper activeStep={currentStep} alternativeLabel>
+            {formSteps.map((step, index) => (
+              <Step key={step.label}>
+                <StepButton
+                  onClick={() => handleStepClick(index)}
+                  style={{ cursor: index <= currentStep ? 'pointer' : 'default' }}
+                >
+                  <StepLabel error={stepStatus[index].error}>{step.label}</StepLabel>
+                </StepButton>
+              </Step>
+            ))}
+          </Stepper>
+
           </Box>
           <LinearProgress variant="determinate" value={(currentStep / formSteps.length) * 100} className="mb-10" />
           <Typography variant="h5" style={{ color: theme.palette.primary.main }}>
             {formSteps[currentStep].label}
           </Typography>
           <Typography variant="body2" style={{ color: theme.palette.primary.alt, marginBottom: 7 }}>* : champs requis</Typography>
-          {React.createElement(formSteps[currentStep].component, { onNext: handleNext, values })}
+          {currentStep === formSteps.findIndex(step => step.label === "Expérience Professionnelle (max. 4)") ?
+              <WorkExperienceForm handleNext={handleNext} setSnackbar={setSnackbar} /> :
+              React.createElement(formSteps[currentStep].component, { onNext: handleNext, values, setErrors})
+            }
 
           <Grid container justifyContent="space-between" spacing={2} className="mt-4">
             {currentStep > 0 && (
@@ -365,6 +414,7 @@ return (
               </Button>
             )}
             <Grid item style={{ marginLeft: 'auto' }}>
+              
               <Button
                 endIcon={<ArrowForwardIos />}
                 type="submit"

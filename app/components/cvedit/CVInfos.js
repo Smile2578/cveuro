@@ -319,25 +319,6 @@ const CVInfos = ({ cvData, setCvData }) => {
         </AccordionDetails>
       </Accordion>
 
-      {/* Template Selection Section */}
-     <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Sélection de modèle</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-            {templates.map((template) => (
-              <Button
-                key={template.id}
-                variant={selectedTemplate === template.path ? 'outlined' : 'outlined'}
-                onClick={() => onSelectTemplate(template.path)}
-              >
-                {template.name}
-              </Button>
-            ))}
-          </Box>
-        </AccordionDetails>
-      </Accordion>
 
       <Snackbar
         open={snackbar.open}

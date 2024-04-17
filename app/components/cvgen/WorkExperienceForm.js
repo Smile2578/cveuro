@@ -19,52 +19,64 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 
 
-const WorkExperienceForm = ({ onNext }) => { 
-  const { values, setFieldValue, touched, errors, isSubmitting } = useFormikContext();
+const WorkExperienceForm = ({ setSnackbar }) => { 
+  const { values, setFieldValue, setTouched, setSubmitting, touched, errors, isSubmitting } = useFormikContext();
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   useEffect(() => {
-    // Make sure responsibilities are always treated as arrays
-    values.workExperience.forEach((exp, index) => {
-      if (typeof exp.responsibilities === 'string' || !exp.responsibilities) {
-        setFieldValue(`workExperience[${index}].responsibilities`, exp.responsibilities ? exp.responsibilities.split('\n') : ['• ']);
-      }
-    });
-  }, [values.workExperience, setFieldValue]);
+    if (!values.hasWorkExp) {
+      // Initialize workExperience to empty if hasWorkExp is false
+      setFieldValue('workExperience', []);
+    }
+  }, [values.hasWorkExp, setFieldValue]);
 
   const handleAddWorkExperience = () => {
-    if (values.workExperience.length < 4) {
     const newExperience = {
       companyName: '',
-      location: '',
       position: '',
+      location: '',
       startDate: '',
       endDate: '',
       responsibilities: [''],
-      ongoing: false,
+      ongoing: true,
     };
     setFieldValue('workExperience', [...values.workExperience, newExperience]);
+    setFieldValue('hasWorkExp', true);
   };
-};
 
   const handleRemoveWorkExperience = (index) => {
     const updatedWorkExperience = values.workExperience.filter((_, i) => i !== index);
     setFieldValue('workExperience', updatedWorkExperience);
   };
 
+  const handleConfirmSkip = () => {
+    // Update the form state to indicate no work experience
+    setFieldValue('hasWorkExp', false);
+    setTouched({});  // Optionally reset touched fields if needed
+    setSubmitting(false);  // Ensure the form is not in a submitting state
+
+    // Close the dialog
+    setOpenConfirmDialog(false);
+
+    // Display a success snackbar message
+    setSnackbar({
+        open: true,
+        message: 'Vous pouvez maintenant passer à l\'étape suivante',
+        severity: 'success'
+    });
+};
+
+
+  
+
+  
   const handleSkipConfirmation = () => {
     setOpenConfirmDialog(true);
 };
 
-const handleConfirmSkip = () => {
-  setOpenConfirmDialog(false);
-  onNext({ skipWorkExperience: true });
-};
-
-
-    const handleCloseDialog = () => {
+  const handleCloseDialog = () => {
         setOpenConfirmDialog(false);
-    };
+};
 
 
   const handleTextChange = (index, event) => {
@@ -107,7 +119,6 @@ const handleConfirmSkip = () => {
             <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
               <Button
                 variant="outlined"
-                startIcon={<AddCircleOutlineIcon />}
                 onClick={handleSkipConfirmation}
                 disabled={isSubmitting}
                 sx={{ m: 2 }}
@@ -115,7 +126,7 @@ const handleConfirmSkip = () => {
                 Je n&apos;ai pas encore d&apos;expérience professionnelle
               </Button>
             </Grid>
-            {values.workExperience.map((exp, index) => (
+            {values.hasWorkExp && values.workExperience.map((exp, index) => (
               <React.Fragment key={index}>
                 <Paper 
                     elevation={1} 
@@ -140,7 +151,7 @@ const handleConfirmSkip = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 name={`workExperience[${index}].companyName`}
-                label="Nom de l'entreprise"
+                label="Nom de l'entreprise*"
                 value={exp.companyName}
                 onChange={e => setFieldValue(`workExperience[${index}].companyName`, e.target.value)}
                 fullWidth
@@ -160,7 +171,7 @@ const handleConfirmSkip = () => {
             <Grid item xs={12}>
               <TextField
                 name={`workExperience[${index}].position`}
-                label="Poste"
+                label="Poste*"
                 value={exp.position}
                 onChange={e => setFieldValue(`workExperience[${index}].position`, e.target.value)}
                 fullWidth
@@ -171,7 +182,7 @@ const handleConfirmSkip = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 name={`workExperience[${index}].startDate`}
-                label="Date de début (MM/YYYY)"
+                label="Date de début (MM/YYYY)*"
                 type="month"
                 value={exp.startDate}
                 onChange={e => setFieldValue(`workExperience[${index}].startDate`, e.target.value)}
@@ -184,7 +195,7 @@ const handleConfirmSkip = () => {
             <Grid item xs={12} sm={6}>
               <TextField
                 name={`workExperience[${index}].endDate`}
-                label="Date de fin (MM/YYYY)"
+                label="Date de fin (MM/YYYY)*"
                 type="month"
                 value={exp.endDate}
                 onChange={e => setFieldValue(`workExperience[${index}].endDate`, e.target.value)}

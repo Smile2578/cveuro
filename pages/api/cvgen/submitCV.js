@@ -66,6 +66,7 @@ export default async function handler(req, res) {
         message: 'CV successfully submitted',
         data: { userId: cv.userId, cvId: cv._id },
       });
+        
     } catch (error) {
       console.error('Error submitting CV:', error);
       return res.status(500).json({
