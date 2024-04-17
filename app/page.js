@@ -41,7 +41,7 @@ export default function LandingPage() {
           Découvrez un outil intuitif pour construire étape par étape un CV convaincant et professionnel.
         </Typography>
         <Typography sx={{ mt: 2, textAlign: 'center', color: theme.palette.primary.dark }}>
-          Commencez par entrer vos informations, modifiez-les en temps réel, et laissez notre système générer automatiquement votre CV en plusieurs langues, grâce à l'intégration de ChatGPT d'OpenAI.
+          Commencez par entrer vos informations, modifiez-les en temps réel, et laissez notre système générer automatiquement votre CV en plusieurs langues, grâce à l&apos;intégration de ChatGPT d&apos;OpenAI.
         </Typography>
         <Grid container spacing={4} justifyContent="center" marginTop={5}> 
           <Grid item xs={12} sm={6} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>

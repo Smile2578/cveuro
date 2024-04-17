@@ -109,10 +109,6 @@ const LiveCV = ({ cvData, setCvData}) => {
     return <Typography>Génération du PDF...</Typography>;
   }
 
-  useEffect(() => {
-    console.log(`PDF Generation Active: ${isGeneratingPDF}`);
-  }, [isGeneratingPDF]);
-
 
   return (
 
