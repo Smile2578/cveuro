@@ -84,7 +84,7 @@ const formatUrl = (url) => {
   return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "");
 };
 
-const LiveCV = ({ cvData, setCvData }) => {
+const LiveCV = ({ cvData, setCvData}) => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')) && !isGeneratingPDF;
   
@@ -108,6 +108,10 @@ const LiveCV = ({ cvData, setCvData }) => {
   if (isGeneratingPDF) {
     return <Typography>Génération du PDF...</Typography>;
   }
+
+  useEffect(() => {
+    console.log(`PDF Generation Active: ${isGeneratingPDF}`);
+  }, [isGeneratingPDF]);
 
 
   return (

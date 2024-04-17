@@ -7,7 +7,8 @@ import { useRouter } from 'next/navigation'; // Ensure correct import path for r
 
 const CVEditor = ({ cvData, setCvData }) => {
   const router = useRouter();
-  const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf');
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
 
   const handleGoBack = () => {
     router.push('/cvgen');
@@ -20,13 +21,13 @@ const CVEditor = ({ cvData, setCvData }) => {
           <CVInfos cvData={cvData} setCvData={setCvData} />
           <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
             <Button variant="outlined" onClick={handleGoBack}>Retourner sur le formulaire</Button>
-            <PrintButton />
+            <PrintButton setIsGeneratingPDF={setIsGeneratingPDF} />
           </Box>
         </Paper>
       </Grid>
       <Grid item xs={12} md={6}>
         <Paper elevation={3} sx={{p: 2, minHeight: '100vh' }}>
-          <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData}/>
+          <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData} setIsGeneratingPDF={setIsGeneratingPDF}/>
         </Paper>
       </Grid>
     </Grid>

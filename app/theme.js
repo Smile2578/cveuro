@@ -13,6 +13,7 @@ palette: {
     primary: {
       main: '#1976d2', // Example primary color
       alt: '#00BA88', // Example secondary color
+      dark: '#004ba0', // Example dark color
     },
     background: {
       default: '#ffffff', // Light background color for contrast
@@ -25,6 +26,7 @@ palette: {
 gradient: {
     background: 'linear-gradient(45deg, #A1E9F0 20%, #79E0EB 90%)', // Example gradient, replace with GEDS colors
   },
+
 
 components: {
     MuiRadio: {
