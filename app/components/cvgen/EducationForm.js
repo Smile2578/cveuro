@@ -71,7 +71,7 @@ const EducationForm = () => {
         startDate: '',
         endDate: '',
         achievements: [],
-        ongoing: false,
+        ongoing: true,
       };
       setFieldValue('education', [...values.education, newEducation]);
     };
