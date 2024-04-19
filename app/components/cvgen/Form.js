@@ -1,13 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Formik, Form as FormikForm } from 'formik';
-import { Button, Box, LinearProgress, Typography, Grid, Snackbar, Alert, Stepper, Step, StepLabel, StepButton} from '@mui/material';
-import { ArrowBackIos, ArrowForwardIos  } from '@mui/icons-material';
+import { Button, Box, LinearProgress, Typography, Grid, Snackbar, Alert, Stepper, Step, StepLabel, StepButton, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@mui/material';
+import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
+import WarningIcon from '@mui/icons-material/Warning';
 import PersonalInfoForm from './PersonalInfoForm'; 
 import EducationForm from './EducationForm'; 
 import WorkExperienceForm from './WorkExperienceForm'; 
 import CombinedForm from './CombinedForm'; 
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';  
 import theme from '@/app/theme';
 
 
@@ -172,15 +173,15 @@ function validatePersonalInfo(values) {
 
 
 
-  
-  const Form = () => {
-    const [currentStep, setCurrentStep] = useState(0);
-    const [formValues, setFormValues] = useState(initialValues);
-    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
-    const [stepStatus, setStepStatus] = useState(formSteps.map(() => ({ validated: false, error: false })));
-    const router = useRouter();
+const Form = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formValues, setFormValues] = useState(initialValues);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [stepStatus, setStepStatus] = useState(formSteps.map(() => ({ validated: false, error: false })));
+  const [openDialog, setOpenDialog] = useState(false);
+  const router = useRouter();
 
-    const saveFormDataToLocalStorage = (formData) => {
+  const saveFormDataToLocalStorage = (formData) => {
       localStorage.setItem('formData', JSON.stringify(formData));
     };
     
@@ -265,122 +266,132 @@ function validatePersonalInfo(values) {
     };
 };
 
-const handleSubmitForm = async (values, { setSubmitting, setErrors }) => {
-  let userId = localStorage.getItem('cvUserId');
-  const isUpdate = Boolean(userId);
-  let endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : `/api/cvgen/submitCV`;
-  let method = isUpdate ? 'PUT' : 'POST';
+    const handleSubmitForm = async (values, { setSubmitting, setErrors }) => {
+      let userId = localStorage.getItem('cvUserId');
+      const isUpdate = Boolean(userId);
+      let endpoint = isUpdate ? `/api/cvgen/updateCV?userId=${userId}` : `/api/cvgen/submitCV`;
+      let method = isUpdate ? 'PUT' : 'POST';
 
-  console.log("Final submission values:", values);
+      console.log("Final submission values:", values);
 
-  let validationErrors = formSteps[currentStep]?.validationFunction(values);
-  if (Object.keys(validationErrors).length !== 0) {
-    console.log("Validation errors:", validationErrors);
-    setErrors(validationErrors);
-    setSnackbar({ open: true, message: 'Veuillez corriger les erreurs avant de soumettre.', severity: 'error' });
-    setSubmitting(false);
-    return;
-  }
-
-  const fetchOptions = {
-    method: method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(values),
-  };
-
-  try {
-    setSubmitting(true);
-    let response = await fetch(endpoint, fetchOptions);
-    if (!response.ok) {
-      // If PUT failed and it was an update attempt, try POST instead
-      if (isUpdate) {
-        console.log('PUT failed, attempting POST');
-        endpoint = `/api/cvgen/submitCV`;
-        method = 'POST';
-        response = await fetch(endpoint, { ...fetchOptions, method });
+      let validationErrors = formSteps[currentStep]?.validationFunction(values);
+      if (Object.keys(validationErrors).length !== 0) {
+        console.log("Validation errors:", validationErrors);
+        setErrors(validationErrors);
+        setSnackbar({ open: true, message: 'Veuillez corriger les erreurs avant de soumettre.', severity: 'error' });
+        setSubmitting(false);
+        return;
       }
-      // Re-throw the error if it's still not OK
-      if (!response.ok) {
+
+      const fetchOptions = {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      };
+
+      try {
+        setSubmitting(true);
+        let response = await fetch(endpoint, fetchOptions);
+        if (!response.ok) {
+          // If PUT failed and it was an update attempt, try POST instead
+          if (isUpdate) {
+            console.log('PUT failed, attempting POST');
+            endpoint = `/api/cvgen/submitCV`;
+            method = 'POST';
+            response = await fetch(endpoint, { ...fetchOptions, method });
+          }
+          // Re-throw the error if it's still not OK
+          if (!response.ok) {
+            const responseData = await response.json();
+            throw new Error(responseData.message || 'Failed to submit CV');
+          }
+        }
         const responseData = await response.json();
-        throw new Error(responseData.message || 'Failed to submit CV');
+        if (!userId && responseData.data && responseData.data.userId) {
+          userId = responseData.data.userId;
+          localStorage.setItem('cvUserId', userId);
+        }
+        setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
+        console.log('CV submitted successfully:', responseData.data);
+        router.push('/cvedit');
+      } catch (error) {
+        console.error('Error submitting CV:', error);
+        setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
+      } finally {
+        setSubmitting(false);
       }
-    }
-    const responseData = await response.json();
-    if (!userId && responseData.data && responseData.data.userId) {
-      userId = responseData.data.userId;
-      localStorage.setItem('cvUserId', userId);
-    }
-    setSnackbar({ open: true, message: 'CV enregistré avec succès!', severity: 'success' });
-    console.log('CV submitted successfully:', responseData.data);
-    router.push('/cvedit');
-  } catch (error) {
-    console.error('Error submitting CV:', error);
-    setSnackbar({ open: true, message: 'Erreur lors de la soumission du CV.', severity: 'error' });
-  } finally {
-    setSubmitting(false);
-  }
-};
+    };
 
 
 
+        
+    const handleNext = async (values, actions) => {
+      if (!actions) {
+        console.error('Formik actions are not passed to handleNext function.');
+        return;
+      }
+
+      const { setErrors } = actions;
+      saveFormDataToLocalStorage(values); // Save current form state to local storage
+
+      let validationErrors = {};
+
+      // Skip validation for work experience if hasWorkExp is false
+      if (currentStep === formSteps.findIndex(step => step.label === "Expérience Professionnelle (max. 4)")) {
+        if (values.hasWorkExp) {
+          validationErrors = formSteps[currentStep]?.validationFunction(values);
+        } else {
+          // Clear any existing errors if skipping
+          setErrors({});
+        }
+      } else {
+        validationErrors = formSteps[currentStep]?.validationFunction(values);
+      }
+
+      setErrors(validationErrors);
+
+      if (Object.keys(validationErrors).length === 0) {
+        if (currentStep + 1 < formSteps.length) {
+          setCurrentStep(currentStep + 1);
+        } else {
+          handleSubmitForm(values, actions);
+        }
+      } else {
+        setSnackbar({
+          open: true,
+          message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
+          severity: 'error'
+        });
+      }
+    };
+
+    const handleStepClick = (index) => {
+      if (index <= currentStep) {
+        setCurrentStep(index);
+      }
+    };
+
+
+
+    const handleBack = () => {
+      saveFormDataToLocalStorage(formValues);
+      setCurrentStep(currentStep - 1);
+    };
+
+    const handleOpenDialog = () => {
+      setOpenDialog(true);
+    };
     
-const handleNext = async (values, actions) => {
-  if (!actions) {
-    console.error('Formik actions are not passed to handleNext function.');
-    return;
-  }
-
-  const { setErrors } = actions;
-  saveFormDataToLocalStorage(values); // Save current form state to local storage
-
-  let validationErrors = {};
-
-  // Skip validation for work experience if hasWorkExp is false
-  if (currentStep === formSteps.findIndex(step => step.label === "Expérience Professionnelle (max. 4)")) {
-    if (values.hasWorkExp) {
-      validationErrors = formSteps[currentStep]?.validationFunction(values);
-    } else {
-      // Clear any existing errors if skipping
-      setErrors({});
-    }
-  } else {
-    validationErrors = formSteps[currentStep]?.validationFunction(values);
-  }
-
-  setErrors(validationErrors);
-
-  if (Object.keys(validationErrors).length === 0) {
-    if (currentStep + 1 < formSteps.length) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleSubmitForm(values, actions);
-    }
-  } else {
-    setSnackbar({
-      open: true,
-      message: 'Vous devez remplir tous les champs obligatoires avant de passer à l\'étape suivante.',
-      severity: 'error'
-    });
-  }
-};
-
-
-
-
-
-
-const handleStepClick = (index) => {
-  if (index <= currentStep) {
-    setCurrentStep(index);
-  }
-};
-
-
-
-const handleBack = () => {
-  saveFormDataToLocalStorage(formValues);
-  setCurrentStep(currentStep - 1);
-};
+    const handleCloseDialog = () => {
+      setOpenDialog(false);
+    };
+    
+    const handleClearAll = () => {
+      localStorage.clear(); // Clears all local storage
+      setFormValues(initialValues); // Resets form values to initial state
+      handleCloseDialog(); // Closes the dialog
+    };
+    
 
 
 
@@ -418,28 +429,82 @@ return (
               React.createElement(formSteps[currentStep].component, { onNext: handleNext, values, setErrors})
             }
 
-          <Grid container justifyContent="space-between" spacing={2} className="mt-4">
-            {currentStep > 0 && (
-              <Button onClick={handleBack} disabled={isSubmitting} startIcon={<ArrowBackIos />}>
-                Précédent
-              </Button>
-            )}
-            <Grid item style={{ marginLeft: 'auto' }}>
+          <Grid container justifyContent={currentStep > 0 ? "space-between" : "center"} alignItems="center" spacing={2} className="mt-4">
+              {currentStep > 0 && (
+                  <Grid item xs>
+                      <Button onClick={handleBack} disabled={isSubmitting} startIcon={<ArrowBackIos />}>
+                          Précédent
+                      </Button>
+                  </Grid>
+              )}
+              <Grid item>
+                  <Button
+                      onClick={handleOpenDialog}
+                      color="error"
+                      variant="contained"
+                      startIcon={<WarningIcon />}
+                      sx={{
+                          justifyContent: 'center',
+                          backgroundColor: theme.palette.error.main,
+                          color: 'white',
+                          fontSize: '0.75rem',
+                          padding: '4px 8px',
+                          minWidth: 'auto',  // Reduces the default width
+                      }}
+                  >
+                      Réinitialiser le formulaire
+                  </Button>
+              </Grid>
               
-              <Button
-                endIcon={<ArrowForwardIos />}
-                type="submit"
-                variant="contained"
-                style={{ backgroundColor: theme.palette.primary.main, color: '#FFFFFF' }}
-                disabled={isSubmitting}
-              >
-                {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
-              </Button>
-            </Grid>
+                  <Grid item xs>
+                      <Button
+                          endIcon={<ArrowForwardIos />}
+                          type="submit"
+                          variant="contained"
+                          sx={{
+                              backgroundColor: theme.palette.primary.main,
+                              color: 'white',
+                              marginLeft: 'auto',
+                              display: 'flex',
+                              alignItems: 'center'
+                          }}
+                          disabled={isSubmitting}
+                      >
+                          {currentStep === formSteps.length - 1 ? 'Soumettre' : 'Suivant'}
+                      </Button>
+                  </Grid>
+          
           </Grid>
+
+
+
         </FormikForm>
       )}
     </Formik>
+
+    <Dialog
+      open={openDialog}
+      onClose={handleCloseDialog}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{"Confirmez la réinitialisation"}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+          Voulez-vous vraiment effacer toutes les données et réinitialiser le formulaire?
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog} color="primary">
+          Annuler
+        </Button>
+        <Button onClick={handleClearAll} color="secondary" autoFocus>
+          Réinitialiser
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+
     <Snackbar
       open={snackbar.open}
       autoHideDuration={4000}
