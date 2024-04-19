@@ -210,11 +210,11 @@ const CVInfos = ({ cvData, setCvData }) => {
 
   return (
     <Box>
-      <Typography component="div" variant="h4" sx={{ textAlign: 'center', marginBottom: '16px', color: theme.palette.primary.main }}>Éditer les informations du CV</Typography>
+      <Typography component="div" variant="h6" sx={{ textAlign: 'center', marginBottom: '50px', color: theme.palette.primary.main }}>Éditer les informations du CV</Typography>
       {/* Personal Information Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Informations Personnelles</Typography>
+          <Typography component="div" variant="body1">Informations Personnelles</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {renderEditableField('personalInfo', 'firstname', 'Prénom', cvData.personalInfo.firstname)}
@@ -236,7 +236,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Education Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Éducation</Typography>
+          <Typography component="div" variant="body1">Éducation</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.education.map((edu, index) => (
@@ -254,7 +254,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Work Experience Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Expérience Professionnelle</Typography>
+          <Typography component="div" variant="body1">Expérience Professionnelle</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.workExperience.map((work, index) =>
@@ -272,7 +272,7 @@ const CVInfos = ({ cvData, setCvData }) => {
    {/* Languages Section */}
    <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Langues</Typography>
+          <Typography component="div" variant="body1">Langues</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.languages.map((lang, index) =>
@@ -287,7 +287,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Skills Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Compétences</Typography>
+          <Typography component="div" variant="body1">Compétences</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.skills.map((skill, index) =>
@@ -305,7 +305,7 @@ const CVInfos = ({ cvData, setCvData }) => {
       {/* Hobbies Section */}
       <Accordion>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="h6">Loisirs</Typography>
+          <Typography component="div" variant="body1">Loisirs</Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ color: theme.palette.primary.main }}>
           {cvData.hobbies.map((hobby, index) =>

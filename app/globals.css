@@ -62,30 +62,61 @@ body {
 }
 
 .a4-layout {
-  max-width: 1000; /* A4 width */
-  min-height: 1000; /* A4 height */
+  max-width: 1000px; /* A4 width */
+  min-height: 1000px; /* A4 height */
   padding: 20px;
   margin: 0 auto;
 }
 
-
-
-/* Print styles for chips to ensure the text is centered */
+/* Print-specific styles ensuring desktop-like layout on print */
 @media print {
-  body {
-    width: 210mm; 
+  body, html {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    color: black; /* Ensures readable print output */
   }
+
+  .section-item {
+    page-break-inside: avoid; /* Avoid breaking within this item */
+  }
+
   .a4-layout {
     width: 100%;
     min-height: 297mm;
+    overflow: hidden; /* Avoids content spilling over */
+    box-shadow: none; /* Remove shadows for print */
+    page-break-inside: avoid; /* Avoid breaking elements across pages */
   }
+
   .chip-blue, .chip-green {
-    font-size: 9px !important;
-    line-height:50px !important;
-    vertical-align: middle !important;
+    font-size: 9pt; /* Smaller font size for print */
+    line-height: 1.5; /* Adjust line spacing for print */
   }
+
   .logo-print {
-    width: 80px !important;
-    height: auto !important;
+    display: block; /* Ensure the logo is displayed */
+    width: 80px; /* Adjust logo width for print */
+    height: auto; /* Adjust logo height for print */
+  }
+
+  #live-cv {
+    width: 100%;
+    max-width: 1000px; /* Adjust as necessary to fit content */
+    min-height: 297mm; /* A4 height */
+    overflow: hidden; /* Avoids content spilling over */
+    box-shadow: none; /* Remove shadows for print */
+    display: block; /* Force block layout */
+    page-break-inside: avoid; /* Avoid breaking elements across pages */
+  }
+
+  .MuiGrid-item {
+    flex-basis: 33.3333%;
+    flex-grow: 0;
+    max-width: 33.3333%;
+  }
+
+  .print-hide {
+    display: none !important;
   }
 }

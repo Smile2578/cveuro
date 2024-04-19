@@ -86,6 +86,7 @@ const formatUrl = (url) => {
 
 const LiveCV = ({ cvData, setCvData}) => {
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const printStyle = isGeneratingPDF ? { width: '210mm', minHeight: '297mm' } : {};
   const isMobile = useMediaQuery(theme.breakpoints.down('sm')) && !isGeneratingPDF;
   
 
@@ -112,8 +113,7 @@ const LiveCV = ({ cvData, setCvData}) => {
 
   return (
 
-    <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 1000, flexGrow: 1, minHeight: 1000}} id="live-cv">
-      
+    <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 1000, flexGrow: 1, minHeight: 1000, ...printStyle }} id="live-cv">
       {/* Top Bar */}
       <Grid container spacing={2} alignItems="center">
       <Grid item xs={12} md={4}>
@@ -156,7 +156,7 @@ const LiveCV = ({ cvData, setCvData}) => {
         </Grid>
 
          {/* Contact Section with Icons */}
-         <Grid item xs={12} md={4}>
+         <Grid className='contact-section' item xs={12} md={4}>
           <Typography variant="h6" align='center' sx={{ color: theme.palette.primary.main, mb: 1 }}>Contact</Typography>
           <List dense>
             <ListItem sx={{ py: 0.25 }}>
@@ -199,13 +199,16 @@ const LiveCV = ({ cvData, setCvData}) => {
 
       <Divider variant='fullWidth' sx={{ my: 2 }} />
 
-      <Grid container spacing={2} direction={isMobile ? 'column-reverse' : 'row'} wrap="nowrap">
+      {/* Main Content */}
+
+
+      <Grid container className="main-content-grid" spacing={2} direction={isMobile ? 'column-reverse' : 'row'} wrap="nowrap">
        {/* Left Sidebar for Languages, Skills, & Hobbies */}
-       <Grid item xs={12} md={3} marginRight={3}>
+       <Grid className="leftside" item xs={12} md={3} marginRight={3}>
           <Box sx={{ paddingRight: 2 }}>
             {/* Languages */}
             <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Langues</Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+            <Box className="languages-chip" sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
             {cvData.languages.map((lang, index) => renderLanguageChip(lang, index))}
             </Box>
 
@@ -213,7 +216,7 @@ const LiveCV = ({ cvData, setCvData}) => {
 
             {/* Skills */}
             <Typography variant="h6" sx={{ color: theme.palette.primary.main, mb: 3 }}>Compétences</Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+            <Box className="skills-chips" sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
             {cvData.skills.map((skills, index) => renderSkillChip(skills, index))}
             </Box>
 
@@ -229,14 +232,14 @@ const LiveCV = ({ cvData, setCvData}) => {
         <Divider orientation="vertical" flexItem sx={{ height: 'auto' }} />
 
         {/* Right Content for Education & Work Experience */}
-        <Grid item xs={12} md={9} sx={{ overflow: 'hidden', paddingLeft: isMobile ? 0 : 2 }}>
+        <Grid className='rightside' item xs={12} md={9} sx={{ overflow: 'hidden', paddingLeft: isMobile ? 0 : 2 }}>
           <Box sx={{ overflow: 'hidden', paddingLeft: 2 }}>
           {/* Education Section */}
             <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 0.5 }}>Éducation</Typography>
             {cvData.education.map((edu, index) => (
               <Box key={`edu-${index}`}>
                 <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <ListItem className="section-header" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                     <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                   </ListItemIcon>
@@ -251,10 +254,10 @@ const LiveCV = ({ cvData, setCvData}) => {
                       </div>
                     </Box>
                     <Box sx={{ display: isGeneratingPDF ? 'none' : 'flex', flexDirection: 'column', ml: 2 }}>
-                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'education')} size="small" sx={{ mb: 1 }}>
+                      <IconButton className="print-hide" style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'education')} size="small" sx={{ mb: 1 }}>
                         <ArrowUpwardIcon />
                       </IconButton>
-                      <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'education')} size="small">
+                      <IconButton className="print-hide" style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'education')} size="small">
                         <ArrowDownwardIcon />
                       </IconButton>
                     </Box>
@@ -273,7 +276,7 @@ const LiveCV = ({ cvData, setCvData}) => {
                     {cvData.workExperience.map((work, index) => (
                         <Box key={`work-${index}`}>
                             <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                <ListItem sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
+                                <ListItem className="section-header" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                                     <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
                                         <FiberManualRecordIcon fontSize="small" sx={{ color: theme.palette.secondary.main }} />
                                     </ListItemIcon>
@@ -292,10 +295,10 @@ const LiveCV = ({ cvData, setCvData}) => {
                                         </div>
                                     </Box>
                                     <Box sx={{ display: isGeneratingPDF ? 'none' : 'flex', flexDirection: 'column', ml: 2 }}>
-                                        <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
+                                        <IconButton className="print-hide" style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveUp(index, 'workExperience')} size="small" sx={{ mb: 1 }}>
                                             <ArrowUpwardIcon />
                                         </IconButton>
-                                        <IconButton style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'workExperience')} size="small">
+                                        <IconButton className="print-hide" style={{ display: isGeneratingPDF ? 'none' : 'flex' }} onClick={() => handleMoveDown(index, 'workExperience')} size="small">
                                             <ArrowDownwardIcon />
                                         </IconButton>
                                     </Box>
