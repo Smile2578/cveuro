@@ -237,7 +237,7 @@ const LiveCV = ({ cvData, setCvData}) => {
           {/* Education Section */}
             <Typography variant="h6" gutterBottom sx={{ color: theme.palette.primary.main, mb: 0.5 }}>Éducation</Typography>
             {cvData.education.map((edu, index) => (
-              <Box key={`edu-${index}`}>
+              <Box className="education-item page-break-inside-avoid" key={`edu-${index}`}>
                 <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                   <ListItem className="section-header" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                   <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>
@@ -274,7 +274,7 @@ const LiveCV = ({ cvData, setCvData}) => {
                         Expérience Professionnelle
                     </Typography>
                     {cvData.workExperience.map((work, index) => (
-                        <Box key={`work-${index}`}>
+                        <Box className="work-experience-item page-break-inside-avoid" key={`work-${index}`}>
                             <List sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <ListItem className="section-header" sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', mb: 2 }}>
                                     <ListItemIcon sx={{ position: 'absolute', left: -25, top: '50%', transform: 'translateY(-50%)' }}>

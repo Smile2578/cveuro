@@ -1,25 +1,21 @@
+"use client";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-
+import { initGA, logPageView } from '../lib/analytics';
+import { useEffect } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 
 
- 
+export default function RootLayout({ children }) {
+  useEffect(() => {
+    initGA();
+    logPageView();
+  }, []);
 
-export const metadata = {
-  title: "Générateur de CV par GEDS",
-  description: "Application gratuite pour créer un CV en ligne",
-};
-
-export default function Root({ children }) {
   return (
-    <html lang="fr">
-      <body>
-
-        {children}
-        </body>
+    <html lang="en">
+      <body>{children}</body>
     </html>
-  )
+  );
 }

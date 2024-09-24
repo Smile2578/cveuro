@@ -27,7 +27,7 @@ export default function CVGenPage() {
           maxWidth="md"
           sx={{
             mt: 12, 
-            mb: 4,
+            mb: 2,
             backgroundColor: 'background.default',
             padding: { xs: 2, sm: 3 }, 
             borderRadius: '24px',

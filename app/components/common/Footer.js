@@ -7,7 +7,7 @@ export default function Footer() {
     <Box component="footer" sx={{ bgcolor: 'transparent', color: 'grey', py: 6 }}>
       <Container maxWidth="lg">
         <Typography variant="body1" align="center" gutterBottom>
-          CV Europass GEDS
+          CV modèle Europass par GEDS©
         </Typography>
         <Typography variant="body2" align="center">
           {'© '}
