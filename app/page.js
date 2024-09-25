@@ -52,7 +52,7 @@ export default function LandingPage() {
     <Box sx={{
       minHeight: '100vh',
       maxHeight: '100vh',
-      overflowY: 'auto',
+      overflowY: isMobile ? 'scroll' : 'hidden',
       display: 'flex',
       flexDirection: 'column',
       backgroundColor: theme.palette.background.default,
