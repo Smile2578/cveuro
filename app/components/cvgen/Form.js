@@ -404,7 +404,7 @@ return (
     >
       {({ isSubmitting, handleSubmit, values, setErrors }) => (
         <FormikForm onSubmit={handleSubmit}>
-          <Box sx={{ overflow: 'hidden' }}>
+          <Box sx={{ overflow: 'hidden', maxHeight: '100vh' }}>
           <Stepper activeStep={currentStep} alternativeLabel>
             {formSteps.map((step, index) => (
               <Step key={step.label}>

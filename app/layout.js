@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 
 const inter = Inter({ subsets: ["latin"] });
 
-
 export default function RootLayout({ children }) {
   useEffect(() => {
     initGA();
@@ -14,8 +13,10 @@ export default function RootLayout({ children }) {
   }, []);
 
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="fr" style={{ height: '100vh' }}>
+      <body style={{ height: '100vh', margin: 0 }}>
+        {children}
+      </body>
     </html>
   );
 }

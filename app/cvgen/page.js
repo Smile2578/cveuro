@@ -36,7 +36,7 @@ export default function CVGenPage() {
             display: 'flex',
             maxWidth: '90%',
             flexDirection: 'column',
-            justifyContent: 'center', 
+            justifyContent: 'center',
           }}
         >
           <Form />

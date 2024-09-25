@@ -4,7 +4,7 @@ import { Container, Typography, Box, Link } from '@mui/material';
 
 export default function Footer() {
   return (
-    <Box component="footer" sx={{ bgcolor: 'transparent', color: 'grey', py: 6 }}>
+    <Box component="footer" sx={{ bgcolor: 'transparent', color: 'grey', py: 2 }}>
       <Container maxWidth="lg">
         <Typography variant="body1" align="center" gutterBottom>
           CV modèle Europass par GEDS©
