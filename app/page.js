@@ -38,7 +38,7 @@ export default function LandingPage() {
     }
   };
 
-  const iconVariants = {
+  const iconVariants = isMobile ? {} : {
     rotate: {
       rotate: 360,
       transition: { duration: 0.5, ease: 'easeInOut' }
@@ -79,6 +79,7 @@ export default function LandingPage() {
         flexDirection: 'column',
         justifyContent: 'center',
         overflowY: 'auto',
+        WebkitOverflowScrolling: 'touch', // Améliore le défilement sur iOS
       }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -160,11 +161,11 @@ export default function LandingPage() {
                       variants={cardVariants} 
                       initial="offscreen" 
                       whileInView="onscreen" 
-                      viewport={{ once: true }}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      onHoverStart={() => setHoveredCard(index)}
-                      onHoverEnd={() => setHoveredCard(null)}
+                      viewport={{ once: true, margin: "-50px" }}
+                      whileHover={isMobile ? {} : { scale: 1.05 }}
+                      whileTap={isMobile ? {} : { scale: 0.95 }}
+                      onHoverStart={() => !isMobile && setHoveredCard(index)}
+                      onHoverEnd={() => !isMobile && setHoveredCard(null)}
                     >
                       <Card sx={{ 
                         height: '100%',
@@ -186,7 +187,7 @@ export default function LandingPage() {
                         }}>
                           <motion.div
                             variants={iconVariants}
-                            animate={hoveredCard === index ? 'rotate' : 'stop'}
+                            animate={!isMobile && hoveredCard === index ? 'rotate' : 'stop'}
                           >
                             <step.icon sx={{ fontSize: 50, color: theme.palette.primary.main, mb: 2 }} />
                           </motion.div>
