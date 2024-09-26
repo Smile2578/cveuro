@@ -113,7 +113,20 @@ const LiveCV = ({ cvData, setCvData}) => {
 
   return (
 
-    <Paper elevation={3} sx={{ p: 4, margin: 'auto', maxWidth: 1000, flexGrow: 1, minHeight: 1000, ...printStyle }} id="live-cv">
+    <Paper 
+      elevation={3} 
+      sx={{ 
+        p: 4, 
+        margin: 'auto', 
+        width: 'auto', // Permet au Paper de s'étendre au-delà de sa largeur initiale
+        maxWidth: 'none', // Retire la contrainte de largeur maximale
+        flexGrow: 1, 
+        minHeight: 1000, 
+        overflowX: 'auto', // Ajoute un défilement horizontal si nécessaire
+        ...printStyle 
+      }} 
+      id="live-cv"
+    >
       {/* Top Bar */}
       <Grid container spacing={2} alignItems="center">
       <Grid item xs={12} md={4}>
@@ -159,7 +172,7 @@ const LiveCV = ({ cvData, setCvData}) => {
          <Grid className='contact-section' item xs={12} md={4}>
           <Typography variant="h6" align='center' sx={{ color: theme.palette.primary.main, mb: 1 }}>Contact</Typography>
           <List dense>
-            <ListItem sx={{ py: 0.25 }}>
+            <ListItem sx={{ py: 0.25, fontSize: { xs: '0.75rem', sm: '0.875rem' }}}>
               <ListItemIcon sx={{ minWidth: '40px' }}>
                 <EmailIcon fontSize="small" />
               </ListItemIcon>

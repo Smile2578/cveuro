@@ -23,8 +23,8 @@ palette: {
     },
   },
 
-gradient: {
-    background: 'linear-gradient(45deg, #A1E9F0 20%, #79E0EB 90%)', // Example gradient, replace with GEDS colors
+  gradient: {
+    background: 'linear-gradient(45deg, #C1F0F6 10%, #F0FBFD 50%, #79E0EB 100%)',
   },
 
 
