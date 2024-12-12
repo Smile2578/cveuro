@@ -1,5 +1,7 @@
+"use client";
 import React from 'react';
-import { useFormikContext, useField, Form } from 'formik';
+import { useFormikContext } from 'formik';
+import { useTranslations } from 'next-intl';
 import {
   TextField,
   Grid,
@@ -14,265 +16,320 @@ import {
   Radio,
   FormControlLabel,
   FormLabel,
+  Typography,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
 import HomeIcon from '@mui/icons-material/Home';
 import PublicIcon from '@mui/icons-material/Public';
 import DateRangeIcon from '@mui/icons-material/DateRange';
-import MaleIcon from '@mui/icons-material/Male';
-import FemaleIcon from '@mui/icons-material/Female';
 import LinkIcon from '@mui/icons-material/Link';
-import sortedCountries from './Countries'; // Ensure this import path is correct
-import styled from '@emotion/styled';
+import sortedCountries from './Countries';
 
+const StyledTextField = styled(TextField)({
+  '& .MuiFormHelperText-root': {
+    minHeight: '1.5em',
+    marginTop: '2px',
+  },
+});
 
+const InputWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  position: 'relative',
+  width: '100%',
+  marginRight: '24px',
+  '& .MuiIconButton-root': {
+    position: 'absolute',
+    left: -48,
+    top: 8,
+  },
+}));
 
+const GenderWrapper = styled(FormControl)(({ theme }) => ({
+  marginTop: -8,
+  '& .MuiFormLabel-root': {
+    transform: 'translate(0, -1.5px) scale(0.75)',
+    transformOrigin: 'top left',
+    color: 'rgba(0, 0, 0, 0.6)',
+  },
+  '& .MuiFormHelperText-root': {
+    minHeight: '1.5em',
+    marginTop: '2px',
+  },
+}));
 
 const GenderBox = styled(FormControlLabel)(({ theme, selected }) => ({
-  border: `2px solid ${selected ? '#1976d2' : '#e0e0e0'}`, // Using hardcoded colors for demo
-  borderRadius: '4px', // Adjusted for a unified look
+  border: `2px solid ${selected ? '#1976d2' : '#e0e0e0'}`,
+  borderRadius: '4px',
   padding: theme.spacing(1),
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  margin: '0px', 
-  marginRight: '8px', 
+  margin: '0px',
+  marginRight: '8px',
   cursor: 'pointer',
   height: '56px',
-  backgroundColor: selected ? '#bbdefb' : 'transparent', 
+  backgroundColor: selected ? '#bbdefb' : 'transparent',
   '&:last-child': {
-    marginRight: '0px', 
+    marginRight: '0px',
   },
-  '& .MuiSvgIcon-root': { 
-    fill: selected ? '#1976d2' : '#757575', 
+  '& .MuiSvgIcon-root': {
+    fill: selected ? '#1976d2' : '#757575',
   },
-  '& .MuiFormControlLabel-label': { 
-    color: 'black', 
+  '& .MuiFormControlLabel-label': {
+    color: 'black',
   },
 }));
 
-
-
 const PersonalInfoForm = () => {
-  const { values, errors, touched, handleChange, handleBlur, setFieldValue } = useFormikContext();
-  const [nationalityField, nationalityMeta] = useField('nationality');
+  const { values, handleChange, handleBlur, errors, touched } = useFormikContext();
+  const t = useTranslations('cvform');
 
   return (
-    <Grid container spacing={2} alignItems="flex-end">
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Typography variant="h5" color="primary" gutterBottom sx={{ mb: 2 }}>
+        {t('personalInfo.title')}
+      </Typography>
+    <Grid container spacing={2.5} columnSpacing={6} sx={{ pl: 6 }}>
       <Grid item xs={12} sm={6}>
-        <IconButton>
-          <AccountCircle />
-        </IconButton>
-        <TextField
-          name="firstname"
-          label="Prénom(s)*"
-          value={values.firstname}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.firstname && Boolean(errors.firstname)}
-          helperText={touched.firstname && errors.firstname}
-          fullWidth
-        />
+        <InputWrapper>
+          <IconButton size="small">
+            <AccountCircle />
+          </IconButton>
+          <StyledTextField
+            name="firstname"
+            label={t('personalInfo.firstName')}
+            value={values.firstname}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.firstname && Boolean(errors.firstname)}
+            helperText={(touched.firstname && errors.firstname) || ' '}
+            fullWidth
+          />
+        </InputWrapper>
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <TextField
+        <StyledTextField
           name="lastname"
-          label="Nom de famille*"
+          label={t('personalInfo.lastName')}
           value={values.lastname}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.lastname && Boolean(errors.lastname)}
-          helperText={touched.lastname && errors.lastname}
+          helperText={(touched.lastname && errors.lastname) || ' '}
           fullWidth
         />
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <IconButton>
-          <EmailIcon />
-        </IconButton>
-        <TextField
-          name="email"
-          label="Email*"
-          value={values.email}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.email && Boolean(errors.email)}
-          helperText={touched.email && errors.email}
-          fullWidth
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <IconButton>
-          <PhoneIcon />
-        </IconButton>
-        <TextField
-          name="phoneNumber"
-          label="Numéro de téléphone*"
-          value={values.phoneNumber}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-          helperText={touched.phoneNumber && errors.phoneNumber}
-          fullWidth
-        />
-      </Grid>
-
-      <Grid item xs={12} sm={6}>
-        <IconButton>
-          <DateRangeIcon />
-        </IconButton>
-        <TextField
-          name="dateofBirth"
-          label="Date de naissance*"
-          type="date"
-          value={values.dateofBirth}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          InputLabelProps={{ shrink: true }}
-          error={touched.dateofBirth && Boolean(errors.dateofBirth)}
-          helperText={touched.dateofBirth && errors.dateofBirth}
-          fullWidth
-        />
-      </Grid>
-
-
-      <Grid item xs={12} sm={6}>
-        <FormLabel component="legend">Sexe*</FormLabel>
-        <RadioGroup row name="sex" value={values.sex || ''}>
-          <GenderBox
-            control={<Radio />}
-            label="Masculin"
-            value="M"
-            selected={values.sex === 'M'}
-            onClick={() => setFieldValue('sex', 'M')}
+        <InputWrapper>
+          <IconButton size="small">
+            <EmailIcon />
+          </IconButton>
+          <StyledTextField
+            name="email"
+            label={t('personalInfo.email')}
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.email && Boolean(errors.email)}
+            helperText={(touched.email && errors.email) || ' '}
+            fullWidth
           />
-          <GenderBox
-            control={<Radio />}
-            label="Féminin"
-            value="F"
-            selected={values.sex === 'F'}
-            onClick={() => setFieldValue('sex', 'F')}
-          />
-        </RadioGroup>
-        {touched.sex && errors.sex && <FormHelperText error>{errors.sex}</FormHelperText>}
+        </InputWrapper>
       </Grid>
 
+      <Grid item xs={12} sm={6}>
+        <InputWrapper>
+          <StyledTextField
+            name="phoneNumber"
+            label={t('personalInfo.phone')}
+            value={values.phoneNumber}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+            helperText={(touched.phoneNumber && errors.phoneNumber) || ' '}
+            fullWidth
+          />
+        </InputWrapper>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <InputWrapper>
+          <IconButton size="small">
+            <DateRangeIcon />
+          </IconButton>
+          <StyledTextField
+            name="dateofBirth"
+            label={t('personalInfo.birthDate')}
+            type="date"
+            value={values.dateofBirth}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            InputLabelProps={{ shrink: true }}
+            error={touched.dateofBirth && Boolean(errors.dateofBirth)}
+            helperText={(touched.dateofBirth && errors.dateofBirth) || ' '}
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+        </InputWrapper>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <GenderWrapper error={touched.sex && Boolean(errors.sex)} fullWidth>
+          <FormLabel component="legend">{t('personalInfo.gender.label')}</FormLabel>
+          <Box>
+            <RadioGroup 
+              row 
+              name="sex" 
+              value={values.sex || ''}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <GenderBox
+                control={<Radio />}
+                label={t('personalInfo.gender.male')}
+                value="M"
+                selected={values.sex === 'M'}
+              />
+              <GenderBox
+                control={<Radio />}
+                label={t('personalInfo.gender.female')}
+                value="F"
+                selected={values.sex === 'F'}
+              />
+            </RadioGroup>
+          </Box>
+          <FormHelperText>
+            {(touched.sex && errors.sex) || ' '}
+          </FormHelperText>
+        </GenderWrapper>
+      </Grid>
 
       <Grid item xs={12}>
-        <IconButton>
-          <HomeIcon />
-        </IconButton>
-        <TextField
-          name="address"
-          label="Adresse*"
-          value={values.address}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          autoComplete='off'
-          error={touched.address && Boolean(errors.address)}
-          helperText={touched.address && errors.address}
-          fullWidth
-        />
+        <InputWrapper>
+          <IconButton size="small">
+            <HomeIcon />
+          </IconButton>
+          <StyledTextField
+            name="address"
+            label={t('personalInfo.address')}
+            value={values.address}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.address && Boolean(errors.address)}
+            helperText={(touched.address && errors.address) || ' '}
+            fullWidth
+          />
+        </InputWrapper>
       </Grid>
 
-      {/* Combine Zip and City into a single row */}
       <Grid item xs={6}>
-        <TextField
+        <StyledTextField
           name="zip"
-          label="Code postal*"
+          label={t('personalInfo.zipCode')}
           value={values.zip}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.zip && Boolean(errors.zip)}
-          helperText={touched.zip && errors.zip}
+          helperText={(touched.zip && errors.zip) || ' '}
           fullWidth
         />
       </Grid>
 
       <Grid item xs={6}>
-        <TextField
+        <StyledTextField
           name="city"
-          label="Ville*"
+          label={t('personalInfo.city')}
           value={values.city}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.city && Boolean(errors.city)}
-          helperText={touched.city && errors.city}
+          helperText={(touched.city && errors.city) || ' '}
           fullWidth
         />
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <IconButton>
-          <PublicIcon />
-        </IconButton>
-        <TextField
-          name="placeofBirth"
-          label="Lieu de naissance (Ville)"
-          value={values.placeofBirth}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.placeofBirth && Boolean(errors.placeofBirth)}
-          helperText={touched.placeofBirth && errors.placeofBirth}
-          fullWidth
-        />
+        <InputWrapper>
+          <IconButton size="small">
+            <PublicIcon />
+          </IconButton>
+          <StyledTextField
+            name="placeofBirth"
+            label={t('personalInfo.birthPlace')}
+            value={values.placeofBirth}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.placeofBirth && Boolean(errors.placeofBirth)}
+            helperText={(touched.placeofBirth && errors.placeofBirth) || ' '}
+            fullWidth
+          />
+        </InputWrapper>
       </Grid>
-      
 
       <Grid item xs={6}>
-  <FormControl fullWidth error={nationalityMeta.touched && Boolean(nationalityMeta.error)}>
-    <InputLabel id="nationality-label">Nationalité*</InputLabel>
-    <Select
-        labelId="nationality-label"
-        {...nationalityField}
-        value={nationalityField.value || ''}
-        onChange={(event) => setFieldValue('nationality', event.target.value)}
-        onBlur={nationalityField.onBlur}
-      >
-      {sortedCountries.map((option) => (
-        <MenuItem key={option.code} value={option.label}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </Select>
-    {nationalityMeta.touched && nationalityMeta.error && <FormHelperText>{nationalityMeta.error}</FormHelperText>}
-  </FormControl>
-</Grid>
-
-      <Grid item xs={12} sm={6}>
-        <IconButton>
-          <LinkIcon />
-        </IconButton>
-        <TextField
-          name="linkedIn"
-          label="LinkedIn (sans https://www.linkedin.com/in/)"
-          value={values.linkedIn}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          error={touched.linkedIn && Boolean(errors.linkedIn)}
-          helperText={touched.linkedIn && errors.linkedIn}
-          fullWidth
-        />
+        <FormControl 
+          fullWidth 
+          error={touched.nationality && Boolean(errors.nationality)}
+        >
+          <InputLabel id="nationality-label">{t('personalInfo.nationality')}</InputLabel>
+          <Select
+            labelId="nationality-label"
+            name="nationality"
+            value={values.nationality || ''}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            label={t('personalInfo.nationality')}
+          >
+            {sortedCountries.map((option) => (
+              <MenuItem key={option.code} value={option.label}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </Select>
+          <FormHelperText sx={{ minHeight: '1.5em' }}>
+            {(touched.nationality && errors.nationality) || ' '}
+          </FormHelperText>
+        </FormControl>
       </Grid>
 
       <Grid item xs={12} sm={6}>
-        <TextField
+        <InputWrapper>
+          <IconButton size="small">
+            <LinkIcon />
+          </IconButton>
+          <StyledTextField
+            name="linkedIn"
+            label={t('personalInfo.linkedin')}
+            value={values.linkedIn}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={touched.linkedIn && Boolean(errors.linkedIn)}
+            helperText={(touched.linkedIn && errors.linkedIn) || ' '}
+            fullWidth
+          />
+        </InputWrapper>
+      </Grid>
+
+      <Grid item xs={12} sm={6}>
+        <StyledTextField
           name="personalWebsite"
-          label="Site Web Personnel (sans https://)"
+          label={t('personalInfo.website')}
           value={values.personalWebsite}
           onChange={handleChange}
           onBlur={handleBlur}
           error={touched.personalWebsite && Boolean(errors.personalWebsite)}
-          helperText={touched.personalWebsite && errors.personalWebsite}
+          helperText={(touched.personalWebsite && errors.personalWebsite) || ' '}
           fullWidth
         />
       </Grid>
     </Grid>
+    </Box>
   );
 };
 

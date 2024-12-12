@@ -7,6 +7,7 @@ import Container from '@mui/material/Container';
 import Image from 'next/image';
 import Link from 'next/link';
 import Box from '@mui/material/Box';
+import LanguageSelector from './LanguageSelector';
 
 export default function NavBar({ show = true }) {
   const [elevateNav, setElevateNav] = useState(false);
@@ -25,22 +26,29 @@ export default function NavBar({ show = true }) {
   }
 
   return (
-      <AppBar 
-        position="fixed"
-        color="primary" 
-        elevation={elevateNav ? 4 : 0}
-        sx={{
-          backgroundColor: elevateNav ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
-          transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
-        }}
-      >
-        <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Link href="/" passHref>
-              <Image src="/logo.png" alt="GEDS Logo" width={130} height={110} priority/>
-            </Link>
-          </Toolbar>
-        </Container>
-      </AppBar>
+    <AppBar 
+      position="fixed"
+      color="primary" 
+      elevation={elevateNav ? 4 : 0}
+      sx={{
+        backgroundColor: elevateNav ? 'rgba(255, 255, 255, 0.95)' : 'transparent',
+        transition: 'background-color 0.3s ease, box-shadow 0.3s ease',
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters sx={{ 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: 'center' 
+        }}>
+          <Link href="/" passHref>
+            <Image src="/logo.png" alt="GEDS Logo" width={130} height={110} priority/>
+          </Link>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <LanguageSelector />
+          </Box>
+        </Toolbar>
+      </Container>
+    </AppBar>
   );
 }

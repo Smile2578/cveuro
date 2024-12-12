@@ -1,0 +1,63 @@
+{
+  "editor": {
+    "loading": "Loading your CV...",
+    "success": "You have now completed your CV! You can edit it or download it directly.",
+    "backToForm": "Back to form",
+    "dragAndDrop": "You can modify the order of professional experiences or education with the arrows",
+    "print": {
+      "button": "Download as PDF",
+      "generating": "Generating PDF..."
+    }
+  },
+  "infos": {
+    "personalInfo": {
+      "title": "Personal Information",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "phone": "Phone",
+      "address": "Address",
+      "birthDate": "Birth Date",
+      "birthPlace": "Birth Place",
+      "nationality": "Nationality",
+      "gender": "Gender"
+    },
+    "education": {
+      "title": "Education",
+      "school": "School",
+      "degree": "Degree",
+      "field": "Field of Study",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "ongoing": "Ongoing",
+      "achievements": "Achievements"
+    },
+    "experience": {
+      "title": "Work Experience",
+      "company": "Company",
+      "position": "Position",
+      "location": "Location",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "ongoing": "Ongoing",
+      "responsibilities": "Responsibilities"
+    },
+    "skills": {
+      "title": "Skills",
+      "name": "Skill",
+      "level": "Level"
+    },
+    "languages": {
+      "title": "Languages",
+      "language": "Language",
+      "level": "Level",
+      "test": {
+        "name": "Test",
+        "score": "Score"
+      }
+    },
+    "hobbies": {
+      "title": "Hobbies"
+    }
+  }
+} 

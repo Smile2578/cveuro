@@ -1,0 +1,28 @@
+{
+  "required": {
+    "firstName": "Le prénom est obligatoire",
+    "lastName": "Le nom est obligatoire",
+    "email": "L'email est obligatoire",
+    "phone": "Le numéro de téléphone est obligatoire",
+    "address": "L'adresse est obligatoire",
+    "city": "La ville est obligatoire",
+    "zipCode": "Le code postal est obligatoire",
+    "nationality": "La nationalité est obligatoire",
+    "birthDate": "La date de naissance est obligatoire",
+    "gender": "Le sexe est obligatoire"
+  },
+  "format": {
+    "email": "L'email est invalide",
+    "date": "Format de date invalide",
+    "phone": "Format de téléphone invalide"
+  },
+  "education": {
+    "required": {
+      "school": "Le nom de l'école est obligatoire",
+      "degree": "Le diplôme est obligatoire",
+      "field": "Le domaine d'étude est obligatoire",
+      "startDate": "La date de début est obligatoire"
+    },
+    "dateOrder": "La date de fin doit être après la date de début"
+  }
+} 

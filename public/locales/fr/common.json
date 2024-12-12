@@ -1,10 +1,57 @@
 {
+  "navigation": {
     "home": "Accueil",
-    "createMyCV": "Créer Mon CV",
-    "welcomeTitle": "Bienvenue sur le générateur de CV GEDS",
-    "welcomeSubtitle": "Commencez à créer votre CV professionnel en quelques minutes",
-    "privacyPolicy": "Politique de Confidentialité",
-    "termsOfService": "Conditions d'Utilisation",
-    "language": "Langue"
+    "createCV": "Créer mon CV",
+    "editCV": "Modifier mon CV"
+  },
+  "footer": {
+    "copyright": "CV modèle Europass par GEDS©",
+    "rights": "GEDS. Tous droits réservés.",
+    "privacy": "PPD",
+    "terms": "CGU"
+  },
+  "buttons": {
+    "next": "Suivant",
+    "previous": "Précédent",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "createCV": "Créer mon CV maintenant"
+  },
+  "loading": {
+    "generating": "Génération du PDF...",
+    "saving": "Enregistrement...",
+    "loading": "Chargement..."
+  },
+  "landing": {
+    "title": "Créez, personnalisez et gérez votre CV en toute simplicité.",
+    "subtitle": "Notre outil intuitif vous guide à chaque étape pour mettre en valeur vos compétences et expériences.",
+    "features": {
+      "personalInfo": {
+        "title": "Informations personnelles",
+        "description": "Saisissez vos coordonnées et présentez-vous en quelques mots."
+      },
+      "education": {
+        "title": "Formation",
+        "description": "Mettez en avant votre parcours académique et vos diplômes."
+      },
+      "experience": {
+        "title": "Expérience professionnelle",
+        "description": "Détaillez vos expériences et réalisations professionnelles."
+      },
+      "languages": {
+        "title": "Compétences linguistiques",
+        "description": "Indiquez les langues que vous maîtrisez et votre niveau."
+      },
+      "skills": {
+        "title": "Compétences techniques",
+        "description": "Listez vos compétences techniques et professionnelles."
+      },
+      "projects": {
+        "title": "Projets et réalisations",
+        "description": "Présentez vos projets marquants et vos accomplissements."
+      }
+    }
   }
+}
   

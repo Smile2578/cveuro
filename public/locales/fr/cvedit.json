@@ -1,0 +1,63 @@
+{
+  "editor": {
+    "loading": "Chargement de votre CV...",
+    "success": "Vous avez maintenant terminé votre CV ! Vous pouvez le modifier ou le télécharger directement.",
+    "backToForm": "Retourner sur le formulaire",
+    "dragAndDrop": "Vous pouvez modifier l'ordre des expériences professionnelles ou éducatives avec les flèches",
+    "print": {
+      "button": "Télécharger en PDF",
+      "generating": "Génération du PDF en cours..."
+    }
+  },
+  "infos": {
+    "personalInfo": {
+      "title": "Informations Personnelles",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "address": "Adresse",
+      "birthDate": "Date de naissance",
+      "birthPlace": "Lieu de naissance",
+      "nationality": "Nationalité",
+      "gender": "Genre"
+    },
+    "education": {
+      "title": "Formation",
+      "school": "École",
+      "degree": "Diplôme",
+      "field": "Domaine d'études",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "ongoing": "En cours",
+      "achievements": "Réalisations"
+    },
+    "experience": {
+      "title": "Expérience Professionnelle",
+      "company": "Entreprise",
+      "position": "Poste",
+      "location": "Lieu",
+      "startDate": "Date de début",
+      "endDate": "Date de fin",
+      "ongoing": "En cours",
+      "responsibilities": "Responsabilités"
+    },
+    "skills": {
+      "title": "Compétences",
+      "name": "Compétence",
+      "level": "Niveau"
+    },
+    "languages": {
+      "title": "Langues",
+      "language": "Langue",
+      "level": "Niveau",
+      "test": {
+        "name": "Test",
+        "score": "Score"
+      }
+    },
+    "hobbies": {
+      "title": "Loisirs"
+    }
+  }
+} 

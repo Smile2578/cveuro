@@ -1,332 +1,197 @@
-import React, { useState } from 'react';
-import {
-  Accordion,
-  Button,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  IconButton,
-  Box,
-  TextField,
-  Snackbar,
-  Alert,
-  CircularProgress,
-  useTheme,
-} from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-
-
-
+"use client";
+import React from 'react';
+import { useTranslations } from 'next-intl';
+import { Box, Typography, Divider } from '@mui/material';
+import theme from '@/app/theme';
 
 const CVInfos = ({ cvData, setCvData }) => {
-  const [editField, setEditField] = useState({});
-  const [editValues, setEditValues] = useState({});
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  const [selectedTemplate, setSelectedTemplate] = useState('template1.pdf'); // Default template
+  const t = useTranslations('cvedit.infos');
 
-
-  const skillLevelMapping = {
-    '1': 'Débutant',
-    '2': 'Intermédiaire',
-    '3': 'Avancé',
-    '4': 'Expert',
-    '5': 'Maîtrise complète'
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
   };
 
-  const onSelectTemplate = async (templatePath) => {
-    setSelectedTemplate(templatePath);
-    const updatedCvData = { ...cvData, template: templatePath };
-  
-    // API call to update the CV in the database
-    try {
-      const userId = localStorage.getItem('cvUserId'); // Ensure you have the correct way to retrieve the user ID
-      const response = await fetch(`/api/cvedit/updateCV?userId=${userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedCvData),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to update CV template');
-      }
-      // Optionally update local CV data state
-      setCvData(updatedCvData);
-      console.log('Template updated successfully');
-    } catch (error) {
-      console.error('Error updating template:', error);
-      // Handle error (e.g., show a notification)
-    }
-  };
+  const renderPersonalInfo = () => {
+    if (!cvData?.personalInfo) return null;
+    const { personalInfo } = cvData;
 
-
-  const theme = useTheme();
-
-  const templates = [
-    { id: 'template1', name: 'Template 1', path: 'template1.pdf' },
-  ];
-
-  const formatDate = (date, isOngoing) => {
-    if (isOngoing) return 'En Cours';
-    const parts = date.split('-');
-  
-    // Check how many parts the date has to handle different formats
-    if (parts.length === 3) {
-      // Assuming format is YYYY-MM-DD
-      const [year, month, day] = parts;
-      return `${day}/${month}/${year}`;
-    } else if (parts.length === 2) {
-      // Assuming format is YYYY-MM
-      const [year, month] = parts;
-      return `${month}/${year}`;
-    } else if (parts.length === 1) {
-      // Assuming format is just YYYY or any single part
-      return parts[0];
-    } else {
-      // If date format is unexpected or empty
-      return date;
-    }
-  };
-  
-  const renderPeriodField = (section, index, startDate, endDate, ongoing) => {
-    const period = `${formatDate(startDate, false)} - ${formatDate(endDate, ongoing)}`;
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-        <Typography variant="body1" sx={{ minWidth: '150px', color: theme.palette.text.primary }}>Période:</Typography>
-        <Typography variant="body1" sx={{ flexGrow: 1, color: theme.palette.primary.main }}>{period}</Typography>
-      </Box>
-    );
-  };
-
-  const handleEditClick = (section, key, value) => {
-    setEditField({ ...editField, [`${section}.${key}`]: true });
-    setEditValues({ ...editValues, [`${section}.${key}`]: value });
-  };
-
-  const handleSave = async (section, key) => {
-    const value = editValues[`${section}.${key}`];
-    // Prepare updated data for submission
-    let updatedSectionData = cvData[section];
-    
-    if (section === 'personalInfo') {
-      updatedSectionData = { ...cvData.personalInfo, [key]: value };
-    } else {
-      updatedSectionData = cvData[section].map((item, index) =>
-        index.toString() === key ? { ...item, ...value } : item
-      );
-    }
-
-    const updatedCvData = { ...cvData, [section]: updatedSectionData };
-
-    try {
-      const userId = localStorage.getItem('cvUserId');
-      const response = await fetch(`/api/cvedit/updateCV?userId=${userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedCvData),
-      });
-
-      if (!response.ok) throw new Error('Failed to update CV');
-      
-      setCvData(updatedCvData);
-      setEditField({ ...editField, [`${section}.${key}`]: false }); // Turn off editing for this field
-      setSnackbar({ open: true, message: 'Modification enregistrée avec succès!', severity: 'success' });
-    } catch (error) {
-      console.error('Save error:', error);
-      setSnackbar({ open: true, message: 'Erreur lors de la connexion au serveur.', severity: 'error' });
-    }
-  };
-
-  const renderEditableField = (section, key, label, value, isDate = false) => {
-    const fieldKey = `${section}.${key}`;
-  
-    let displayValue = value;
-    if (section === 'skills' && key.endsWith('.level')) {
-      displayValue = skillLevelMapping[value] || 'Non défini';
-    }
-  
-  
-    // Function to handle saving or closing the field on blur
-    const handleBlur = () => {
-      // Use a timeout to delay execution until after the save button click is processed
-      setTimeout(() => {
-        // Ensure we only proceed if the editField corresponds to the current field
-        if (editField[fieldKey]) {
-          setEditField((prev) => ({ ...prev, [fieldKey]: false }));
-        }
-      }, 100); // A delay of 100ms should be enough to catch the save click event
-    };
-  
-    return (
-      <Box key={fieldKey} sx={{ display: 'flex', alignItems: 'center', marginBottom: '8px', '&:hover svg': { visibility: 'visible' } }}>
-        <Typography component="div" variant="body1" sx={{ minWidth: '150px', color: theme.palette.text.primary }}>
-          {label}:
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('personalInfo.title')}
         </Typography>
-        {editField[`${section}.${key}`] ? (
-          <TextField
-            fullWidth
-            variant="outlined"
-            type={isDate ? 'date' : 'text'}
-            value={editValues[`${section}.${key}`] || ''}
-            onChange={(e) => setEditValues({...editValues, [`${section}.${key}`]: e.target.value})}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent form submission on enter
-                handleSave(section, key);
-              }
-            }}
-            InputLabelProps={isDate ? { shrink: true } : undefined}
-            onBlur={handleBlur}
-            autoFocus
-          />
-        ) : (
-          <Typography component="div" variant="body1" sx={{ flexGrow: 1, color: theme.palette.primary.main }}>{displayValue}</Typography>
-        )}
-        <IconButton
-          size="small"
-          sx={{ ml: 1, visibility: editField[fieldKey] ? 'visible' : 'hidden' }}
-          onClick={() => handleSave(section, key)}
-        >
-          <SaveIcon />
-        </IconButton>
-        {!editField[fieldKey] && (
-          <IconButton
-            size="small"
-            sx={{ ml: 1, visibility: 'hidden' }}
-            onMouseEnter={(e) => e.currentTarget.style.visibility = 'visible'}
-            onMouseLeave={(e) => e.currentTarget.style.visibility = 'hidden'}
-            onClick={() => handleEditClick(section, key, value)}
-          >
-            <EditIcon />
-          </IconButton>
-        )}
+        <Divider sx={{ mb: 2 }} />
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Typography><strong>{t('personalInfo.firstName')}:</strong> {personalInfo.firstname}</Typography>
+          <Typography><strong>{t('personalInfo.lastName')}:</strong> {personalInfo.lastname}</Typography>
+          <Typography><strong>{t('personalInfo.email')}:</strong> {personalInfo.email}</Typography>
+          <Typography><strong>{t('personalInfo.phone')}:</strong> {personalInfo.phoneNumber}</Typography>
+          <Typography><strong>{t('personalInfo.address')}:</strong> {personalInfo.address}</Typography>
+          <Typography><strong>{t('personalInfo.birthDate')}:</strong> {formatDate(personalInfo.dateofBirth)}</Typography>
+          <Typography><strong>{t('personalInfo.birthPlace')}:</strong> {personalInfo.placeofBirth}</Typography>
+          <Typography><strong>{t('personalInfo.nationality')}:</strong> {personalInfo.nationality}</Typography>
+          <Typography><strong>{t('personalInfo.gender')}:</strong> {personalInfo.sex}</Typography>
+        </Box>
       </Box>
     );
   };
-  
 
-  if (!cvData) return <CircularProgress />;
+  const renderEducation = () => {
+    if (!cvData?.education?.length) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('education.title')}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        {cvData.education.map((edu, index) => (
+          <Box key={index} sx={{ mb: 2 }}>
+            <Typography><strong>{t('education.school')}:</strong> {edu.schoolName}</Typography>
+            <Typography><strong>{t('education.degree')}:</strong> {edu.degree}</Typography>
+            <Typography><strong>{t('education.field')}:</strong> {edu.fieldOfStudy}</Typography>
+            <Typography>
+              <strong>{t('education.startDate')}:</strong> {formatDate(edu.startDate)}
+              {edu.ongoing ? 
+                ` - ${t('education.ongoing')}` : 
+                ` - ${formatDate(edu.endDate)}`
+              }
+            </Typography>
+            {edu.achievements?.length > 0 && (
+              <>
+                <Typography><strong>{t('education.achievements')}:</strong></Typography>
+                <ul>
+                  {edu.achievements.map((achievement, i) => (
+                    <li key={i}>{achievement}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
+  const renderWorkExperience = () => {
+    if (!cvData?.workExperience?.length) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('experience.title')}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        {cvData.workExperience.map((exp, index) => (
+          <Box key={index} sx={{ mb: 2 }}>
+            <Typography><strong>{t('experience.company')}:</strong> {exp.companyName}</Typography>
+            <Typography><strong>{t('experience.position')}:</strong> {exp.position}</Typography>
+            <Typography><strong>{t('experience.location')}:</strong> {exp.location}</Typography>
+            <Typography>
+              <strong>{t('experience.startDate')}:</strong> {formatDate(exp.startDate)}
+              {exp.ongoing ? 
+                ` - ${t('experience.ongoing')}` : 
+                ` - ${formatDate(exp.endDate)}`
+              }
+            </Typography>
+            {exp.responsibilities?.length > 0 && (
+              <>
+                <Typography><strong>{t('experience.responsibilities')}:</strong></Typography>
+                <ul>
+                  {exp.responsibilities.map((resp, i) => (
+                    <li key={i}>{resp}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
+  const renderSkills = () => {
+    if (!cvData?.skills?.length) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('skills.title')}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        {cvData.skills.map((skill, index) => (
+          <Box key={index}>
+            <Typography>
+              <strong>{t('skills.name')}:</strong> {skill.skillName}
+              <br />
+              <strong>{t('skills.level')}:</strong> {skill.level}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
+  const renderLanguages = () => {
+    if (!cvData?.languages?.length) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('languages.title')}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        {cvData.languages.map((lang, index) => (
+          <Box key={index}>
+            <Typography>
+              <strong>{t('languages.language')}:</strong> {lang.language}
+              <br />
+              <strong>{t('languages.level')}:</strong> {lang.proficiency}
+              {lang.testName && (
+                <>
+                  <br />
+                  <strong>{t('languages.test.name')}:</strong> {lang.testName}
+                  <br />
+                  <strong>{t('languages.test.score')}:</strong> {lang.testScore}
+                </>
+              )}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    );
+  };
+
+  const renderHobbies = () => {
+    if (!cvData?.hobbies?.length) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h6" color={theme.palette.primary.main}>
+          {t('hobbies.title')}
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <ul>
+          {cvData.hobbies.map((hobby, index) => (
+            <li key={index}>{hobby}</li>
+          ))}
+        </ul>
+      </Box>
+    );
+  };
+
+  if (!cvData) return null;
 
   return (
     <Box>
-      <Typography component="div" variant="h6" sx={{ textAlign: 'center', marginBottom: '50px', color: theme.palette.primary.main }}>Éditer les informations du CV</Typography>
-      {/* Personal Information Section */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Informations Personnelles</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {renderEditableField('personalInfo', 'firstname', 'Prénom', cvData.personalInfo.firstname)}
-          {renderEditableField('personalInfo', 'lastname', 'Nom', cvData.personalInfo.lastname)}
-          {renderEditableField('personalInfo', 'birthdate', 'Date de naissance', cvData.personalInfo.dateofBirth, true)}
-          {renderEditableField('personalInfo', 'sex', 'Sexe', cvData.personalInfo.sex)}
-          {renderEditableField('personalInfo', 'nationality', 'Nationalité', cvData.personalInfo.nationality)}
-          {renderEditableField('personalInfo', 'placeofBirth', 'Lieu de naissance', cvData.personalInfo.placeofBirth)}  
-          {renderEditableField('personalInfo', 'address', 'Adresse', cvData.personalInfo.address)}
-          {renderEditableField('personalInfo', 'city', 'Ville', cvData.personalInfo.city)}
-          {renderEditableField('personalInfo', 'zip', 'Code Postal', cvData.personalInfo.zip)}
-          {renderEditableField('personalInfo', 'email', 'Email', cvData.personalInfo.email)}  
-          {renderEditableField('personalInfo', 'phoneNumber', 'Téléphone', cvData.personalInfo.phoneNumber)}
-          {renderEditableField('personalInfo', 'linkedin', 'LinkedIn', cvData.personalInfo.linkedIn)}
-          {renderEditableField('personalInfo', 'personalWebsite', 'Site Web', cvData.personalInfo.personalWebsite)}
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Education Section */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Éducation</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {cvData.education.map((edu, index) => (
-           <Box key={`edu-${index}`} sx={{ border: '1px solid lightgray', borderRadius: '8px', padding: '16px', marginBottom: '8px' }}>
-              {renderEditableField('education', `${index}.schoolName`, 'Établissement', edu.schoolName)}
-              {renderEditableField('education', `${index}.degree`, 'Diplôme', edu.degree)}
-              {renderEditableField('education', `${index}.fieldOfStudy`, 'Spécialité', edu.fieldOfStudy)}
-              {renderPeriodField('education', index, edu.startDate, edu.endDate, edu.ongoing)}
-              {renderEditableField('education', `${index}.achievements`, 'Réalisations', edu.achievements.join(', '))}
-              </Box>
-          ))}
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Work Experience Section */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Expérience Professionnelle</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {cvData.workExperience.map((work, index) =>
-            <Box key={`work-${index}`} sx={{ border: '1px solid lightgray', borderRadius: '8px', padding: '16px', marginBottom: '8px' }}>
-              {renderEditableField('workExperience', `${index}.companyName`, 'Entreprise', work.companyName)}
-              {renderEditableField('workExperience', `${index}.position`, 'Poste', work.position)}
-              {renderEditableField('workExperience', `${index}.location`, 'Lieu', work.location)}
-              {renderPeriodField('workExperience', index, work.startDate, work.endDate, work.ongoing)}
-              {renderEditableField('workExperience', `${index}.responsibilities`, 'Responsabilités', work.responsibilities.join(', '))}
-            </Box>
-          )}
-        </AccordionDetails>
-      </Accordion>
-
-   {/* Languages Section */}
-   <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Langues</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {cvData.languages.map((lang, index) =>
-            <Box key={`lang-${index}`} sx={{ marginBottom: '8px' }}>
-              {renderEditableField('languages', `${index}.language`, 'Langue', lang.language)}
-              {renderEditableField('languages', `${index}.proficiency`, 'Niveau de maîtrise', lang.proficiency)}
-            </Box>
-          )}
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Skills Section */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Compétences</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {cvData.skills.map((skill, index) =>
-            <Box key={`skill-${index}`} sx={{ marginBottom: '8px' }}>
-              <Typography component="div" variant="body1" sx={{ color: theme.palette.primary.main }}>
-                {renderEditableField('skills', `${index}.skillName`, 'Compétence', skill.skillName)}
-                {renderEditableField('skills', `${index}.level`, 'Niveau de maîtrise', skill.level)}
-              </Typography>
-            </Box>
-          )}
-          {/* Assuming skills are just a list of strings, if more detail is needed, adjust accordingly */}
-        </AccordionDetails>
-      </Accordion>
-
-      {/* Hobbies Section */}
-      <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography component="div" variant="body1">Loisirs</Typography>
-        </AccordionSummary>
-        <AccordionDetails sx={{ color: theme.palette.primary.main }}>
-          {cvData.hobbies.map((hobby, index) =>
-            <Box key={`hobby-${index}`} sx={{ marginBottom: '8px' }}>
-              <Typography component="div" variant="body1" sx={{ color: theme.palette.primary.main }}>
-                {hobby}
-              </Typography>
-            </Box>
-          )}
-          {/* Assuming hobbies are just a list of strings, if more detail is needed, adjust accordingly */}
-        </AccordionDetails>
-      </Accordion>
-
-
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
-      </Snackbar>
+      {renderPersonalInfo()}
+      {renderEducation()}
+      {renderWorkExperience()}
+      {renderSkills()}
+      {renderLanguages()}
+      {renderHobbies()}
     </Box>
   );
 };

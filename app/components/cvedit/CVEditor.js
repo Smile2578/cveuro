@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Button, Box, Typography } from '@mui/material';
+import { useTranslations } from 'next-intl';
 import CVInfos from './CVInfos';
 import LiveCV from './LiveCV';
 import PrintButton from './PrintButton';
@@ -58,6 +59,7 @@ const CVEditor = ({ cvData, setCvData, setShowNavBar }) => {
   const router = useRouter();
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [showNotification, setShowNotification] = useState(true);
+  const t = useTranslations('cvedit.editor');
 
   useEffect(() => {
     setShowNavBar(!showNotification);
@@ -75,7 +77,7 @@ const CVEditor = ({ cvData, setCvData, setShowNavBar }) => {
     <>
       <SuccessNotification 
         show={showNotification}
-        message="Vous avez maintenant terminé votre CV ! Vous pouvez le modifier ou le télécharger directement."
+        message={t('success')}
         onHide={handleNotificationHide}
       />
       <Grid container spacing={2}>
@@ -84,10 +86,10 @@ const CVEditor = ({ cvData, setCvData, setShowNavBar }) => {
             <CVInfos cvData={cvData} setCvData={setCvData} />
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
               <Typography variant="h6" component="h2" sx={{ mb: 2, color: theme.palette.primary.alt, textAlign: 'center' }}>
-                Vous pouvez modifier l&apos;ordre des expériences professionnelles ou éducatives avec les flèches
+                {t('dragAndDrop')}
               </Typography>
               <Button variant="outlined" sx={{ width: "40%" }} onClick={handleGoBack}>
-                Retourner sur le formulaire
+                {t('backToForm')}
               </Button>
             </Box>
           </Paper>

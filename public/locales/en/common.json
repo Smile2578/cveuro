@@ -1,10 +1,58 @@
 {
+  "navigation": {
     "home": "Home",
-    "createMyCV": "Create My CV",
-    "welcomeTitle": "Welcome to GEDS CV Generator",
-    "welcomeSubtitle": "Start creating your professional CV in minutes",
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service",
-    "language": "Language"
+    "createCV": "Create CV",
+    "editCV": "Edit CV"
+  },
+  "footer": {
+    "copyright": "Europass CV template by GEDS©",
+    "rights": "GEDS. All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms"
+  },
+  "buttons": {
+    "next": "Next",
+    "previous": "Previous",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "createCV": "Create my CV now"
+  },
+  "loading": {
+    "generating": "Generating PDF...",
+    "saving": "Saving...",
+    "loading": "Loading..."
+  },
+  "languageRequired": "At least one language is required",
+  "landing": {
+    "title": "Create, customize and manage your CV with ease.",
+    "subtitle": "Our intuitive tool guides you through each step to highlight your skills and experiences.",
+    "features": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Enter your contact details and introduce yourself in a few words."
+      },
+      "education": {
+        "title": "Education",
+        "description": "Highlight your academic background and degrees."
+      },
+      "experience": {
+        "title": "Professional Experience",
+        "description": "Detail your professional experiences and achievements."
+      },
+      "languages": {
+        "title": "Language Skills",
+        "description": "Indicate the languages you master and your level."
+      },
+      "skills": {
+        "title": "Technical Skills",
+        "description": "List your technical and professional skills."
+      },
+      "projects": {
+        "title": "Projects and Achievements",
+        "description": "Present your significant projects and accomplishments."
+      }
+    }
   }
+}
   

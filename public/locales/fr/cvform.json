@@ -1,0 +1,159 @@
+{
+  "steps": {
+    "personalInfo": "Informations Personnelles",
+    "education": "Formation (max. 4)",
+    "workExperience": "Expérience Professionnelle (max. 4)",
+    "additional": "Langues, Compétences, Loisirs"
+  },
+  "buttons": {
+    "next": "Suivant",
+    "previous": "Précédent",
+    "submit": "Soumettre",
+    "reset": "Réinitialiser",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "addDegree": "Ajouter un diplôme",
+    "addExperience": "Ajouter une expérience",
+    "addLanguage": "Ajouter une langue",
+    "addSkill": "Ajouter une compétence"
+  },
+  "personalInfo": {
+    "title": "Informations Personnelles",
+    "firstName": "Prénom(s)*",
+    "lastName": "Nom*",
+    "email": "Email*",
+    "phone": "Téléphone*",
+    "birthDate": "Date de naissance*",
+    "birthPlace": "Lieu de naissance (Ville)",
+    "address": "Adresse*",
+    "city": "Ville*",
+    "zipCode": "Code Postal*",
+    "nationality": "Nationalité*",
+    "linkedin": "LinkedIn (sans https://www.linkedin.com/in/)",
+    "website": "Site Personnel (sans https://)",
+    "gender": {
+      "label": "Genre*",
+      "male": "Homme",
+      "female": "Femme"
+    }
+  },
+  "education": {
+    "title": "Formation",
+    "subtitle": "Ajoutez jusqu'à 4 formations",
+    "school": "Nom de l'école, Ville/Pays*",
+    "degree": "Diplôme*",
+    "field": "Domaine d'études*",
+    "startDate": "Date de début (MM/AAAA)*",
+    "endDate": "Date de fin (MM/AAAA)",
+    "ongoing": "En cours",
+    "achievements": "Réalisations et Distinctions",
+    "achievementsPlaceholder": "• Listez vos réalisations ici\n• Commencez chaque ligne par •\n• Appuyez sur Entrée pour une nouvelle ligne",
+    "customDegree": {
+      "title": "Saisir un diplôme personnalisé",
+      "label": "Diplôme personnalisé"
+    },
+    "degrees": {
+      "bac": "Baccalauréat",
+      "license": "Licence",
+      "bachelor": "Bachelor",
+      "master": "Master",
+      "phd": "Doctorat",
+      "other": "Autre"
+    }
+  },
+  "workExperience": {
+    "title": "Expérience Professionnelle",
+    "subtitle": "Ajoutez jusqu'à 4 expériences professionnelles",
+    "noExperience": "Je n'ai pas encore d'expérience professionnelle",
+    "company": "Nom de l'entreprise*",
+    "position": "Poste*",
+    "location": "Lieu (ville, pays)",
+    "startDate": "Date de début (MM/AAAA)*",
+    "endDate": "Date de fin (MM/AAAA)*",
+    "ongoing": "En cours",
+    "responsibilities": "Responsabilités",
+    "responsibilitiesPlaceholder": "• Listez vos responsabilités ici\n• Commencez chaque ligne par •\n• Appuyez sur Entrée pour une nouvelle ligne",
+    "skipConfirm": {
+      "title": "Confirmation",
+      "message": "Êtes-vous sûr de vouloir passer cette section sans ajouter d'expérience professionnelle ?"
+    }
+  },
+  "additional": {
+    "languages": {
+      "title": "Langues* (min. 1)",
+      "language": "Langue",
+      "level": "Niveau",
+      "test": {
+        "label": "J'ai passé un test pour cette langue",
+        "title": "Test de langue",
+        "name": "Nom du test",
+        "score": "Score obtenu"
+      },
+      "levels": {
+        "a1": "A1",
+        "a2": "A2",
+        "b1": "B1",
+        "b2": "B2",
+        "c1": "C1",
+        "c2": "C2",
+        "native": "Langue maternelle"
+      }
+    },
+    "skills": {
+      "title": "Compétences",
+      "name": "Compétence (ex: Word, Excel, Photoshop, etc.)",
+      "level": "Niveau",
+      "levels": {
+        "beginner": "Débutant",
+        "intermediate": "Intermédiaire",
+        "advanced": "Avancé",
+        "expert": "Expert",
+        "master": "Maîtrise complète"
+      }
+    },
+    "hobbies": {
+      "title": "Loisirs",
+      "placeholder": "Ajoutez vos loisirs..."
+    }
+  },
+  "validation": {
+    "required": {
+      "firstName": "Le prénom est requis",
+      "lastName": "Le nom est requis",
+      "email": "L'email est requis",
+      "phone": "Le numéro de téléphone est requis",
+      "birthDate": "La date de naissance est requise",
+      "address": "L'adresse est requise",
+      "city": "La ville est requise",
+      "zipCode": "Le code postal est requis",
+      "nationality": "La nationalité est requise",
+      "gender": "Le genre est requis",
+      "company": "Le nom de l'entreprise est requis",
+      "position": "Le poste est requis",
+      "startDate": "La date de début est requise",
+      "language": "La langue est requise",
+      "level": "Le niveau est requis",
+      "skillName": "Le nom de la compétence est requis",
+      "school": "Le nom de l'école est requis",
+      "degree": "Le diplôme est requis",
+      "field": "Le domaine d'études est requis"
+    },
+    "format": {
+      "email": "Format d'email invalide"
+    },
+    "education": {
+      "required": "Au moins une formation est requise",
+      "dateOrder": "La date de fin doit être postérieure à la date de début"
+    },
+    "languageRequired": "La langue et le niveau sont requis",
+    "skillRequired": "Le nom et le niveau de la compétence sont requis",
+    "minLanguages": "Au moins une langue est requise pour continuer"
+  },
+  "messages": {
+    "success": "CV enregistré avec succès !",
+    "error": "Erreur lors de l'enregistrement du CV.",
+    "fillRequired": "Vous devez remplir tous les champs obligatoires avant de passer à l'étape suivante.",
+    "skipSuccess": "Vous pouvez maintenant passer à l'étape suivante",
+    "resetConfirm": "Voulez-vous vraiment effacer toutes les données et réinitialiser le formulaire ?"
+  }
+} 

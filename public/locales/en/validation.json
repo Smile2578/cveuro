@@ -1,0 +1,28 @@
+{
+  "required": {
+    "firstName": "First name is required",
+    "lastName": "Last name is required",
+    "email": "Email is required",
+    "phone": "Phone number is required",
+    "address": "Address is required",
+    "city": "City is required",
+    "zipCode": "Zip code is required",
+    "nationality": "Nationality is required",
+    "birthDate": "Birth date is required",
+    "gender": "Gender is required"
+  },
+  "format": {
+    "email": "Invalid email format",
+    "date": "Invalid date format",
+    "phone": "Invalid phone format"
+  },
+  "education": {
+    "required": {
+      "school": "School name is required",
+      "degree": "Degree is required",
+      "field": "Field of study is required",
+      "startDate": "Start date is required"
+    },
+    "dateOrder": "End date must be after start date"
+  }
+} 

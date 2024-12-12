@@ -1,0 +1,159 @@
+{
+  "steps": {
+    "personalInfo": "Personal Information",
+    "education": "Education (max. 4)",
+    "workExperience": "Work Experience (max. 4)",
+    "additional": "Languages, Skills, Hobbies"
+  },
+  "buttons": {
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "cancel": "Cancel",
+    "save": "Save",
+    "addDegree": "Add Degree",
+    "addExperience": "Add Experience",
+    "addLanguage": "Add Language",
+    "addSkill": "Add Skill"
+  },
+  "personalInfo": {
+    "title": "Personal Information",
+    "firstName": "First Name(s)*",
+    "lastName": "Last Name*",
+    "email": "Email*",
+    "phone": "Phone*",
+    "birthDate": "Birth Date*",
+    "birthPlace": "Birth Place (City)",
+    "address": "Address*",
+    "city": "City*",
+    "zipCode": "Zip Code*",
+    "nationality": "Nationality*",
+    "linkedin": "LinkedIn (without https://www.linkedin.com/in/)",
+    "website": "Personal Website (without https://)",
+    "gender": {
+      "label": "Gender*",
+      "male": "Male",
+      "female": "Female"
+    }
+  },
+  "education": {
+    "title": "Education",
+    "subtitle": "Add up to 4 education entries",
+    "school": "School Name, City/Country*",
+    "degree": "Degree*",
+    "field": "Field of Study*",
+    "startDate": "Start Date (MM/YYYY)*",
+    "endDate": "End Date (MM/YYYY)",
+    "ongoing": "Ongoing",
+    "achievements": "Achievements and Distinctions",
+    "achievementsPlaceholder": "• List your achievements here\n• Start each line with •\n• Press Enter for a new line",
+    "customDegree": {
+      "title": "Enter a custom degree",
+      "label": "Custom degree"
+    },
+    "degrees": {
+      "bac": "High School Diploma",
+      "license": "Bachelor's Degree",
+      "bachelor": "Bachelor",
+      "master": "Master's Degree",
+      "phd": "PhD",
+      "other": "Other"
+    }
+  },
+  "workExperience": {
+    "title": "Work Experience",
+    "subtitle": "Add up to 4 work experiences",
+    "noExperience": "I don't have any work experience yet",
+    "company": "Company Name*",
+    "position": "Position*",
+    "location": "Location (city, country)",
+    "startDate": "Start Date (MM/YYYY)*",
+    "endDate": "End Date (MM/YYYY)*",
+    "ongoing": "Ongoing",
+    "responsibilities": "Responsibilities",
+    "responsibilitiesPlaceholder": "• List your responsibilities here\n• Start each line with •\n• Press Enter for a new line",
+    "skipConfirm": {
+      "title": "Confirmation",
+      "message": "Are you sure you want to skip this section without adding any work experience?"
+    }
+  },
+  "additional": {
+    "languages": {
+      "title": "Languages* (min. 1)",
+      "language": "Language",
+      "level": "Level",
+      "test": {
+        "label": "I have taken a test for this language",
+        "title": "Language Test",
+        "name": "Test Name",
+        "score": "Score"
+      },
+      "levels": {
+        "a1": "A1",
+        "a2": "A2",
+        "b1": "B1",
+        "b2": "B2",
+        "c1": "C1",
+        "c2": "C2",
+        "native": "Native"
+      }
+    },
+    "skills": {
+      "title": "Skills",
+      "name": "Skill (e.g., Word, Excel, Photoshop, etc.)",
+      "level": "Level",
+      "levels": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "expert": "Expert",
+        "master": "Master"
+      }
+    },
+    "hobbies": {
+      "title": "Hobbies",
+      "placeholder": "Add your hobbies..."
+    }
+  },
+  "validation": {
+    "required": {
+      "firstName": "First name is required",
+      "lastName": "Last name is required",
+      "email": "Email is required",
+      "phone": "Phone number is required",
+      "birthDate": "Birth date is required",
+      "address": "Address is required",
+      "city": "City is required",
+      "zipCode": "Zip code is required",
+      "nationality": "Nationality is required",
+      "gender": "Gender is required",
+      "company": "Company name is required",
+      "position": "Position is required",
+      "startDate": "Start date is required",
+      "language": "Language is required",
+      "level": "Level is required",
+      "skillName": "Skill name is required",
+      "school": "School name is required",
+      "degree": "Degree is required",
+      "field": "Field of study is required"
+    },
+    "format": {
+      "email": "Invalid email format"
+    },
+    "education": {
+      "required": "At least one education entry is required",
+      "dateOrder": "End date must be after start date"
+    },
+    "languageRequired": "Language and level are required",
+    "skillRequired": "Skill name and level are required",
+    "minLanguages": "At least one language is required"
+  },
+  "messages": {
+    "success": "CV saved successfully!",
+    "error": "Error saving CV.",
+    "fillRequired": "You must fill in all required fields before proceeding to the next step.",
+    "skipSuccess": "You can now proceed to the next step",
+    "resetConfirm": "Are you sure you want to clear all data and reset the form?"
+  }
+} 
