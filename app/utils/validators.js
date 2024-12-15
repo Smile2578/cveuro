@@ -121,7 +121,7 @@ export const createValidators = (t) => {
         });
       }
 
-      // Validation de la date de fin
+      // Validation de la date de fin uniquement si ongoing est false
       if (!education.ongoing) {
         if (!education.endDate) {
           ctx.addIssue({
@@ -129,26 +129,30 @@ export const createValidators = (t) => {
             message: t('education.endDate.required'),
             path: [`${index}.endDate`]
           });
-        } else if (!monthYearRegex.test(education.endDate)) {
+          return; // Sortir tôt si pas de date de fin
+        }
+
+        if (!monthYearRegex.test(education.endDate)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: t('education.endDate.format'),
             path: [`${index}.endDate`]
           });
+          return; // Sortir tôt si format invalide
         }
-      }
 
-      // Validation de la chronologie des dates uniquement si les deux sont présentes
-      if (education.startDate && education.endDate && !education.ongoing) {
-        const [startMonth, startYear] = education.startDate.split('/').map(Number);
-        const [endMonth, endYear] = education.endDate.split('/').map(Number);
-        
-        if (endYear < startYear || (endYear === startYear && endMonth < startMonth)) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: t('education.dates.chronology'),
-            path: [`${index}.endDate`]
-          });
+        // Validation de la chronologie uniquement si les deux dates sont valides
+        if (monthYearRegex.test(education.startDate) && monthYearRegex.test(education.endDate)) {
+          const [startMonth, startYear] = education.startDate.split('/').map(Number);
+          const [endMonth, endYear] = education.endDate.split('/').map(Number);
+          
+          if (endYear < startYear || (endYear === startYear && endMonth < startMonth)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('education.dates.chronology'),
+              path: [`${index}.endDate`]
+            });
+          }
         }
       }
     });

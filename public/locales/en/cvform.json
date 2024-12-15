@@ -39,6 +39,10 @@
         "label": "Social",
         "title": "Your online presence",
         "description": "Add your social media profiles"
+      },
+      "null": {
+        "title": "Personal Information",
+        "description": "Let's start with your basic information"
       }
     },
     "identity": {

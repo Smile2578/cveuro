@@ -49,6 +49,10 @@
         "title": "Vos réseaux sociaux",
         "description": "Ajoutez vos profils professionnels",
         "fields": ["linkedIn", "personalWebsite"]
+      },
+      "null": {
+        "title": "Informations personnelles",
+        "description": "Commençons par vos informations de base"
       }
     },
     "identity": {

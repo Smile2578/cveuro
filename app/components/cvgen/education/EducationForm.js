@@ -124,22 +124,21 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
       fieldName,
       date ? dayjs(date).format('MM/YYYY') : '',
       { 
-        shouldValidate: isSubmitted,
+        shouldValidate: shouldShowError(fieldName.split('.').pop()),
         shouldTouch: true 
       }
     );
-  }, [setValue, isSubmitted]);
+  }, [setValue, shouldShowError]);
   const handleOngoingChange = useCallback((e) => {
-    const checked = e.target.checked;
-    setValue(`educations.${index}.ongoing`, checked, { 
-      shouldValidate: isSubmitted
+    setValue(`educations.${index}.ongoing`, e.target.checked, { 
+      shouldValidate: false // On ne valide pas immédiatement au changement
     });
-    if (checked) {
+    if (e.target.checked) {
       setValue(`educations.${index}.endDate`, '', { 
-        shouldValidate: isSubmitted
+        shouldValidate: false 
       });
     }
-  }, [setValue, index, isSubmitted]);
+  }, [setValue, index]);
 
   return (
     <Paper
@@ -239,8 +238,8 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                     fullWidth: true,
                     required: true,
                     placeholder: t('education.dates.startDate.placeholder'),
-                    error: isSubmitted && !!errors?.educations?.[index]?.startDate,
-                    helperText: isSubmitted && errors?.educations?.[index]?.startDate?.message
+                    error: shouldShowError('startDate') && !!errors?.educations?.[index]?.startDate,
+                    helperText: shouldShowError('startDate') && errors?.educations?.[index]?.startDate?.message
                   }
                 }}
               />
@@ -259,8 +258,8 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                       fullWidth: true,
                       required: !isOngoing,
                       placeholder: t('education.dates.endDate.placeholder'),
-                      error: isSubmitted && !isOngoing && !!errors?.educations?.[index]?.endDate,
-                      helperText: isSubmitted && !isOngoing && errors?.educations?.[index]?.endDate?.message
+                      error: shouldShowError('endDate') && !isOngoing && !!errors?.educations?.[index]?.endDate,
+                      helperText: shouldShowError('endDate') && !isOngoing && errors?.educations?.[index]?.endDate?.message
                     }
                   }}
                 />
@@ -443,34 +442,41 @@ const EducationForm = () => {
 
   // Fonction de réinitialisation optimisée pour éviter la duplication
   const handleReset = useCallback(async () => {
-    try {
-      setIsResetting(true);
-      
-      // Reset du formulaire avec une seule formation vide
-      formReset({
-        educations: [{
-          schoolName: '',
-          degree: '',
-          startDate: '',
-          endDate: '',
-          ongoing: false,
-          achievements: [],
-          customDegree: ''
-        }]
-      }, {
-        keepDefaultValues: true
-      });
-      
-      // Reset de l'interface
-      setExpandedItems([0]);
-      cvStore.clearFormErrors();
-      
-    } catch (error) {
-      console.error('Erreur lors du reset:', error);
-    } finally {
-      setIsResetting(false);
-    }
-  }, [formReset, cvStore]);
+      try {
+        setIsResetting(true);
+        
+        // Utiliser la méthode reset de useFormContext pour réinitialiser proprement le formulaire
+        const { reset } = useFormContext();
+        
+        reset({
+          educations: [{
+            schoolName: '',
+            degree: '',
+            startDate: '',
+            endDate: '',
+            ongoing: false,
+            achievements: [],
+            customDegree: ''
+          }]
+        }, {
+          keepDefaultValues: true,
+          keepIsSubmitted: false,
+          keepTouched: false,
+          keepDirty: false,
+          keepErrors: false,
+          keepIsValid: false
+        });
+    
+        // Réinitialiser l'expansion et les erreurs
+        setExpandedItems([0]);
+        cvStore.clearFormErrors();
+        
+      } catch (error) {
+        console.error('Erreur lors du reset:', error);
+      } finally {
+        setIsResetting(false);
+      }
+    }, []);
 
   // Validation du formulaire
   const validateForm = useCallback(async () => {
