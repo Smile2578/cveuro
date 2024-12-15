@@ -1,159 +1,460 @@
 {
   "steps": {
     "personalInfo": "Personal Information",
-    "education": "Education (max. 4)",
-    "workExperience": "Work Experience (max. 4)",
-    "additional": "Languages, Skills, Hobbies"
+    "education": "Education",
+    "experience": "Work Experience",
+    "skills": "Skills",
+    "languages": "Languages",
+    "hobbies": "Hobbies",
+    "combined": {
+      "title": "Skills & Languages",
+      "description": "Add your skills, languages and hobbies"
+    }
+  },
+  "personalInfo": {
+    "title": "Personal Information",
+    "description": "Let's start with your basic information",
+    "subSteps": {
+      "0": {
+        "label": "Identity",
+        "title": "Who are you?",
+        "description": "Start with your basic identity information"
+      },
+      "1": {
+        "label": "Contact",
+        "title": "How can we reach you?",
+        "description": "Add your contact information"
+      },
+      "2": {
+        "label": "Details",
+        "title": "Tell us more about you",
+        "description": "Add some additional personal details"
+      },
+      "3": {
+        "label": "Address",
+        "title": "Where do you live?",
+        "description": "Add your current address"
+      },
+      "4": {
+        "label": "Social",
+        "title": "Your online presence",
+        "description": "Add your social media profiles"
+      }
+    },
+    "identity": {
+      "title": "Identity",
+      "description": "Start with your basic identity information",
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "e.g. John",
+        "maxLength": "Maximum 50 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "e.g. Doe",
+        "maxLength": "Maximum 50 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "errors": {
+        "required": "This field is required",
+        "minLength": "Minimum 2 characters",
+        "maxLength": "Maximum 50 characters",
+        "checkFields": "Please check the fields"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "description": "How can people reach you?",
+      "email": {
+        "label": "Email",
+        "placeholder": "e.g. john.doe@example.com",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "phone": {
+        "label": "Phone Number",
+        "placeholder": "e.g. +1 234 567 890",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      }
+    },
+    "info": {
+      "title": "Personal Details",
+      "description": "Tell us more about yourself",
+      "birthDate": {
+        "label": "Date of Birth",
+        "placeholder": "DD/MM/YYYY",
+        "maxLength": "Maximum 10 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "nationality": {
+        "label": "Nationality",
+        "placeholder": "Select your nationality",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "gender": {
+        "label": "Gender",
+        "options": {
+          "male": "Male",
+          "female": "Female",
+          "other": "Other"
+        },
+        "placeholder": "Select your gender",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      }
+    },
+    "address": {
+      "title": "Address",
+      "description": "Where can we find you?",
+      "maxLength": "Maximum 100 characters",
+      "minLength": "Minimum 2 characters",
+      "street": {
+        "label": "Street Address",
+        "placeholder": "e.g. 123 Main Street",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "city": {
+        "label": "City",
+        "placeholder": "e.g. New York",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "zip": {
+        "label": "ZIP Code",
+        "placeholder": "e.g. 12345",
+        "maxLength": "Maximum 10 characters",
+        "minLength": "Minimum 2 characters"
+      }
+    },
+    "social": {
+      "title": "Social Media (Optional)",
+      "description": "Share your online presence",
+      "linkedin": {
+        "label": "LinkedIn Profile (Optional)",
+        "placeholder": "e.g. https://linkedin.com/in/johndoe",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      },
+      "website": {
+        "label": "Personal Website (Optional)",
+        "placeholder": "e.g. https://johndoe.com",
+        "maxLength": "Maximum 100 characters",
+        "minLength": "Minimum 2 characters"
+      }
+    }
+  },
+  "education": {
+    "main": {
+      "title": "Education",
+      "description": "Tell us about your academic background"
+    },
+    "school": {
+      "label": "School / University",
+      "placeholder": "Ex: Harvard University",
+      "minLength": "School name must be at least 2 characters",
+      "maxLength": "School name cannot exceed 100 characters",
+      "required": "School name is required",
+      "error": "School name is required"
+    },
+    "degree": {
+      "label": "Degree",
+      "placeholder": "Select your degree",
+      "minLength": "Degree must be at least 2 characters",
+      "maxLength": "Degree cannot exceed 100 characters",
+      "required": "Degree is required",
+      "error": "Degree is required",
+      "options": {
+        "baccalaureat": "High School Diploma",
+        "licence": "Bachelor's Degree",
+        "bachelor": "Bachelor's Degree",
+        "master": "Master's Degree",
+        "doctorat": "Doctorate",
+        "other": "Other"
+      }
+    },
+    "customDegree": {
+      "label": "Specify your degree",
+      "placeholder": "Ex: Computer Science Engineering Degree",
+      "minLength": "Custom degree must be at least 2 characters",
+      "maxLength": "Custom degree cannot exceed 100 characters",
+      "required": "Please specify your degree",
+      "error": "Please specify your degree"
+    },
+    "field": {
+      "label": "Field of Study",
+      "placeholder": "Ex: Computer Science, Law, Business...",
+      "minLength": "Field of study must be at least 2 characters",
+      "maxLength": "Field of study cannot exceed 100 characters",
+      "required": "Field of study is required"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Start Date",
+        "placeholder": "MM/YYYY",
+        "format": "Invalid date format (MM/YYYY)",
+        "future": "Start date cannot be in the future",
+        "required": "Start date is required",
+        "error": "Start date is required"
+      },
+      "endDate": {
+        "label": "End Date",
+        "placeholder": "MM/YYYY",
+        "format": "Invalid date format (MM/YYYY)",
+        "future": "End date cannot be in the future",
+        "beforeStart": "End date must be after start date",
+        "required": "End date is required",
+        "error": "End date is required"
+      },
+      "ongoing": "Currently Studying"
+    },
+    "achievements": {
+      "label": "Achievements",
+      "placeholder": "Ex: Class Valedictorian, Award-winning Project...",
+      "add": "Add Achievement",
+      "remove": "Remove Achievement",
+      "minLength": "Achievement must be at least 10 characters",
+      "maxLength": "Achievement cannot exceed 200 characters",
+      "maxItems": "You cannot add more than 4 achievements"
+    },
+    "actions": {
+      "add": "Add Education",
+      "remove": "Remove Education",
+      "maxLength": "You cannot add more than 4 educations",
+      "confirmDelete": "Are you sure you want to delete this education?"
+    },
+    "validation": {
+      "required": "This field is required",
+      "dateFormat": "Invalid date format",
+      "endDateBeforeStart": "End date must be after start date",
+      "futureDateNotAllowed": "Date cannot be in the future"
+    },
+    "errors": {
+      "hasErrors": "This education contains errors. Click to see details."
+    } 
+  },
+  "experience": {
+    "main": {
+      "title": "Work Experience",
+      "description": "Share your professional journey",
+      "hasExperience": "I have work experience",
+      "noExperienceMessage": "You haven't added any work experience yet. Toggle the switch above to start adding some.",
+      "confirmNoExperienceTitle": "Remove all experiences?",
+      "confirmNoExperience": "Are you sure you want to remove all your work experiences? This action cannot be undone."
+    },
+    "company": {
+      "label": "Company",
+      "placeholder": "Ex: Google, Microsoft, Apple...",
+      "minLength": "Company name must be at least 2 characters",
+      "maxLength": "Company name cannot exceed 100 characters"
+    },
+    "position": {
+      "label": "Position",
+      "placeholder": "Ex: Full Stack Developer, Project Manager...",
+      "minLength": "Position must be at least 2 characters",
+      "maxLength": "Position cannot exceed 100 characters"
+    },
+    "location": {
+      "label": "Location",
+      "placeholder": "Ex: London, UK",
+      "minLength": "Location must be at least 2 characters",
+      "maxLength": "Location cannot exceed 100 characters"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Start Date",
+        "placeholder": "MM/YYYY"
+      },
+      "endDate": {
+        "label": "End Date",
+        "placeholder": "MM/YYYY"
+      },
+      "ongoing": "Current position"
+    },
+    "responsibilities": {
+      "label": "Responsibilities and achievements",
+      "placeholder": "Describe your main responsibilities and achievements",
+      "add": "Add responsibility",
+      "maxItems": "You cannot add more than 5 responsibilities",
+      "minLength": "Description must be at least 10 characters",
+      "maxLength": "Description cannot exceed 500 characters"
+    },
+    "actions": {
+      "add": "Add experience",
+      "addFirst": "Add first experience",
+      "remove": "Remove this experience",
+      "maxLength": "You have reached the maximum number of experiences (4)"
+    },
+    "errors": {
+      "required": "Please add at least one work experience",
+      "hasErrors": "This work experience contains errors. Click to see details.",
+      "checkFields": "Some work experiences contain errors. Please check the fields."
+    }
+  },
+  "skills": {
+    "main": {
+      "title": "Skills & Expertise",
+      "description": "Add your skills and level of expertise"
+    },
+    "name": {
+      "label": "Skill",
+      "placeholder": "Ex: JavaScript, React, Node.js..."
+    },
+    "level": {
+      "label": "Level",
+      "placeholder": "Select your level",
+      "options": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced",
+        "expert": "Expert"
+      }
+    },
+    "suggestions": {
+      "title": "Skill suggestions",
+      "description": "Click to quickly add common skills",
+      "items": {
+        "office": "Microsoft Office",
+        "communication": "Communication",
+        "teamwork": "Teamwork",
+        "timeManagement": "Time Management",
+        "research": "Research",
+        "presentation": "Presentation",
+        "analysis": "Analysis",
+        "writing": "Writing",
+        "programming": "Programming",
+        "socialMedia": "Social Media",
+        "adaptability": "Adaptability",
+        "problemSolving": "Problem Solving",
+        "organization": "Organization",
+        "leadership": "Leadership",
+        "creativity": "Creativity"
+      }
+    },
+    "actions": {
+      "add": "Add skill",
+      "addFirst": "Add your first skill",
+      "remove": "Remove this skill",
+      "maxLength": "You have reached the maximum number of skills (15)"
+    },
+    "errors": {
+      "hasErrors": "This skill contains errors",
+      "checkFields": "Some skills contain errors. Please check the fields."
+    }
+  },
+  "languages": {
+    "main": {
+      "title": "Languages",
+      "description": "Add the languages you speak"
+    },
+    "language": {
+      "label": "Language",
+      "placeholder": "Ex: English, Spanish, German..."
+    },
+    "proficiency": {
+      "label": "Proficiency",
+      "placeholder": "Select your level",
+      "options": {
+        "A1": "Beginner (A1)",
+        "A2": "Elementary (A2)",
+        "B1": "Intermediate (B1)",
+        "B2": "Upper Intermediate (B2)",
+        "C1": "Advanced (C1)",
+        "C2": "Mastery (C2)"
+      }
+    },
+    "test": {
+      "name": {
+        "label": "Language Test (Optional)",
+        "placeholder": "Ex: ETHS, TOEFL, Cambridge..."
+      },
+      "score": {
+        "label": "Score/Level Achieved (Optional)",
+        "placeholder": "Ex: 95/120, B2..."
+      }
+    },
+    "actions": {
+      "add": "Add language",
+      "addFirst": "Add your first language",
+      "remove": "Remove this language",
+      "maxLength": "You have reached the maximum number of languages (5)"
+    },
+    "errors": {
+      "hasErrors": "This language contains errors",
+      "checkFields": "Some languages contain errors"
+    },
+    "suggestions": {
+      "title": "Language suggestions",
+      "description": "Click to quickly add common languages",
+      "items": {
+        "english": "English",
+        "german": "German",
+        "spanish": "Spanish",
+        "italian": "Italian",
+        "dutch": "Dutch",
+        "portuguese": "Portuguese",
+        "russian": "Russian",
+        "chinese": "Chinese",
+        "japanese": "Japanese",
+        "arabic": "Arabic"
+      }
+    }
+  },
+  "hobbies": {
+    "main": {
+      "title": "Hobbies",
+      "description": "Share your passions and activities"
+    },
+    "hobby": {
+      "label": "Hobby",
+      "placeholder": "Ex: Reading, Music, Sports..."
+    },
+    "actions": {
+      "add": "Add hobby",
+      "addFirst": "Add your first hobby",
+      "remove": "Remove this hobby",
+      "maxLength": "You have reached the maximum number of hobbies (5)"
+    },
+    "errors": {
+      "hasErrors": "This hobby contains errors",
+      "checkFields": "Some hobbies contain errors"
+    },
+    "suggestions": {
+      "title": "Hobby suggestions",
+      "description": "Click to quickly add common hobbies",
+      "items": {
+        "reading": "Reading",
+        "sports": "Sports",
+        "music": "Music",
+        "travel": "Travel",
+        "photography": "Photography",
+        "cooking": "Cooking",
+        "gardening": "Gardening",
+        "volunteering": "Volunteering",
+        "arts": "Arts",
+        "theater": "Theater"
+      }
+    }
   },
   "buttons": {
     "next": "Next",
     "previous": "Previous",
-    "submit": "Submit",
-    "reset": "Reset",
-    "cancel": "Cancel",
+    "nextStep": "Next Step",
     "save": "Save",
-    "addDegree": "Add Degree",
-    "addExperience": "Add Experience",
-    "addLanguage": "Add Language",
-    "addSkill": "Add Skill"
+    "cancel": "Cancel",
+    "reset": "Reset"
   },
-  "personalInfo": {
-    "title": "Personal Information",
-    "firstName": "First Name(s)*",
-    "lastName": "Last Name*",
-    "email": "Email*",
-    "phone": "Phone*",
-    "birthDate": "Birth Date*",
-    "birthPlace": "Birth Place (City)",
-    "address": "Address*",
-    "city": "City*",
-    "zipCode": "Zip Code*",
-    "nationality": "Nationality*",
-    "linkedin": "LinkedIn (without https://www.linkedin.com/in/)",
-    "website": "Personal Website (without https://)",
-    "gender": {
-      "label": "Gender*",
-      "male": "Male",
-      "female": "Female"
-    }
-  },
-  "education": {
-    "title": "Education",
-    "subtitle": "Add up to 4 education entries",
-    "school": "School Name, City/Country*",
-    "degree": "Degree*",
-    "field": "Field of Study*",
-    "startDate": "Start Date (MM/YYYY)*",
-    "endDate": "End Date (MM/YYYY)",
-    "ongoing": "Ongoing",
-    "achievements": "Achievements and Distinctions",
-    "achievementsPlaceholder": "• List your achievements here\n• Start each line with •\n• Press Enter for a new line",
-    "customDegree": {
-      "title": "Enter a custom degree",
-      "label": "Custom degree"
-    },
-    "degrees": {
-      "bac": "High School Diploma",
-      "license": "Bachelor's Degree",
-      "bachelor": "Bachelor",
-      "master": "Master's Degree",
-      "phd": "PhD",
-      "other": "Other"
-    }
-  },
-  "workExperience": {
-    "title": "Work Experience",
-    "subtitle": "Add up to 4 work experiences",
-    "noExperience": "I don't have any work experience yet",
-    "company": "Company Name*",
-    "position": "Position*",
-    "location": "Location (city, country)",
-    "startDate": "Start Date (MM/YYYY)*",
-    "endDate": "End Date (MM/YYYY)*",
-    "ongoing": "Ongoing",
-    "responsibilities": "Responsibilities",
-    "responsibilitiesPlaceholder": "• List your responsibilities here\n• Start each line with •\n• Press Enter for a new line",
-    "skipConfirm": {
-      "title": "Confirmation",
-      "message": "Are you sure you want to skip this section without adding any work experience?"
-    }
-  },
-  "additional": {
-    "languages": {
-      "title": "Languages* (min. 1)",
-      "language": "Language",
-      "level": "Level",
-      "test": {
-        "label": "I have taken a test for this language",
-        "title": "Language Test",
-        "name": "Test Name",
-        "score": "Score"
-      },
-      "levels": {
-        "a1": "A1",
-        "a2": "A2",
-        "b1": "B1",
-        "b2": "B2",
-        "c1": "C1",
-        "c2": "C2",
-        "native": "Native"
-      }
-    },
-    "skills": {
-      "title": "Skills",
-      "name": "Skill (e.g., Word, Excel, Photoshop, etc.)",
-      "level": "Level",
-      "levels": {
-        "beginner": "Beginner",
-        "intermediate": "Intermediate",
-        "advanced": "Advanced",
-        "expert": "Expert",
-        "master": "Master"
-      }
-    },
-    "hobbies": {
-      "title": "Hobbies",
-      "placeholder": "Add your hobbies..."
-    }
-  },
-  "validation": {
-    "required": {
-      "firstName": "First name is required",
-      "lastName": "Last name is required",
-      "email": "Email is required",
-      "phone": "Phone number is required",
-      "birthDate": "Birth date is required",
-      "address": "Address is required",
-      "city": "City is required",
-      "zipCode": "Zip code is required",
-      "nationality": "Nationality is required",
-      "gender": "Gender is required",
-      "company": "Company name is required",
-      "position": "Position is required",
-      "startDate": "Start date is required",
-      "language": "Language is required",
-      "level": "Level is required",
-      "skillName": "Skill name is required",
-      "school": "School name is required",
-      "degree": "Degree is required",
-      "field": "Field of study is required"
-    },
-    "format": {
-      "email": "Invalid email format"
-    },
-    "education": {
-      "required": "At least one education entry is required",
-      "dateOrder": "End date must be after start date"
-    },
-    "languageRequired": "Language and level are required",
-    "skillRequired": "Skill name and level are required",
-    "minLanguages": "At least one language is required"
-  },
-  "messages": {
-    "success": "CV saved successfully!",
-    "error": "Error saving CV.",
-    "fillRequired": "You must fill in all required fields before proceeding to the next step.",
-    "skipSuccess": "You can now proceed to the next step",
-    "resetConfirm": "Are you sure you want to clear all data and reset the form?"
+  "common": {
+    "required": "This field is required",
+    "optional": "Optional",
+    "confirmReset": "Are you sure you want to reset the form? All data will be lost.",
+    "showDetails": "Show details",
+    "hideDetails": "Hide details",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete"
   }
 } 

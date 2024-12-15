@@ -1,58 +1,106 @@
 {
+  "title": "CVBuilder",
+  "description": "Create your professional CV in a few simple steps",
   "navigation": {
     "home": "Home",
-    "createCV": "Create CV",
-    "editCV": "Edit CV"
+    "cvgen": "Create CV",
+    "cvedit": "Edit CV",
+    "about": "About"
   },
-  "footer": {
-    "copyright": "Europass CV template by GEDS©",
-    "rights": "GEDS. All rights reserved.",
-    "privacy": "Privacy Policy",
-    "terms": "Terms"
+  "landing": {
+    "title": "Create your professional CV in a few clicks",
+    "subtitle": "A simple and intuitive tool to create a CV that represents you. Follow our guided steps and get a professional CV in minutes.",
+    "features": {
+      "personalInfo": {
+        "title": "Personal Information",
+        "description": "Start with the basics: your contact details and essential information"
+      },
+      "education": {
+        "title": "Education",
+        "description": "Highlight your academic background and degrees"
+      },
+      "experience": {
+        "title": "Professional Experience",
+        "description": "Detail your professional experiences and achievements"
+      },
+      "languages": {
+        "title": "Languages",
+        "description": "Indicate the languages you master and your level"
+      },
+      "skills": {
+        "title": "Skills",
+        "description": "List your technical and professional skills"
+      },
+      "projects": {
+        "title": "Projects",
+        "description": "Present your personal and professional projects"
+      }
+    }
+  },
+  "progress": {
+    "step": "Step {current} of {total}",
+    "subStep": "Sub-step {current} of {total}",
+    "completion": "Progress: {percentage}%",
+    "quality": {
+      "0": "Let's start!",
+      "25": "Good start!",
+      "50": "Keep going!",
+      "75": "Almost there!",
+      "100": "Perfect!"
+    }
   },
   "buttons": {
+    "createCV": "Create my CV for free",
+    "editCV": "Edit my CV",
+    "downloadCV": "Download my CV",
     "next": "Next",
     "previous": "Previous",
     "save": "Save",
     "cancel": "Cancel",
-    "confirm": "Confirm",
-    "createCV": "Create my CV now"
+    "reset": "Reset",
+    "finish": "Finish",
+    "skip": "Skip",
+    "back": "Back"
   },
-  "loading": {
-    "generating": "Generating PDF...",
+  "status": {
+    "loading": "Loading...",
     "saving": "Saving...",
-    "loading": "Loading..."
+    "saved": "Saved",
+    "error": "Error",
+    "success": "Success",
+    "completed": "Completed",
+    "incomplete": "Incomplete",
+    "required": "Required"
   },
-  "languageRequired": "At least one language is required",
-  "landing": {
-    "title": "Create, customize and manage your CV with ease.",
-    "subtitle": "Our intuitive tool guides you through each step to highlight your skills and experiences.",
-    "features": {
-      "personalInfo": {
-        "title": "Personal Information",
-        "description": "Enter your contact details and introduce yourself in a few words."
-      },
-      "education": {
-        "title": "Education",
-        "description": "Highlight your academic background and degrees."
-      },
-      "experience": {
-        "title": "Professional Experience",
-        "description": "Detail your professional experiences and achievements."
-      },
-      "languages": {
-        "title": "Language Skills",
-        "description": "Indicate the languages you master and your level."
-      },
-      "skills": {
-        "title": "Technical Skills",
-        "description": "List your technical and professional skills."
-      },
-      "projects": {
-        "title": "Projects and Achievements",
-        "description": "Present your significant projects and accomplishments."
-      }
-    }
+  "autoSave": {
+    "enabled": "Auto-save enabled",
+    "message": "Auto-save enabled"
+  },
+  "validation": {
+    "required": "This field is required",
+    "optional": "Optional",
+    "minLength": "Minimum {min} characters",
+    "maxLength": "Maximum {max} characters",
+    "invalidFormat": "Invalid format",
+    "futureDate": "Date cannot be in the future",
+    "endDateBeforeStart": "End date must be after start date"
+  },
+  "errors": {
+    "generic": "An error occurred",
+    "network": "Connection error",
+    "validation": "Validation error",
+    "notFound": "Page not found",
+    "unauthorized": "Unauthorized"
+  },
+  "language": {
+    "fr": "French",
+    "en": "English",
+    "select": "Select language"
+  },
+  "confirmations": {
+    "reset": "Are you sure you want to reset the form? All data will be lost.",
+    "delete": "Are you sure you want to delete this item?",
+    "unsavedChanges": "You have unsaved changes. Do you want to leave?"
   }
 }
   

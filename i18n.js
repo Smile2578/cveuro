@@ -11,7 +11,49 @@ export default getRequestConfig(async ({ locale }) => {
   return {
     messages,
     locales,
-    defaultLocale: 'fr',
-    localeDetection: true
+    defaultLocale: 'en',
+    localeDetection: true,
+    timeZone: 'Europe/Paris',
+    now: new Date(),
+    formats: {
+      dateTime: {
+        short: {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        },
+        long: {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric'
+        }
+      },
+      date: {
+        short: {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric'
+        },
+        long: {
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }
+      },
+      time: {
+        short: {
+          hour: 'numeric',
+          minute: 'numeric'
+        },
+        long: {
+          hour: 'numeric',
+          minute: 'numeric',
+          second: 'numeric',
+          timeZoneName: 'short'
+        }
+      }
+    }
   };
 }); 

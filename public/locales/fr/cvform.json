@@ -1,159 +1,435 @@
 {
-  "steps": {
-    "personalInfo": "Informations Personnelles",
-    "education": "Formation (max. 4)",
-    "workExperience": "Expérience Professionnelle (max. 4)",
-    "additional": "Langues, Compétences, Loisirs"
-  },
-  "buttons": {
-    "next": "Suivant",
-    "previous": "Précédent",
-    "submit": "Soumettre",
-    "reset": "Réinitialiser",
+  "common": {
+    "showDetails": "Afficher les détails",
+    "hideDetails": "Masquer les détails",
     "cancel": "Annuler",
-    "save": "Enregistrer",
-    "addDegree": "Ajouter un diplôme",
-    "addExperience": "Ajouter une expérience",
-    "addLanguage": "Ajouter une langue",
-    "addSkill": "Ajouter une compétence"
+    "confirm": "Confirmer",
+    "delete": "Supprimer"
+  },
+  "steps": {
+    "personalInfo": "Informations personnelles",
+    "education": "Formation",
+    "experience": "Expérience professionnelle",
+    "skills": "Compétences",
+    "languages": "Langues",
+    "hobbies": "Centres d'intérêt",
+    "combined": {
+      "title": "Compétences et Langues",
+      "description": "Ajoutez vos compétences, langues et centres d'intérêt"
+    }
   },
   "personalInfo": {
-    "title": "Informations Personnelles",
-    "firstName": "Prénom(s)*",
-    "lastName": "Nom*",
-    "email": "Email*",
-    "phone": "Téléphone*",
-    "birthDate": "Date de naissance*",
-    "birthPlace": "Lieu de naissance (Ville)",
-    "address": "Adresse*",
-    "city": "Ville*",
-    "zipCode": "Code Postal*",
-    "nationality": "Nationalité*",
-    "linkedin": "LinkedIn (sans https://www.linkedin.com/in/)",
-    "website": "Site Personnel (sans https://)",
-    "gender": {
-      "label": "Genre*",
-      "male": "Homme",
-      "female": "Femme"
+    "subSteps": {
+      "0": {
+        "label": "👤 Identité",
+        "title": "Votre identité",
+        "description": "Commençons par vos informations de base",
+        "fields": ["firstname", "lastname"]
+      },
+      "1": {
+        "label": "📞 Contact",
+        "title": "Vos coordonnées",
+        "description": "Comment peut-on vous contacter ?",
+        "fields": ["email", "phoneNumber"]
+      },
+      "2": {
+        "label": "ℹ️ Informations",
+        "title": "Vos informations",
+        "description": "Quelques détails supplémentaires",
+        "fields": ["dateofBirth", "nationality", "sex"]
+      },
+      "3": {
+        "label": "📍 Adresse",
+        "title": "Votre adresse",
+        "description": "Où habitez-vous ?",
+        "fields": ["address", "city", "zip"]
+      },
+      "4": {
+        "label": "🌐 Réseaux sociaux",
+        "title": "Vos réseaux sociaux",
+        "description": "Ajoutez vos profils professionnels",
+        "fields": ["linkedIn", "personalWebsite"]
+      }
+    },
+    "identity": {
+      "title": "Votre identité",
+      "description": "Commençons par vos informations de base",
+      "firstName": {
+        "label": "Prénom",
+        "placeholder": "Entrez votre prénom",
+        "maxLength": "Maximum 50 caractères",   
+        "minLength": "Minimum 2 caractères"
+      },
+      "lastName": {
+        "label": "Nom",
+        "placeholder": "Entrez votre nom",
+        "maxLength": "Maximum 50 caractères",
+        "minLength": "Minimum 2 caractères"
+      },
+      "errors": {
+        "required": "Ce champ est requis",
+        "minLength": "Minimum 2 caractères",
+        "maxLength": "Maximum 50 caractères",
+        "checkFields": "Veuillez vérifier les champs"
+      }
+    },
+    "contact": {
+      "title": "Vos coordonnées",
+      "description": "Comment peut-on vous contacter ?",
+      "email": {
+        "label": "Email",
+        "placeholder": "Ex: jean.dupont@email.com",
+        "format": "Format d'email invalide",
+        "maxLength": "L'email ne peut pas dépasser 100 caractères",
+        "minLength": "Minimum 2 caractères"
+      },
+      "phone": {
+        "label": "Téléphone",
+        "placeholder": "+33 6 12 34 56 78", 
+        "format": "Format de téléphone invalide",
+        "maxLength": "L'email ne peut pas dépasser 100 caractères",
+        "minLength": "Minimum 2 caractères"
+      }
+    },
+    "info": {
+      "title": "Vos informations",
+      "description": "Quelques détails supplémentaires",
+      "birthDate": {
+        "label": "Date de naissance",
+        "placeholder": "JJ/MM/AAAA",
+        "format": "Format de date invalide",
+        "invalid": "Date de naissance invalide",
+        "maxLength": "Maximum 10 caractères",
+        "minLength": "Minimum 2 caractères"
+      },
+      "nationality": {
+        "label": "Nationalité(s)",
+        "placeholder": "Sélectionnez votre/vos nationalité(s)",
+        "required": "Veuillez sélectionner au moins une nationalité",
+        "maxLength": "Vous ne pouvez pas sélectionner plus de 3 nationalités",
+        "minLength": "Minimum 2 caractères"
+      },
+      "gender": {
+        "label": "Genre",
+        "placeholder": "Sélectionnez votre genre",
+        "required": "Veuillez sélectionner votre genre",
+        "options": {
+          "male": "Homme",
+          "female": "Femme",
+          "other": "Autre",
+          "preferNotToSay": "Je préfère ne pas préciser",
+          "maxLength": "Vous ne pouvez pas sélectionner plus de 3 nationalités",
+          "minLength": "Minimum 2 caractères"
+        }
+      }
+    },
+    "address": {
+      "title": "Votre adresse",
+      "description": "Où habitez-vous ?",
+      "street": {
+        "label": "Rue",
+        "placeholder": "Ex: 1 rue de la Paix",
+        "minLength": "L'adresse doit contenir au moins 5 caractères",
+        "maxLength": "L'adresse ne peut pas dépasser 200 caractères"
+      },
+      "city": {
+        "label": "Ville",
+        "placeholder": "Ex: Paris",
+        "minLength": "La ville doit contenir au moins 2 caractères",
+        "maxLength": "La ville ne peut pas dépasser 100 caractères"
+      },
+      "zip": {
+        "label": "Code postal",
+        "placeholder": "Ex: 75001",
+        "format": "Format de code postal invalide"
+      }
+    },
+    "social": {
+      "title": "Vos réseaux sociaux (Optionnel)",
+      "description": "Ajoutez vos profils professionnels",
+      "linkedin": {
+        "label": "LinkedIn (Optionnel)",
+        "placeholder": "https://linkedin.com/in/votre-profil",
+        "format": "URL LinkedIn invalide"
+      },
+      "website": {
+        "label": "Site web personnel (Optionnel)",
+        "placeholder": "https://votre-site.com",
+        "format": "URL invalide"
+      }
     }
   },
   "education": {
-    "title": "Formation",
-    "subtitle": "Ajoutez jusqu'à 4 formations",
-    "school": "Nom de l'école, Ville/Pays*",
-    "degree": "Diplôme*",
-    "field": "Domaine d'études*",
-    "startDate": "Date de début (MM/AAAA)*",
-    "endDate": "Date de fin (MM/AAAA)",
-    "ongoing": "En cours",
-    "achievements": "Réalisations et Distinctions",
-    "achievementsPlaceholder": "• Listez vos réalisations ici\n• Commencez chaque ligne par •\n• Appuyez sur Entrée pour une nouvelle ligne",
-    "customDegree": {
-      "title": "Saisir un diplôme personnalisé",
-      "label": "Diplôme personnalisé"
+    "errors": {
+      "hasErrors": "Cette formation contient des erreurs. Cliquez pour voir les détails.",
+      "checkFields": "Certaines formations contiennent des erreurs. Veuillez vérifier les champs.",
+      "required": "Veuillez ajouter au moins une formation"
     },
-    "degrees": {
-      "bac": "Baccalauréat",
-      "license": "Licence",
-      "bachelor": "Bachelor",
-      "master": "Master",
-      "phd": "Doctorat",
-      "other": "Autre"
-    }
-  },
-  "workExperience": {
-    "title": "Expérience Professionnelle",
-    "subtitle": "Ajoutez jusqu'à 4 expériences professionnelles",
-    "noExperience": "Je n'ai pas encore d'expérience professionnelle",
-    "company": "Nom de l'entreprise*",
-    "position": "Poste*",
-    "location": "Lieu (ville, pays)",
-    "startDate": "Date de début (MM/AAAA)*",
-    "endDate": "Date de fin (MM/AAAA)*",
-    "ongoing": "En cours",
-    "responsibilities": "Responsabilités",
-    "responsibilitiesPlaceholder": "• Listez vos responsabilités ici\n• Commencez chaque ligne par •\n• Appuyez sur Entrée pour une nouvelle ligne",
-    "skipConfirm": {
-      "title": "Confirmation",
-      "message": "Êtes-vous sûr de vouloir passer cette section sans ajouter d'expérience professionnelle ?"
-    }
-  },
-  "additional": {
-    "languages": {
-      "title": "Langues* (min. 1)",
-      "language": "Langue",
-      "level": "Niveau",
-      "test": {
-        "label": "J'ai passé un test pour cette langue",
-        "title": "Test de langue",
-        "name": "Nom du test",
-        "score": "Score obtenu"
+    "main": {
+      "title": "Formation",
+      "description": "Ajoutez vos formations et diplômes",
+      "required": "Veuillez ajouter au moins une formation"
+    },
+    "school": {
+      "label": "École / Établissement",
+      "placeholder": "Nom de l'établissement",
+      "minLength": "Le nom de l'école doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de l'école ne peut pas dépasser 100 caractères",
+      "required": "Le nom de l'école est requis",
+      "error": "Le nom de l'école est requis"
+    },
+    "degree": {
+      "label": "Diplôme",
+      "placeholder": "Sélectionnez votre diplôme",
+      "options": {
+        "baccalaureat": "Baccalauréat",
+        "licence": "Licence",
+        "bachelor": "Bachelor",
+        "master": "Master",
+        "doctorat": "Doctorat",
+        "other": "Autre"
       },
-      "levels": {
-        "a1": "A1",
-        "a2": "A2",
-        "b1": "B1",
-        "b2": "B2",
-        "c1": "C1",
-        "c2": "C2",
-        "native": "Langue maternelle"
-      }
+      "required": "Veuillez sélectionner votre diplôme",
+      "error": "Veuillez sélectionner votre diplôme"
     },
-    "skills": {
+    "customDegree": {
+      "label": "Précisez votre diplôme",
+      "placeholder": "Ex: BTS, DUT, etc.",
+      "minLength": "Le diplôme doit contenir au moins 2 caractères",
+      "maxLength": "Le diplôme ne peut pas dépasser 100 caractères",
+      "required": "Veuillez préciser votre diplôme",
+      "error": "Veuillez préciser votre diplôme"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Date de début",
+        "placeholder": "MM/AAAA",
+        "required": "La date de début est requise", 
+        "error": "La date de début est requise"
+      },
+      "endDate": {
+        "label": "Date de fin",
+        "placeholder": "MM/AAAA",
+        "required": "La date de fin est requise",
+        "error": "La date de fin est requise"
+      },
+      "ongoing": "En cours"
+    },
+    "achievements": {
+      "label": "Réalisations",
+      "placeholder": "Décrivez vos réalisations principales",
+      "add": "Ajouter une réalisation",
+      "remove": "Supprimer cette réalisation",
+      "minLength": "La réalisation doit contenir au moins 10 caractères",
+      "maxLength": "La réalisation ne peut pas dépasser 200 caractères"
+    },
+    "actions": {
+      "add": "Ajouter une formation",
+      "remove": "Supprimer cette formation",
+      "maxLength": "Vous ne pouvez pas ajouter plus de 4 formations",
+      "minLength": "Vous ne pouvez pas ajouter moins de 1 formation"
+    }
+  },
+  "experience": {
+    "main": {
+      "title": "Expérience professionnelle",
+      "description": "Partagez votre parcours professionnel",
+      "hasExperience": "J'ai une expérience professionnelle",
+      "noExperienceMessage": "Vous n'avez pas encore ajouté d'expérience professionnelle. Activez le bouton ci-dessus pour commencer à en ajouter.",
+      "confirmNoExperienceTitle": "Supprimer toutes les expériences ?",
+      "confirmNoExperience": "Êtes-vous sûr de vouloir supprimer toutes vos expériences professionnelles ? Cette action est irréversible."
+    },
+    "company": {
+      "label": "Entreprise",
+      "placeholder": "Ex: Google, Microsoft, Apple...",
+      "minLength": "Le nom de l'entreprise doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de l'entreprise ne peut pas dépasser 100 caractères"
+    },
+    "position": {
+      "label": "Poste occupé",
+      "placeholder": "Ex: Développeur Full Stack, Chef de projet...",
+      "minLength": "Le poste doit contenir au moins 2 caractères",
+      "maxLength": "Le poste ne peut pas dépasser 100 caractères"
+    },
+    "location": {
+      "label": "Lieu",
+      "placeholder": "Ex: Paris, France",
+      "minLength": "Le lieu doit contenir au moins 2 caractères",
+      "maxLength": "Le lieu ne peut pas dépasser 100 caractères"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Date de début",
+        "placeholder": "MM/AAAA"
+      },
+      "endDate": {
+        "label": "Date de fin",
+        "placeholder": "MM/AAAA"
+      },
+      "ongoing": "Poste actuel"
+    },
+    "responsibilities": {
+      "label": "Responsabilités et réalisations",
+      "placeholder": "Décrivez vos principales responsabilités et réalisations",
+      "add": "Ajouter une responsabilité",
+      "maxItems": "Vous ne pouvez pas ajouter plus de 5 responsabilités",
+      "minLength": "La description doit contenir au moins 10 caractères",
+      "maxLength": "La description ne peut pas dépasser 500 caractères"
+    },
+    "actions": {
+      "add": "Ajouter une expérience",
+      "addFirst": "Ajouter ma première expérience",
+      "remove": "Supprimer cette expérience",
+      "maxLength": "Vous avez atteint le nombre maximum d'expériences (4)"
+    },
+    "errors": {
+      "hasErrors": "Cette expérience contient des erreurs",
+      "checkFields": "Certaines expériences contiennent des erreurs. Veuillez vérifier les champs."
+    }
+  },
+  "skills": {
+    "main": {
       "title": "Compétences",
-      "name": "Compétence (ex: Word, Excel, Photoshop, etc.)",
-      "level": "Niveau",
-      "levels": {
+      "description": "Ajoutez vos compétences et votre niveau d'expertise"
+    },
+    "name": {
+      "label": "Compétence",
+      "placeholder": "Ex: JavaScript, React, Node.js..."
+    },
+    "level": {
+      "label": "Niveau",
+      "placeholder": "Sélectionnez votre niveau",
+      "options": {
         "beginner": "Débutant",
         "intermediate": "Intermédiaire",
         "advanced": "Avancé",
-        "expert": "Expert",
-        "master": "Maîtrise complète"
+        "expert": "Expert"
       }
     },
-    "hobbies": {
-      "title": "Loisirs",
-      "placeholder": "Ajoutez vos loisirs..."
+    "suggestions": {
+      "title": "Suggestions de compétences",
+      "description": "Cliquez pour ajouter rapidement des compétences courantes",
+      "items": {
+        "office": "Microsoft Office",
+        "communication": "Communication",
+        "teamwork": "Travail en équipe",
+        "timeManagement": "Gestion du temps",
+        "research": "Recherche",
+        "presentation": "Présentation",
+        "analysis": "Analyse",
+        "writing": "Rédaction",
+        "programming": "Programmation",
+        "socialMedia": "Réseaux sociaux",
+        "adaptability": "Adaptabilité",
+        "problemSolving": "Résolution de problèmes",
+        "organization": "Organisation",
+        "leadership": "Leadership",
+        "creativity": "Créativité"
+      }
+    },
+    "actions": {
+      "add": "Ajouter une compétence",
+      "addFirst": "Ajouter ma première compétence",
+      "remove": "Supprimer cette compétence",
+      "maxLength": "Vous avez atteint le nombre maximum de compétences (15)"
+    },
+    "errors": {
+      "hasErrors": "Cette compétence contient des erreurs",
+      "checkFields": "Certaines compétences contiennent des erreurs. Veuillez vérifier les champs."
     }
   },
-  "validation": {
-    "required": {
-      "firstName": "Le prénom est requis",
-      "lastName": "Le nom est requis",
-      "email": "L'email est requis",
-      "phone": "Le numéro de téléphone est requis",
-      "birthDate": "La date de naissance est requise",
-      "address": "L'adresse est requise",
-      "city": "La ville est requise",
-      "zipCode": "Le code postal est requis",
-      "nationality": "La nationalité est requise",
-      "gender": "Le genre est requis",
-      "company": "Le nom de l'entreprise est requis",
-      "position": "Le poste est requis",
-      "startDate": "La date de début est requise",
-      "language": "La langue est requise",
-      "level": "Le niveau est requis",
-      "skillName": "Le nom de la compétence est requis",
-      "school": "Le nom de l'école est requis",
-      "degree": "Le diplôme est requis",
-      "field": "Le domaine d'études est requis"
+  "languages": {
+    "main": {
+      "title": "Langues",
+      "description": "Ajoutez les langues que vous maîtrisez"
     },
-    "format": {
-      "email": "Format d'email invalide"
+    "language": {
+      "label": "Langue",
+      "placeholder": "Ex: Anglais, Espagnol, Allemand..."
     },
-    "education": {
-      "required": "Au moins une formation est requise",
-      "dateOrder": "La date de fin doit être postérieure à la date de début"
+    "proficiency": {
+      "label": "Niveau",
+      "placeholder": "Sélectionnez votre niveau",
+      "options": {
+        "A1": "Débutant (A1)",
+        "A2": "Élémentaire (A2)",
+        "B1": "Intermédiaire (B1)",
+        "B2": "Intermédiaire avancé (B2)",
+        "C1": "Avancé (C1)",
+        "C2": "Maîtrise (C2)"
+      }
     },
-    "languageRequired": "La langue et le niveau sont requis",
-    "skillRequired": "Le nom et le niveau de la compétence sont requis",
-    "minLanguages": "Au moins une langue est requise pour continuer"
+    "test": {
+      "name": {
+        "label": "Test de langue (Optionnel)",
+        "placeholder": "Ex: ETHS, TOEFL, Cambridge..."
+      },
+      "score": {
+        "label": "Score/Niveau obtenu (Optionnel)",
+        "placeholder": "Ex: 95/120, B2..."
+      }
+    },
+    "actions": {
+      "add": "Ajouter une langue",
+      "addFirst": "Ajouter ma première langue",
+      "remove": "Supprimer cette langue",
+      "maxLength": "Vous avez atteint le nombre maximum de langues (5)"
+    },
+    "errors": {
+      "hasErrors": "Cette langue contient des erreurs",
+      "checkFields": "Certaines langues contiennent des erreurs"
+    },
+    "suggestions": {
+      "title": "Suggestions de langues",
+      "description": "Cliquez pour ajouter rapidement des langues courantes",
+      "items": {
+        "english": "Anglais",
+        "german": "Allemand",
+        "spanish": "Espagnol",
+        "italian": "Italien",
+        "dutch": "Néerlandais",
+        "portuguese": "Portugais",
+        "russian": "Russe",
+        "chinese": "Chinois",
+        "japanese": "Japonais",
+        "arabic": "Arabe"
+      }
+    }
   },
-  "messages": {
-    "success": "CV enregistré avec succès !",
-    "error": "Erreur lors de l'enregistrement du CV.",
-    "fillRequired": "Vous devez remplir tous les champs obligatoires avant de passer à l'étape suivante.",
-    "skipSuccess": "Vous pouvez maintenant passer à l'étape suivante",
-    "resetConfirm": "Voulez-vous vraiment effacer toutes les données et réinitialiser le formulaire ?"
+  "hobbies": {
+    "main": {
+      "title": "Centres d'intérêt",
+      "description": "Partagez vos passions et activités"
+    },
+    "hobby": {
+      "label": "Centre d'intérêt",
+      "placeholder": "Ex: Lecture, Musique, Sport..."
+    },
+    "actions": {
+      "add": "Ajouter un centre d'intérêt",
+      "addFirst": "Ajouter mon premier centre d'intérêt",
+      "remove": "Supprimer ce centre d'intérêt",
+      "maxLength": "Vous avez atteint le nombre maximum de centres d'intérêt (5)"
+    },
+    "errors": {
+      "hasErrors": "Ce centre d'intérêt contient des erreurs",
+      "checkFields": "Certains centres d'intérêt contiennent des erreurs"
+    },
+    "suggestions": {
+      "title": "Suggestions de centres d'intérêt",
+      "description": "Cliquez pour ajouter rapidement des centres d'intérêt courants",
+      "items": {
+        "reading": "Lecture",
+        "sports": "Sport",
+        "music": "Musique",
+        "travel": "Voyages",
+        "photography": "Photographie",
+        "cooking": "Cuisine",
+        "gardening": "Jardinage",
+        "volunteering": "Bénévolat",
+        "arts": "Arts",
+        "theater": "Théâtre"
+      }
+    }
   }
 } 

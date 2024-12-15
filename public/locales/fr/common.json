@@ -1,57 +1,106 @@
 {
+  "title": "CVBuilder",
+  "description": "Créez votre CV professionnel en quelques étapes simples",
   "navigation": {
     "home": "Accueil",
-    "createCV": "Créer mon CV",
-    "editCV": "Modifier mon CV"
+    "cvgen": "Créer un CV",
+    "cvedit": "Éditer un CV",
+    "about": "À propos"
   },
-  "footer": {
-    "copyright": "CV modèle Europass par GEDS©",
-    "rights": "GEDS. Tous droits réservés.",
-    "privacy": "PPD",
-    "terms": "CGU"
+  "landing": {
+    "title": "Créez votre CV professionnel en quelques clics",
+    "subtitle": "Un outil simple et intuitif pour créer un CV qui vous ressemble. Suivez nos étapes guidées et obtenez un CV professionnel en quelques minutes.",
+    "features": {
+      "personalInfo": {
+        "title": "Informations Personnelles",
+        "description": "Commencez par les bases : vos coordonnées et informations essentielles"
+      },
+      "education": {
+        "title": "Formation",
+        "description": "Mettez en valeur votre parcours académique et vos diplômes"
+      },
+      "experience": {
+        "title": "Expérience Professionnelle",
+        "description": "Détaillez vos expériences et réalisations professionnelles"
+      },
+      "languages": {
+        "title": "Langues",
+        "description": "Indiquez les langues que vous maîtrisez et votre niveau"
+      },
+      "skills": {
+        "title": "Compétences",
+        "description": "Listez vos compétences techniques et professionnelles"
+      },
+      "projects": {
+        "title": "Projets",
+        "description": "Présentez vos projets personnels et professionnels"
+      }
+    }
+  },
+  "progress": {
+    "step": "Étape {current} sur {total}",
+    "subStep": "Sous-étape {current} sur {total}",
+    "completion": "Progression : {percentage}%",
+    "quality": {
+      "0": "Commençons !",
+      "25": "Bon début !",
+      "50": "Continuez !",
+      "75": "Presque fini !",
+      "100": "Parfait !"
+    }
   },
   "buttons": {
+    "createCV": "Créer mon CV gratuitement",
+    "editCV": "Modifier mon CV",
+    "downloadCV": "Télécharger mon CV",
     "next": "Suivant",
     "previous": "Précédent",
     "save": "Enregistrer",
     "cancel": "Annuler",
-    "confirm": "Confirmer",
-    "createCV": "Créer mon CV maintenant"
+    "reset": "Réinitialiser",
+    "finish": "Terminer",
+    "skip": "Passer",
+    "back": "Retour"
   },
-  "loading": {
-    "generating": "Génération du PDF...",
+  "status": {
+    "loading": "Chargement...",
     "saving": "Enregistrement...",
-    "loading": "Chargement..."
+    "saved": "Enregistré",
+    "error": "Erreur",
+    "success": "Succès",
+    "completed": "Terminé",
+    "incomplete": "Incomplet",
+    "required": "Requis"
   },
-  "landing": {
-    "title": "Créez, personnalisez et gérez votre CV en toute simplicité.",
-    "subtitle": "Notre outil intuitif vous guide à chaque étape pour mettre en valeur vos compétences et expériences.",
-    "features": {
-      "personalInfo": {
-        "title": "Informations personnelles",
-        "description": "Saisissez vos coordonnées et présentez-vous en quelques mots."
-      },
-      "education": {
-        "title": "Formation",
-        "description": "Mettez en avant votre parcours académique et vos diplômes."
-      },
-      "experience": {
-        "title": "Expérience professionnelle",
-        "description": "Détaillez vos expériences et réalisations professionnelles."
-      },
-      "languages": {
-        "title": "Compétences linguistiques",
-        "description": "Indiquez les langues que vous maîtrisez et votre niveau."
-      },
-      "skills": {
-        "title": "Compétences techniques",
-        "description": "Listez vos compétences techniques et professionnelles."
-      },
-      "projects": {
-        "title": "Projets et réalisations",
-        "description": "Présentez vos projets marquants et vos accomplissements."
-      }
-    }
+  "autoSave": {
+    "enabled": "Sauvegarde automatique activée",
+    "message": "Sauvegarde automatique activée"
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "optional": "Optionnel",
+    "minLength": "Minimum {min} caractères",
+    "maxLength": "Maximum {max} caractères",
+    "invalidFormat": "Format invalide",
+    "futureDate": "La date ne peut pas être dans le futur",
+    "endDateBeforeStart": "La date de fin doit être après la date de début"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue",
+    "network": "Erreur de connexion",
+    "validation": "Erreur de validation",
+    "notFound": "Page non trouvée",
+    "unauthorized": "Non autorisé"
+  },
+  "language": {
+    "fr": "Français",
+    "en": "Anglais",
+    "select": "Sélectionner la langue"
+  },
+  "confirmations": {
+    "reset": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les données seront perdues.",
+    "delete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter ?"
   }
 }
   

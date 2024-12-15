@@ -2,9 +2,9 @@
 import React from 'react';
 import { Typography, Container, Box, Link as MuiLink } from '@mui/material';
 import Link from 'next/link';
-import NavBar from '../components/common/NavBar';
-import Footer from '../components/common/Footer';
-import theme from '../theme';
+import NavBar from '../../components/common/NavBar';
+import Footer from '../../components/common/Footer';
+import theme from '../../theme';
 
 const CGUPage = () => {
   return (

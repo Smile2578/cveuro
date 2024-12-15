@@ -1,0 +1,37 @@
+{
+  "title": "✨ Créez Votre CV Professionnel",
+  "description": "Un outil simple et efficace pour construire votre CV en quelques étapes",
+  "dontShowAgain": "🔔 Ne plus afficher ce message",
+  "startButton": "🚀 Démarrer",
+  "subSteps": "📑 Sous-étapes",
+  "steps": {
+    "personal": {
+      "title": "👤 Profil Personnel",
+      "description": "La première impression compte ! Commençons par vos informations essentielles",
+      "identity": "📝 Identité • Prénom et Nom",
+      "contact": "📞 Contact • Email et Téléphone",
+      "info": "ℹ️ Détails • Date de naissance, Nationalité(s), Genre",
+      "address": "📍 Localisation • Adresse complète",
+      "social": "🌐 Présence Web • LinkedIn et Site personnel"
+    },
+    "education": {
+      "title": "🎓 Parcours Académique",
+      "description": "Mettez en valeur votre formation et vos diplômes",
+      "details": "📚 Formation • Diplômes et certifications",
+      "achievements": "🏆 Distinctions • Prix et mentions"
+    },
+    "experience": {
+      "title": "💼 Parcours Professionnel",
+      "description": "Racontez votre histoire professionnelle avec impact",
+      "details": "⚡ Expériences • Postes et entreprises",
+      "responsibilities": "🎯 Réussites • Missions et accomplissements"
+    },
+    "skills": {
+      "title": "🛠️ Compétences & Talents",
+      "description": "Distinguez-vous par vos atouts uniques",
+      "languages": "🗣️ Langues • Niveaux de maîtrise",
+      "technical": "💻 Expertise • Compétences techniques",
+      "hobbies": "🎨 Loisirs • Centres d'intérêt"
+    }
+  }
+}

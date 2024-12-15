@@ -1,28 +1,213 @@
 {
-  "required": {
-    "firstName": "First name is required",
-    "lastName": "Last name is required",
-    "email": "Email is required",
-    "phone": "Phone number is required",
-    "address": "Address is required",
-    "city": "City is required",
-    "zipCode": "Zip code is required",
-    "nationality": "Nationality is required",
-    "birthDate": "Birth date is required",
-    "gender": "Gender is required"
+  "required": "This field is required",
+  "email": {
+    "required": "Email address is required",
+    "invalid": "Invalid email address", 
+    "format": "Expected format: example@domain.com"
   },
-  "format": {
-    "email": "Invalid email format",
-    "date": "Invalid date format",
-    "phone": "Invalid phone format"
+  "phone": {
+    "required": "Phone number is required",
+    "invalid": "Invalid phone number",
+    "format": "Expected format: +33 6 34 56 78 90 or 06 34 56 78 90"
+  },
+  "name": {
+    "required": "Name is required",
+    "minLength": "Name must be at least 2 characters",
+    "maxLength": "Name cannot exceed 50 characters",
+    "format": "Name must contain only letters"
+  },
+  "date": {
+    "required": "Date is required",
+    "invalid": "Date is invalid",
+    "future": "Date cannot be in the future",
+    "past": "Date cannot be in the past",
+    "format": "Expected format: MM/YYYY",
+    "endBeforeStart": "End date must be after start date",
+    "startAfterEnd": "Start date must be before end date"
+  },
+  "url": {
+    "invalid": "URL is invalid",
+    "format": "Expected format: https://www.example.com",
+    "required": "URL is required"
+  },
+  "text": {
+    "minLength": "Text must be at least 2 characters",
+    "maxLength": "Text cannot exceed 1000 characters",
+    "required": "Text is required"
   },
   "education": {
-    "required": {
-      "school": "School name is required",
-      "degree": "Degree is required",
-      "field": "Field of study is required",
-      "startDate": "Start date is required"
+    "school": {
+      "required": "School name is required",
+      "minLength": "School name must be at least 2 characters",
+      "maxLength": "School name cannot exceed 100 characters"
     },
-    "dateOrder": "End date must be after start date"
+    "degree": {
+      "required": "Degree is required",
+      "minLength": "Degree must be at least 2 characters",
+      "maxLength": "Degree cannot exceed 100 characters"
+    },
+    "customDegree": {
+      "minLength": "Degree must be at least 2 characters",
+      "maxLength": "Degree cannot exceed 100 characters",
+      "required": "Degree is required"
+    },
+    "startDate": {
+      "required": "Start date is required",
+      "format": "Invalid date format (MM/YYYY)",
+      "future": "Date cannot be in the future"
+    },
+    "endDate": {
+      "required": "End date is required",
+      "format": "Invalid date format (MM/YYYY)",
+      "future": "Date cannot be in the future",
+      "beforeStart": "End date must be after start date"
+    },
+    "achievements": {
+      "required": "Achievement is required",
+      "minLength": "Achievement must be at least 2 characters",
+      "maxLength": "Achievement cannot exceed 100 characters"
+    },
+    "maxItems": "You cannot add more than 4 educations",
+    "required": "Please add at least one education"
+  },
+  "languages": {
+    "name": {
+      "required": "Language is required",
+      "minLength": "Language name must be at least 2 characters",
+      "maxLength": "Language name cannot exceed 50 characters"
+    },
+    "proficiency": {
+      "required": "Proficiency level is required",
+      "invalid": "Invalid proficiency level"
+    }
+  },
+  "hobbies": {
+    "minLength": "Hobby must be at least 2 characters",
+    "maxLength": "Hobby cannot exceed 50 characters",
+    "maxItems": "You cannot add more than 5 hobbies"
+  },
+  "personalInfo": {
+    "firstName": {
+      "required": "First name is required",
+      "minLength": "First name must be at least 2 characters",
+      "maxLength": "First name cannot exceed 50 characters",
+      "format": "First name must contain only letters"
+    },
+    "lastName": {
+      "required": "Last name is required",
+      "minLength": "Last name must be at least 2 characters",
+      "maxLength": "Last name cannot exceed 50 characters",
+      "format": "Last name must contain only letters"
+    },
+    "email": {
+      "required": "Email address is required",
+      "format": "Please enter a valid email address",
+      "maxLength": "Email cannot exceed 100 characters"
+    },
+    "phone": {
+      "required": "Phone number is required",
+      "format": "Please enter a valid phone number"
+    },
+    "dateOfBirth": {
+      "required": "Date of birth is required",
+      "format": "Invalid date format (DD/MM/YYYY)",
+      "future": "Date cannot be in the future",
+      "age": "Invalid date of birth"
+    },
+    "nationality": {
+      "required": "Please select at least one nationality",
+      "maxLength": "You cannot select more than 3 nationalities"
+    },
+    "sex": {
+      "required": "Please select your sex"
+    },
+    "gender": {
+      "required": "Please select your gender"
+    },
+    "address": {
+      "required": "Address is required",
+      "maxLength": "Address cannot exceed 200 characters"
+    },
+    "city": {
+      "required": "City is required",
+      "maxLength": "City cannot exceed 100 characters"
+    },
+    "zip": {
+      "required": "Zip code is required",
+      "format": "Zip code must contain 5 digits"
+    }
+  },
+  "experience": {
+    "company": {
+      "required": "Company name is required",
+      "minLength": "Company name must be at least 2 characters",
+      "maxLength": "Company name cannot exceed 100 characters"
+    },
+    "position": {
+      "required": "Position is required",
+      "minLength": "Position must be at least 2 characters",
+      "maxLength": "Position cannot exceed 100 characters"
+    },
+    "location": {
+      "required": "Location is required",
+      "minLength": "Location must be at least 2 characters",
+      "maxLength": "Location cannot exceed 100 characters"
+    },
+    "responsibilities": {
+      "required": "Responsibility cannot be empty",
+      "minLength": "Responsibility must be at least 10 characters",
+      "maxLength": "Responsibility cannot exceed 500 characters"
+    },
+    "required": "Please add at least one work experience"
+  },
+  "skills": {
+    "minimum": "Select at least 3 skills",
+    "maximum": "Cannot select more than 15 skills",
+    "name": {
+      "required": "Skill name is required",
+      "minLength": "Skill name must be at least 2 characters long",
+      "maxLength": "Skill name cannot exceed 50 characters"
+    },
+    "level": {
+      "required": "Skill level is required",
+      "invalid": "Selected skill level is not valid"
+    },
+    "list": {
+      "min": "You must add at least one skill",
+      "max": "You cannot add more than 15 skills"
+    }
+  },
+  "combined": {
+    "skills": {
+      "required": "At least one skill is required",
+      "maxItems": "You cannot add more than 15 skills",
+      "name": {
+        "required": "Skill name is required",
+        "minLength": "Skill name must be at least 2 characters long",
+        "maxLength": "Skill name cannot exceed 50 characters"
+      },
+      "level": {
+        "required": "Level is required",
+        "invalid": "Selected level is not valid"
+      }
+    },
+    "languages": {
+      "required": "At least one language is required",
+      "maxItems": "You cannot add more than 5 languages",
+      "name": {
+        "required": "Language is required",
+        "minLength": "Language name must be at least 2 characters long",
+        "maxLength": "Language name cannot exceed 50 characters"
+      },
+      "proficiency": {
+        "required": "Proficiency level is required",
+        "invalid": "Selected proficiency level is not valid"
+      }
+    },
+    "hobbies": {
+      "maxItems": "You cannot add more than 5 hobbies",
+      "minLength": "Hobby must be at least 2 characters long",
+      "maxLength": "Hobby cannot exceed 50 characters"
+    }
   }
-} 
+}

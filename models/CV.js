@@ -1,3 +1,5 @@
+// models/CV.js
+
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
@@ -11,7 +13,7 @@ const CVSchema = new Schema({
     firstname: String,
     lastname: String,
     email: String,
-    nationality: String,
+    nationality: Array,
     phoneNumber: String,
     dateofBirth: String, 
     sex: String,

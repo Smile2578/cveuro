@@ -1,28 +1,216 @@
 {
-  "required": {
-    "firstName": "Le prénom est obligatoire",
-    "lastName": "Le nom est obligatoire",
-    "email": "L'email est obligatoire",
-    "phone": "Le numéro de téléphone est obligatoire",
-    "address": "L'adresse est obligatoire",
-    "city": "La ville est obligatoire",
-    "zipCode": "Le code postal est obligatoire",
-    "nationality": "La nationalité est obligatoire",
-    "birthDate": "La date de naissance est obligatoire",
-    "gender": "Le sexe est obligatoire"
+  "required": "Ce champ est requis",
+  "email": {
+    "required": "L'adresse email est requise", 
+    "invalid": "L'adresse email n'est pas valide",
+    "format": "Format attendu : exemple@domaine.com"
   },
-  "format": {
-    "email": "L'email est invalide",
-    "date": "Format de date invalide",
-    "phone": "Format de téléphone invalide"
+  "phone": {
+    "required": "Le numéro de téléphone est requis",
+    "invalid": "Le numéro de téléphone n'est pas valide", 
+    "format": "Format attendu : +33 6 12 34 56 78 ou 06 12 34 56 78"
+  },
+  "name": {
+    "required": "Le nom est requis",
+    "minLength": "Le nom doit contenir au moins 2 caractères",
+    "maxLength": "Le nom ne doit pas dépasser 50 caractères",
+    "format": "Le nom ne doit contenir que des lettres"
+  },
+  "date": {
+    "required": "La date est requise",
+    "invalid": "La date n'est pas valide",
+    "future": "La date ne peut pas être dans le futur",
+    "past": "La date ne peut pas être dans le passé",
+    "format": "Format attendu : MM/AAAA",
+    "endBeforeStart": "La date de fin doit être après la date de début",
+    "startAfterEnd": "La date de début doit être avant la date de fin"
+  },
+  "url": {
+    "invalid": "L'URL n'est pas valide",
+    "format": "Format attendu : https://www.exemple.com",
+    "required": "L'URL est requise"
+  },
+  "text": {
+    "minLength": "Le texte doit contenir au moins 2 caractères",
+    "maxLength": "Le texte ne doit pas dépasser 1000 caractères",
+    "required": "Le texte est requis"
   },
   "education": {
-    "required": {
-      "school": "Le nom de l'école est obligatoire",
-      "degree": "Le diplôme est obligatoire",
-      "field": "Le domaine d'étude est obligatoire",
-      "startDate": "La date de début est obligatoire"
+    "school": {
+      "required": "Le nom de l'école est requis",
+      "minLength": "Le nom de l'école doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de l'école ne peut pas dépasser 100 caractères"
     },
-    "dateOrder": "La date de fin doit être après la date de début"
+    "degree": {
+      "required": "Le diplôme est requis",
+      "minLength": "Le diplôme doit contenir au moins 2 caractères",
+      "maxLength": "Le diplôme ne peut pas dépasser 100 caractères"
+    },
+    "customDegree": {
+      "minLength": "Le diplôme doit contenir au moins 2 caractères",
+      "maxLength": "Le diplôme ne peut pas dépasser 100 caractères",
+      "required": "Le diplôme est requis"
+    },
+    "startDate": {
+      "required": "La date de début est requise",
+      "format": "Format de date invalide (MM/AAAA)",
+      "future": "La date ne peut pas être dans le futur"
+    },
+    "endDate": {
+      "required": "La date de fin est requise",
+      "format": "Format de date invalide (MM/AAAA)",
+      "future": "La date ne peut pas être dans le futur",
+      "beforeStart": "La date de fin doit être après la date de début"
+    },
+    "achievements": {
+      "required": "La réalisation est requise",
+      "minLength": "La réalisation doit contenir au moins 2 caractères",
+      "maxLength": "La réalisation ne peut pas dépasser 100 caractères"
+    },
+    "maxItems": "Vous ne pouvez pas ajouter plus de 4 formations",
+    "required": "Veuillez ajouter au moins une formation"
+  },
+  "languages": {
+    "name": {
+      "required": "La langue est requise",
+      "minLength": "Le nom de la langue doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de la langue ne peut pas dépasser 50 caractères"
+    },
+    "proficiency": {
+      "required": "Le niveau est requis",
+      "invalid": "Le niveau de langue n'est pas valide"
+    }
+  },
+  "hobbies": {
+    "minLength": "Le centre d'intérêt doit contenir au moins 2 caractères",
+    "maxLength": "Le centre d'intérêt ne peut pas dépasser 50 caractères",
+    "maxItems": "Vous ne pouvez pas ajouter plus de 5 centres d'intérêt"
+  },
+  "personalInfo": {
+    "firstName": {
+      "required": "Veuillez saisir votre prénom",
+      "minLength": "Le prénom doit contenir au moins 2 caractères",
+      "maxLength": "Le prénom ne peut pas dépasser 50 caractères",
+      "format": "Le prénom ne peut contenir que des lettres"
+    },
+    "lastName": {
+      "required": "Veuillez saisir votre nom",
+      "minLength": "Le nom doit contenir au moins 2 caractères", 
+      "maxLength": "Le nom ne peut pas dépasser 50 caractères",
+      "format": "Le nom ne peut contenir que des lettres"
+    },
+    "email": {
+      "required": "Veuillez saisir votre adresse email",
+      "format": "Veuillez saisir une adresse email valide",
+      "maxLength": "L'email ne peut pas dépasser 100 caractères"
+    },
+    "phone": {
+      "required": "Veuillez saisir votre numéro de téléphone",
+      "format": "Veuillez saisir un numéro de téléphone valide"
+    },
+    "dateOfBirth": {
+      "required": "Veuillez saisir votre date de naissance",
+      "format": "Format de date invalide (JJ/MM/AAAA)",
+      "future": "La date ne peut pas être dans le futur",
+      "age": "Date de naissance invalide"
+    },
+    "nationality": {
+      "required": "Veuillez sélectionner au moins une nationalité",
+      "maxLength": "Vous ne pouvez pas sélectionner plus de 3 nationalités"
+    },
+    "sex": {
+      "required": "Veuillez sélectionner votre genre"
+    },
+    "gender": {
+      "required": "Veuillez sélectionner votre genre"
+    },
+    "address": {
+      "required": "Veuillez saisir votre adresse",
+      "maxLength": "L'adresse ne peut pas dépasser 200 caractères"
+    },
+    "city": {
+      "required": "Veuillez saisir votre ville",
+      "maxLength": "La ville ne peut pas dépasser 100 caractères"
+    },
+    "zip": {
+      "required": "Veuillez saisir votre code postal",
+      "format": "Le code postal doit contenir 5 chiffres"
+    }
+  },
+  "experience": {
+    "company": {
+      "required": "Le nom de l'entreprise est requis",
+      "minLength": "Le nom de l'entreprise doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de l'entreprise ne peut pas dépasser 100 caractères"
+    },
+    "position": {
+      "required": "Le poste est requis",
+      "minLength": "Le poste doit contenir au moins 2 caractères",
+      "maxLength": "Le poste ne peut pas dépasser 100 caractères"
+    },
+    "location": {
+      "required": "Le lieu est requis",
+      "minLength": "Le lieu doit contenir au moins 2 caractères",
+      "maxLength": "Le lieu ne peut pas dépasser 100 caractères"
+    },
+    "responsibilities": {
+      "required": "La responsabilité ne peut pas être vide",
+      "minLength": "Les responsabilités doivent contenir au moins 10 caractères",
+      "maxLength": "Les responsabilités ne peuvent pas dépasser 500 caractères"
+    },
+    "achievements": {
+      "required": "La réalisation est requise",
+      "minLength": "La réalisation doit contenir au moins 2 caractères",
+      "maxLength": "La réalisation ne peut pas dépasser 100 caractères"
+    },
+    "required": "Veuillez ajouter au moins une expérience professionnelle"
+  },
+  "skills": {
+    "name": {
+      "required": "Le nom de la compétence est requis",
+      "minLength": "Le nom de la compétence doit contenir au moins 2 caractères",
+      "maxLength": "Le nom de la compétence ne peut pas dépasser 50 caractères"
+    },
+    "level": {
+      "required": "Le niveau de compétence est requis",
+      "invalid": "Le niveau de compétence sélectionné n'est pas valide"
+    },
+    "list": {
+      "min": "Vous devez ajouter au moins une compétence",
+      "max": "Vous ne pouvez pas ajouter plus de 15 compétences"
+    }
+  },
+  "combined": {
+    "skills": {
+      "required": "Au moins une compétence est requise",
+      "maxItems": "Vous ne pouvez pas ajouter plus de 15 compétences",
+      "name": {
+        "required": "Le nom de la compétence est requis",
+        "minLength": "Le nom de la compétence doit contenir au moins 2 caractères",
+        "maxLength": "Le nom de la compétence ne peut pas dépasser 50 caractères"
+      },
+      "level": {
+        "required": "Le niveau est requis",
+        "invalid": "Le niveau sélectionné n'est pas valide"
+      }
+    },
+    "languages": {
+      "required": "Au moins une langue est requise",
+      "maxItems": "Vous ne pouvez pas ajouter plus de 5 langues",
+      "name": {
+        "required": "La langue est requise",
+        "minLength": "Le nom de la langue doit contenir au moins 2 caractères",
+        "maxLength": "Le nom de la langue ne peut pas dépasser 50 caractères"
+      },
+      "proficiency": {
+        "required": "Le niveau est requis",
+        "invalid": "Le niveau sélectionné n'est pas valide"
+      }
+    },
+    "hobbies": {
+      "maxItems": "Vous ne pouvez pas ajouter plus de 5 centres d'intérêt",
+      "minLength": "Le centre d'intérêt doit contenir au moins 2 caractères",
+      "maxLength": "Le centre d'intérêt ne peut pas dépasser 50 caractères"
+    }
   }
-} 
+}
