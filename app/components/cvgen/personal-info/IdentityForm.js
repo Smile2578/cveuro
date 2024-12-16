@@ -76,7 +76,7 @@ const IdentityForm = () => {
         </Box>
 
         <Stack spacing={3}>
-          <Box sx={{ flex: 1, minHeight: '85px', position: 'relative' }}>
+          <Box sx={{ flex: 1, minHeight: { xs: '100px', sm: '85px' }, position: 'relative' }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -128,7 +128,7 @@ const IdentityForm = () => {
                       fontSize: { xs: '0.75rem', sm: '0.875rem' },
                       marginLeft: 1,
                       position: 'absolute',
-                      bottom: '-20px'
+                      bottom: { xs: '-24px', sm: '-20px' }
                     }
                   }}
                 />
@@ -136,7 +136,7 @@ const IdentityForm = () => {
             />
           </Box>
 
-          <Box sx={{ flex: 1, minHeight: '85px', position: 'relative' }}>
+          <Box sx={{ flex: 1, minHeight: { xs: '100px', sm: '85px' }, position: 'relative' }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -188,7 +188,7 @@ const IdentityForm = () => {
                       fontSize: { xs: '0.75rem', sm: '0.875rem' },
                       marginLeft: 1,
                       position: 'absolute',
-                      bottom: '-20px'
+                      bottom: { xs: '-24px', sm: '-20px' }
                     }
                   }}
                 />

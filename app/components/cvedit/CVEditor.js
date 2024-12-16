@@ -1,109 +1,139 @@
 "use client";
-import React, { useEffect, useState } from 'react';
-import { Grid, Paper, Button, Box, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { 
+  Stack,
+  Paper, 
+  Box, 
+  Button,
+  Snackbar,
+  Alert,
+  useTheme,
+} from '@mui/material';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
+import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import CVInfos from './CVInfos';
 import LiveCV from './LiveCV';
 import PrintButton from './PrintButton';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle } from 'lucide-react';
-import theme from '@/app/theme';
+import { motion } from 'framer-motion';
 
-const SuccessNotification = ({ show, message, onHide }) => {
-  const [progress, setProgress] = useState(100);
-
-  useEffect(() => {
-    if (show) {
-      const timer = setInterval(() => {
-        setProgress((prevProgress) => {
-          if (prevProgress <= 0) {
-            clearInterval(timer);
-            onHide();
-            return 0;
-          }
-          return prevProgress - 1;
-        });
-      }, 80);
-
-      return () => clearInterval(timer);
-    }
-  }, [show, onHide]);
-
-  return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          className="fixed top-3 transform -translate-x-1/2 bg-white shadow-lg rounded-lg"
-          style={{ maxWidth: '90vw', zIndex: 1000 }}
-        >
-          <div className="p-4 flex items-center space-x-3">
-            <CheckCircle color={theme.palette.primary.alt} size={24} />
-            <p className="text-sm font-medium text-gray-800">{message}</p>
-          </div>
-          <motion.div
-            className="bg-green-500 h-1"
-            initial={{ width: '100%' }}
-            animate={{ width: `${progress}%` }}
-          />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-};
-
-const CVEditor = ({ cvData, setCvData, setShowNavBar }) => {
+const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
+  const theme = useTheme();
+  const t = useTranslations('cvedit');
   const router = useRouter();
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [showNotification, setShowNotification] = useState(true);
-  const t = useTranslations('cvedit.editor');
+  const [selectedSection, setSelectedSection] = useState(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+  const [localCvData, setLocalCvData] = useState(initialCvData);
+  const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    setShowNavBar(!showNotification);
-  }, [showNotification, setShowNavBar]);
+  const handleSectionUpdate = async (sectionName, newData) => {
+    // Mettre à jour les données localement d'abord
+    const updatedCV = {
+      ...localCvData,
+      [sectionName]: newData
+    };
+    setLocalCvData(updatedCV);
 
-  const handleNotificationHide = () => {
-    setShowNotification(false);
+    // Sauvegarder dans la BDD
+    try {
+      setIsSaving(true);
+      await onUpdate(updatedCV);
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour:", error);
+      // Remettre les anciennes données en cas d'erreur
+      setLocalCvData(localCvData);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const handleGoBack = () => {
-    router.push('/cvgen');
+  const handlePrint = async () => {
+    setIsPrinting(true);
+    // La logique d'impression sera implémentée dans PrintButton
+    setIsPrinting(false);
   };
 
   return (
-    <>
-      <SuccessNotification 
-        show={showNotification}
-        message={t('success')}
-        onHide={handleNotificationHide}
-      />
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <Paper elevation={3} sx={{ p: 2 }}>
-            <CVInfos cvData={cvData} setCvData={setCvData} />
-            <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', mt: 4 }}>
-              <Typography variant="h6" component="h2" sx={{ mb: 2, color: theme.palette.primary.alt, textAlign: 'center' }}>
-                {t('dragAndDrop')}
-              </Typography>
-              <Button variant="outlined" sx={{ width: "40%" }} onClick={handleGoBack}>
-                {t('backToForm')}
-              </Button>
-            </Box>
-          </Paper>
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <Paper elevation={3} sx={{ p: 4, minHeight: '100vh', overflowX: 'auto' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
-              <PrintButton setIsGeneratingPDF={setIsGeneratingPDF} />
-            </Box>
-            <LiveCV id="live-cv" cvData={cvData} setCvData={setCvData} setIsGeneratingPDF={setIsGeneratingPDF}/>
-          </Paper>
-        </Grid>
-      </Grid>
-    </>
+    <Box sx={{ position: 'relative', py: 4 }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={3}>
+        {/* Panneau d'édition */}
+        <Box sx={{ flex: { xs: '1', md: '0 0 33.333%' } }}>
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 3,
+                height: '100%',
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                position: 'relative'
+              }}
+            >
+              <CVInfos
+                cvData={localCvData}
+                onEdit={handleSectionUpdate}
+                selectedSection={selectedSection}
+                setSelectedSection={setSelectedSection}
+                locale={locale}
+              />
+            </Paper>
+          </motion.div>
+        </Box>
+
+        {/* Prévisualisation du CV */}
+        <Box sx={{ flex: { xs: '1', md: '0 0 66.666%' } }}>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 4,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                position: 'relative'
+              }}
+            >
+              <Box sx={{ 
+                mb: 3, 
+                display: 'flex', 
+                justifyContent: 'flex-end',
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                zIndex: 1
+              }}>
+                <PrintButton 
+                  onPrint={handlePrint} 
+                  disabled={isPrinting || isSaving}
+                />
+              </Box>
+              <LiveCV 
+                data={localCvData}
+                locale={locale}
+              />
+            </Paper>
+          </motion.div>
+        </Box>
+      </Stack>
+
+      {/* Notification de succès */}
+      <Snackbar 
+        open={showSuccess} 
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert severity="success" elevation={6} variant="filled">
+          {t('editor.success')}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };
 

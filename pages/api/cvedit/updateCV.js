@@ -7,35 +7,46 @@ export default async function handler(req, res) {
     await dbConnect();
 
     if (method === 'PUT') {
-        console.log('Received update request with body:', req.body); // This will show everything received
+        console.log('Données reçues pour mise à jour:', JSON.stringify(req.body, null, 2));
 
         try {
             const { userId } = req.query;
-            const updateData = {};
 
-            // Personal info updates
-            Object.entries(req.body.personalInfo).forEach(([key, value]) => {
-                updateData[`personalInfo.${key}`] = value;
-            });
+            // Transformer les données pour correspondre au schéma MongoDB
+            const transformedData = {
+                ...req.body,
+                // Transformer educations en education en préservant tous les champs
+                education: req.body.educations?.map(edu => ({
+                    ...edu,
+                    customDegree: edu.customDegree || null // Préserver le customDegree
+                })),
+                // Transformer workExperience.experiences en workExperience
+                workExperience: req.body.workExperience?.experiences || [],
+            };
 
-            // Assuming other fields are at the root level and not nested under personalInfo
-            ['education', 'workExperience', 'skills', 'languages', 'hobbies', 'hasWorkExp'].forEach(field => {
-                updateData[field] = req.body[field];
-            });
+            // Supprimer les anciennes clés
+            delete transformedData.educations;
+            if (transformedData.workExperience) {
+                delete transformedData.workExperience.experiences;
+            }
 
-            console.log('Update data being set:', updateData); // Confirm what will be set
+            console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
 
-            const cvUpdate = await CV.findOneAndUpdate({ userId }, { $set: updateData }, { new: true, runValidators: true });
+            const cvUpdate = await CV.findOneAndUpdate(
+                { userId },
+                { $set: transformedData },
+                { new: true, runValidators: true }
+            );
 
             if (!cvUpdate) {
                 return res.status(404).json({ success: false, message: 'CV not found' });
             }
 
-            console.log('Updated CV:', cvUpdate); // See the updated result
+            console.log('CV mis à jour avec succès:', cvUpdate);
 
             return res.status(200).json({ success: true, data: cvUpdate });
         } catch (error) {
-            console.error('Error in updating CV:', error);
+            console.error('Erreur lors de la mise à jour du CV:', error);
             res.status(400).json({ success: false, message: 'Failed to update CV', error: error.message });
         }
     } else {

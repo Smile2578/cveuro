@@ -390,7 +390,8 @@
     },
     "errors": {
       "hasErrors": "Cette langue contient des erreurs",
-      "checkFields": "Certaines langues contiennent des erreurs"
+      "checkFields": "Certaines langues contiennent des erreurs",
+      "required": "Une langue est requise"
     },
     "suggestions": {
       "title": "Suggestions de langues",

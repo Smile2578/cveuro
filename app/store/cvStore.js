@@ -4,6 +4,7 @@
 
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { shallow } from 'zustand/shallow';
 
 console.log('cvStore - Initialisation du store');
 
@@ -31,11 +32,18 @@ const defaultFormData = {
     hasWorkExperience: false,
     experiences: []
   },
-  combinedForm: {
-    skills: [],
-    languages: [],
-    hobbies: []
-  }
+  skills: [],
+  languages: [],
+  hobbies: []
+};
+
+// Sélecteurs optimisés
+const selectors = {
+  formData: (state) => state.formData,
+  userId: (state) => state.userId,
+  isEditing: (state) => state.isEditing,
+  currentStep: (state) => state.activeStep,
+  formErrors: (state) => state.formErrors,
 };
 
 const useCVStore = create(
@@ -53,7 +61,128 @@ const useCVStore = create(
       userId: null,
       formErrors: {},
 
-      // Nouvelles méthodes de gestion des étapes
+      // Actions optimisées
+      setFormData: (data) => {
+        const currentData = get().formData;
+        // Vérifier si les données ont réellement changé
+        if (JSON.stringify(currentData) !== JSON.stringify(data)) {
+          set({ 
+            formData: data,
+            isFormDirty: true,
+            lastSaved: new Date().toISOString()
+          });
+        }
+      },
+
+      updateFormField: (field, value) => {
+        const currentValue = get().formData[field];
+        // Vérifier si la valeur a réellement changé
+        if (JSON.stringify(currentValue) !== JSON.stringify(value)) {
+          set((state) => ({
+            formData: {
+              ...state.formData,
+              [field]: value
+            },
+            isFormDirty: true,
+            lastSaved: new Date().toISOString()
+          }));
+        }
+      },
+
+      // Navigation optimisée
+      canNavigateNext: () => {
+        const state = get();
+        const { currentStep, currentSubStep, totalSubSteps } = state.getStepInfo();
+        
+        if (currentStep === 0) {
+          return currentSubStep < PERSONAL_INFO_SUBSTEPS - 1 || currentStep < TOTAL_STEPS - 1;
+        }
+        
+        if (currentStep === TOTAL_STEPS - 1) {
+          return currentSubStep < COMBINED_FORM_SUBSTEPS - 1;
+        }
+        
+        return currentStep < TOTAL_STEPS - 1;
+      },
+
+      canNavigatePrevious: () => {
+        const state = get();
+        const { currentStep, currentSubStep } = state.getStepInfo();
+        
+        return currentStep > 0 || currentSubStep > 0;
+      },
+
+      navigateNext: () => {
+        const state = get();
+        const { currentStep, currentSubStep } = state.getStepInfo();
+
+        set((state) => {
+          if (currentStep === 0 && currentSubStep < PERSONAL_INFO_SUBSTEPS - 1) {
+            return { personalInfoStep: state.personalInfoStep + 1 };
+          }
+          if (currentStep === TOTAL_STEPS - 1 && currentSubStep < COMBINED_FORM_SUBSTEPS - 1) {
+            return { combinedFormStep: state.combinedFormStep + 1 };
+          }
+          if (currentStep < TOTAL_STEPS - 1) {
+            return { 
+              activeStep: state.activeStep + 1,
+              personalInfoStep: 0,
+              combinedFormStep: 0
+            };
+          }
+          return state;
+        });
+      },
+
+      navigatePrevious: () => {
+        const state = get();
+        const { currentStep, currentSubStep } = state.getStepInfo();
+
+        set((state) => {
+          if (currentStep === 0 && currentSubStep > 0) {
+            return { personalInfoStep: state.personalInfoStep - 1 };
+          }
+          if (currentStep === TOTAL_STEPS - 1 && currentSubStep > 0) {
+            return { combinedFormStep: state.combinedFormStep - 1 };
+          }
+          if (currentStep > 0) {
+            return { 
+              activeStep: state.activeStep - 1,
+              personalInfoStep: currentStep === 1 ? PERSONAL_INFO_SUBSTEPS - 1 : 0,
+              combinedFormStep: 0
+            };
+          }
+          return state;
+        });
+      },
+
+      // Autres méthodes optimisées
+      setIsEditing: (isEditing) => set({ isEditing }),
+      setUserId: (userId) => set({ userId }),
+      setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
+      setFormErrors: (errors) => set({ formErrors: errors }),
+      clearFormErrors: () => set({ formErrors: {} }),
+
+      resetForm: () => {
+        set({ 
+          formData: defaultFormData,
+          activeStep: 0,
+          personalInfoStep: 0,
+          combinedFormStep: 0,
+          isFormDirty: false,
+          lastSaved: null,
+          isEditing: false,
+          isSubmitting: false,
+          userId: null,
+          formErrors: {}
+        });
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('cvFormData');
+          localStorage.removeItem('cv-store');
+        }
+      },
+
+      // Getters optimisés
       getStepInfo: () => {
         const state = get();
         const isInPersonalInfo = state.activeStep === 0;
@@ -74,155 +203,23 @@ const useCVStore = create(
               : 0,
           isLastStep: state.activeStep === TOTAL_STEPS - 1,
           isLastSubStep: (isInPersonalInfo && state.personalInfoStep === PERSONAL_INFO_SUBSTEPS - 1) ||
-                        (isInCombinedForm && state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1),
-          isLastStepAndSubStep: state.activeStep === TOTAL_STEPS - 1 && 
-                               state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1,
-          isFinalStep: state.activeStep === TOTAL_STEPS - 1 && 
-                      state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1
+                        (isInCombinedForm && state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1)
         };
       },
 
-      // Navigation améliorée
-      canNavigateNext: () => {
-        const state = get();
-        const { currentStep, currentSubStep, totalSubSteps } = state.getStepInfo();
-        
-        if (currentStep === 0) {
-          return currentSubStep < PERSONAL_INFO_SUBSTEPS - 1 || currentStep < TOTAL_STEPS - 1;
-        }
-        
-        if (currentStep === TOTAL_STEPS - 1) {
-          return currentSubStep < COMBINED_FORM_SUBSTEPS - 1;
-        }
-        
-        return currentStep < TOTAL_STEPS - 1;
-      },
-
-      canNavigatePrevious: () => {
-        const state = get();
-        const { currentStep, currentSubStep } = state.getStepInfo();
-        
-        if (currentStep === 0) {
-          return currentSubStep > 0;
-        }
-        
-        if (currentStep === TOTAL_STEPS - 1) {
-          return currentSubStep > 0 || currentStep > 0;
-        }
-        
-        return currentStep > 0;
-      },
-
-      // Navigation
-      navigateNext: () => {
-        const state = get();
-        const { currentStep, currentSubStep, totalSubSteps } = state.getStepInfo();
-
-        if (currentStep === 0 && currentSubStep < PERSONAL_INFO_SUBSTEPS - 1) {
-          set({ personalInfoStep: currentSubStep + 1 });
-        } else if (currentStep === TOTAL_STEPS - 1 && currentSubStep < COMBINED_FORM_SUBSTEPS - 1) {
-          set({ combinedFormStep: currentSubStep + 1 });
-        } else if (currentStep < TOTAL_STEPS - 1) {
-          set({ 
-            activeStep: currentStep + 1,
-            personalInfoStep: 0,
-            combinedFormStep: 0
-          });
-        }
-      },
-
-      navigatePrevious: () => {
-        const state = get();
-        const { currentStep, currentSubStep } = state.getStepInfo();
-
-        if (currentStep === 0 && currentSubStep > 0) {
-          set({ personalInfoStep: currentSubStep - 1 });
-        } else if (currentStep === TOTAL_STEPS - 1) {
-          if (currentSubStep > 0) {
-            set({ combinedFormStep: currentSubStep - 1 });
-          } else {
-            set({ 
-              activeStep: currentStep - 1,
-              combinedFormStep: 0
-            });
-          }
-        } else if (currentStep > 0) {
-          set({ 
-            activeStep: currentStep - 1,
-            personalInfoStep: currentStep === 1 ? PERSONAL_INFO_SUBSTEPS - 1 : 0,
-            combinedFormStep: 0
-          });
-        }
-      },
-
-      // Actions de gestion du formulaire
-      setFormData: (data) => {
-        set({ 
-          formData: data,
-          isFormDirty: true,
-          lastSaved: new Date().toISOString()
-        });
-      },
-      
-      updateFormField: (field, value) => {
-        set((state) => ({
-          formData: {
-            ...state.formData,
-            [field]: value
-          },
-          isFormDirty: true,
-          lastSaved: new Date().toISOString()
-        }));
-      },
-
-      // Gestion de l'édition
-      setIsEditing: (isEditing) => set({ isEditing }),
-      setUserId: (userId) => set({ userId }),
-      setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
-      
-      // Gestion des erreurs
-      setFormErrors: (errors) => set({ formErrors: errors }),
-      clearFormErrors: () => set({ formErrors: {} }),
-      
-      // Reset complet
-      resetForm: () => {
-        set({ 
-          formData: defaultFormData,
-          activeStep: 0,
-          personalInfoStep: 0,
-          combinedFormStep: 0,
-          isFormDirty: false,
-          lastSaved: null,
-          isEditing: false,
-          isSubmitting: false,
-          userId: null,
-          formErrors: {}
-        });
-        localStorage.removeItem('cvFormData');
-        localStorage.removeItem('cv-store');
-      },
-
-      // Calcul de la progression mis à jour
       getProgress: () => {
-        const state = get();
-        const { currentStep, currentSubStep, totalSubSteps } = state.getStepInfo();
-        
-        // Chaque étape principale vaut 25%
+        const { currentStep, currentSubStep, totalSubSteps } = get().getStepInfo();
         const mainProgress = (currentStep / (TOTAL_STEPS - 1)) * 100;
-        
-        // Calcul de la progression des sous-étapes
-        let subProgress = 0;
-        if (totalSubSteps > 0) {
-          const subStepValue = 25 / totalSubSteps; // 25% divisé par le nombre de sous-étapes
-          subProgress = currentSubStep * subStepValue;
-        }
+        const subProgress = totalSubSteps > 0 
+          ? (currentSubStep / totalSubSteps) * (100 / TOTAL_STEPS)
+          : 0;
         
         return Math.min(100, Math.round(mainProgress + subProgress));
       }
     }),
     {
       name: 'cv-store',
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
       partialize: (state) => ({
         formData: state.formData,
         activeStep: state.activeStep,
@@ -235,4 +232,11 @@ const useCVStore = create(
   )
 );
 
-export { useCVStore }; 
+// Export des sélecteurs optimisés
+export const useFormData = () => useCVStore(selectors.formData, shallow);
+export const useUserId = () => useCVStore(selectors.userId);
+export const useIsEditing = () => useCVStore(selectors.isEditing);
+export const useCurrentStep = () => useCVStore(selectors.currentStep);
+export const useFormErrors = () => useCVStore(selectors.formErrors, shallow);
+
+export { useCVStore };

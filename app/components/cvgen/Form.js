@@ -1,7 +1,7 @@
 // app/components/cvgen/Form.js
 "use client";
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import { Box, Container } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -38,86 +38,92 @@ const Form = () => {
   const tValidation = useTranslations('validation');
   const isResetting = useRef(false);
   const { currentStep } = useFormProgress();
+  const formStateRef = useRef({});
 
   const { cvSchema } = createValidators(tValidation);
 
-  // Configuration de React Hook Form avec Zod
+  // Configuration optimisée de React Hook Form
   const methods = useForm({
     resolver: zodResolver(cvSchema),
     defaultValues: store.formData,
     mode: 'onTouched',
-    reValidateMode: 'onBlur'
+    reValidateMode: 'onBlur',
+    shouldUnregister: false // Empêche la perte des données lors du changement d'étape
   });
 
-  // Chargement initial des données depuis le store
+  // Synchronisation optimisée avec le store
   useEffect(() => {
-    const loadInitialData = async () => {
-      const userId = localStorage.getItem('userId');
-      if (userId) {
-        try {
-          store.setUserId(userId);
-          store.setIsEditing(true);
-          const response = await fetch(`/api/cvgen/fetchCV?userId=${userId}`);
-          if (response.ok) {
-            const data = await response.json();
-            methods.reset(data);
-            store.setFormData(data);
-          }
-        } catch (error) {
-          console.error('Erreur lors du chargement des données:', error);
+    if (isResetting.current) return;
+
+    const subscription = methods.watch((value, { name, type }) => {
+      if (!isResetting.current && value) {
+        // Éviter les mises à jour inutiles en comparant avec l'état précédent
+        const hasChanged = JSON.stringify(formStateRef.current[name]) !== JSON.stringify(value[name]);
+        
+        if ((type === 'change' || type === 'blur') && hasChanged) {
+          formStateRef.current[name] = value[name];
+          store.setFormData(value);
         }
       }
-    };
-    loadInitialData();
-  }, []);
-
-  // Synchronisation des données validées avec le store
-  useEffect(() => {
-    const subscription = methods.watch((value) => {
-      if (!isResetting.current && value) {
-        store.setFormData(value);
-      }
     });
-    return () => subscription.unsubscribe();
-  }, [methods.watch]);
 
-  // Soumission finale du formulaire
+    return () => subscription.unsubscribe();
+  }, [methods.watch, store]);
+
+  // Soumission optimisée du formulaire
   const handleSubmit = useCallback(async () => {
-    console.log('Form: handleSubmit called');
     try {
       store.setIsSubmitting(true);
+      store.setFormErrors(null);
       
-      // Valider le formulaire complet
       const isValid = await methods.trigger();
       if (!isValid) {
-        console.log('Form: validation failed');
+        store.setFormErrors(methods.formState.errors);
         return;
       }
 
       const formData = methods.getValues();
       const userId = store.userId;
       
-      const endpoint = userId 
-        ? `/api/cvgen/updateCV?userId=${userId}`
-        : '/api/cvgen/submitCV';
-      
-      const method = userId ? 'PUT' : 'POST';
+      let response;
+      let result;
 
-      const response = await fetch(endpoint, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      });
+      if (userId) {
+        try {
+          response = await fetch(`/api/cvgen/updateCV?userId=${userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          });
 
-      if (!response.ok) {
-        throw new Error('Erreur lors de la soumission');
+          if (response.status === 404) {
+            throw new Error('CV_NOT_FOUND');
+          }
+        } catch (error) {
+          if (error.message === 'CV_NOT_FOUND') {
+            localStorage.removeItem('userId');
+            store.setUserId(null);
+          } else {
+            throw error;
+          }
+        }
       }
 
-      const result = await response.json();
+      if (!userId || response?.status === 404) {
+        response = await fetch('/api/cvgen/submitCV', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+      }
+
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+
+      result = await response.json();
       
-      if (!userId && result.data?.userId) {
+      if (result.data?.userId) {
         localStorage.setItem('userId', result.data.userId);
         store.setUserId(result.data.userId);
       }
@@ -132,12 +138,16 @@ const Form = () => {
     }
   }, [methods, store, router]);
 
+  // Composant StepContent mémorisé
+  const MemoizedStepContent = useMemo(() => (
+    <StepContent step={currentStep} onSubmit={handleSubmit} />
+  ), [currentStep, handleSubmit]);
+
   return (
     <FormProvider {...methods}>
       <form onSubmit={(e) => e.preventDefault()}>
         <Container maxWidth="md" sx={{ overflowX: 'hidden', paddingRight: 'calc(100vw - 100%)' }}>
           <ProgressBar />
-
           <Box sx={{ minHeight: '60vh' }}>
             <AnimatePresence mode="wait">
               <motion.div
@@ -147,7 +157,7 @@ const Form = () => {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <StepContent step={currentStep} onSubmit={handleSubmit} />
+                {MemoizedStepContent}
               </motion.div>
             </AnimatePresence>
           </Box>

@@ -12,6 +12,7 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
     const { userId } = req.query;
+    console.log('Données reçues pour mise à jour:', JSON.stringify(req.body, null, 2));
 
     if (!userId) {
       return res.status(400).json({ 
@@ -20,9 +21,29 @@ export default async function handler(req, res) {
       });
     }
 
+    // Transformer les données pour correspondre au schéma MongoDB
+    const transformedData = {
+      ...req.body,
+      // Transformer educations en education en préservant tous les champs
+      education: req.body.educations?.map(edu => ({
+        ...edu,
+        customDegree: edu.customDegree || null // Préserver le customDegree
+      })),
+      // Transformer workExperience.experiences en workExperience
+      workExperience: req.body.workExperience?.experiences || [],
+    };
+
+    // Supprimer les anciennes clés
+    delete transformedData.educations;
+    if (transformedData.workExperience) {
+      delete transformedData.workExperience.experiences;
+    }
+
+    console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
+
     const cvUpdate = await CV.findOneAndUpdate(
       { userId }, 
-      req.body,
+      transformedData,
       { new: true, runValidators: true }
     );
 
@@ -39,6 +60,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error('Erreur lors de la mise à jour:', error);
     return res.status(500).json({ 
       success: false, 
       error: error.message 

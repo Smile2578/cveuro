@@ -187,16 +187,26 @@ const LanguagesForm = () => {
   const handleRemove = useCallback((index) => {
     console.log('[LanguagesForm] Début de la suppression pour index:', index);
     
-    // On supprime simplement la langue
+    // On désactive complètement la validation
+    clearErrors();
+    
+    // On supprime la langue
     remove(index);
     
-    // On nettoie les erreurs sans re-validation
-    clearErrors('languages');
-  }, [remove, clearErrors]);
+    // On ne revalide que si c'est la dernière langue
+    const remainingFields = fields.length - 1;
+    if (remainingFields === 0) {
+      // Si c'était la dernière langue, on nettoie juste les erreurs
+      clearErrors();
+    }
+  }, [remove, clearErrors, fields.length]);
 
   const handleAddLanguage = useCallback(() => {
     console.log('[LanguagesForm] Ajout d\'une nouvelle langue');
     if (fields.length < 5) {
+      // On désactive complètement la validation
+      clearErrors();
+      
       const newLanguage = {
         language: '',
         proficiency: 'B1',
@@ -206,11 +216,9 @@ const LanguagesForm = () => {
       
       console.log('[LanguagesForm] Nouvelle langue à ajouter:', newLanguage);
       
-      // On désactive toute validation
-      clearErrors('languages');
-      
+      // On ajoute sans aucune validation
       append(newLanguage, {
-        shouldFocus: true,
+        shouldFocus: false,
         shouldValidate: false,
         shouldDirty: false,
         shouldTouch: false
@@ -221,6 +229,9 @@ const LanguagesForm = () => {
   const handleQuickAdd = useCallback((language) => {
     console.log('[LanguagesForm] Ajout rapide d\'une langue:', language);
     if (fields.length < 5) {
+      // On désactive complètement la validation
+      clearErrors();
+      
       const newLanguage = {
         language: t(language.code),
         proficiency: language.level,
@@ -228,19 +239,36 @@ const LanguagesForm = () => {
         testScore: ''
       };
       
+      // On ajoute sans aucune validation
       append(newLanguage, {
         shouldFocus: false,
         shouldValidate: false,
         shouldDirty: false,
         shouldTouch: false
       });
-      
-      // On déclenche la validation après un court délai
-      setTimeout(() => {
-        trigger('languages');
-      }, 100);
     }
-  }, [fields.length, append, trigger, t]);
+  }, [fields.length, append, clearErrors, t]);
+
+  // Effet pour gérer la validation initiale des champs
+  useEffect(() => {
+    if (fields.length > 0) {
+      // On ne valide que si les champs ont été touchés
+      const hasBeenTouched = Object.keys(touchedFields).length > 0;
+      if (hasBeenTouched) {
+        const timer = setTimeout(() => {
+          trigger('languages');
+        }, 100);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [fields.length, touchedFields, trigger]);
+
+  // Effet pour nettoyer les erreurs quand il n'y a pas de langues
+  useEffect(() => {
+    if (fields.length === 0) {
+      clearErrors('languages');
+    }
+  }, [fields.length, clearErrors]);
 
   return (
     <Box sx={{ width: '100%', mb: 4 }}>
@@ -254,9 +282,9 @@ const LanguagesForm = () => {
           </Typography>
         </Box>
 
-        {errors?.languages && (
+        {(errors?.languages?.message || errors?.languages?.type === 'required') && (
           <Alert severity="error">
-            {errors.languages.message || t('languages.errors.checkFields')}
+            {errors.languages.message || t('languages.errors.required')}
           </Alert>
         )}
 

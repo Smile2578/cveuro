@@ -375,23 +375,34 @@ const WorkExperienceForm = () => {
     const formData = store.formData;
     console.log('WorkExperienceForm - Initialisation', {
       storeData: formData?.workExperience,
-      currentFields: fields
+      currentFields: fields,
+      hasWorkExperience
     });
 
-    if (formData?.workExperience?.hasWorkExperience && 
-        formData.workExperience.experiences?.length > 0 && 
-        fields.length === 0) {
-      console.log('WorkExperienceForm - Restauration des données');
+    // Vérifier s'il y a des expériences dans le store
+    const hasExistingExperiences = formData?.workExperience?.experiences?.length > 0;
+    const shouldInitialize = hasExistingExperiences && 
+                           (!hasWorkExperience || fields.length === 0) && 
+                           !fields.some(field => field.companyName); // Vérifie si les champs sont vides
+
+    if (shouldInitialize) {
+      console.log('WorkExperienceForm - Restauration des données et activation du switch');
+      // Activer le switch
       setValue('workExperience.hasWorkExperience', true, { 
         shouldValidate: false,
         shouldDirty: false,
         shouldTouch: false
       });
+
+      // Nettoyer les champs existants avant d'ajouter
+      remove();
+
+      // Ajouter les expériences existantes
       formData.workExperience.experiences.forEach(exp => {
         append(exp, { shouldFocus: false });
       });
     }
-  }, [store.formData, fields.length, setValue, append]);
+  }, [store.formData, fields.length, setValue, append, hasWorkExperience, remove]);
 
   // Effet pour synchroniser les erreurs avec le store uniquement quand nécessaire
   useEffect(() => {

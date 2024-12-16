@@ -1,63 +1,91 @@
 {
   "editor": {
     "loading": "Chargement de votre CV...",
-    "success": "Vous avez maintenant terminé votre CV ! Vous pouvez le modifier ou le télécharger directement.",
-    "backToForm": "Retourner sur le formulaire",
-    "dragAndDrop": "Vous pouvez modifier l'ordre des expériences professionnelles ou éducatives avec les flèches",
+    "success": "Votre CV a été mis à jour avec succès !",
+    "backToForm": "Retour au formulaire",
+    "dragAndDrop": "Vous pouvez modifier l'ordre des sections par glisser-déposer",
+    "noUser": "Aucun utilisateur spécifié",
+    "redirecting": "Redirection vers la page d'accueil...",
     "print": {
       "button": "Télécharger en PDF",
       "generating": "Génération du PDF en cours..."
     }
   },
-  "infos": {
-    "personalInfo": {
-      "title": "Informations Personnelles",
-      "firstName": "Prénom",
-      "lastName": "Nom",
-      "email": "Email",
-      "phone": "Téléphone",
-      "address": "Adresse",
-      "birthDate": "Date de naissance",
-      "birthPlace": "Lieu de naissance",
-      "nationality": "Nationalité",
-      "gender": "Genre"
-    },
-    "education": {
-      "title": "Formation",
-      "school": "École",
-      "degree": "Diplôme",
-      "field": "Domaine d'études",
-      "startDate": "Date de début",
-      "endDate": "Date de fin",
-      "ongoing": "En cours",
-      "achievements": "Réalisations"
-    },
-    "experience": {
-      "title": "Expérience Professionnelle",
-      "company": "Entreprise",
-      "position": "Poste",
-      "location": "Lieu",
-      "startDate": "Date de début",
-      "endDate": "Date de fin",
-      "ongoing": "En cours",
-      "responsibilities": "Responsabilités"
-    },
-    "skills": {
-      "title": "Compétences",
-      "name": "Compétence",
-      "level": "Niveau"
-    },
-    "languages": {
-      "title": "Langues",
-      "language": "Langue",
-      "level": "Niveau",
-      "test": {
-        "name": "Test",
-        "score": "Score"
-      }
-    },
-    "hobbies": {
-      "title": "Loisirs"
+  "sections": {
+    "personalInfo": "Informations Personnelles",
+    "education": "Formation",
+    "experience": "Expérience Professionnelle",
+    "skills": "Compétences",
+    "languages": "Langues",
+    "hobbies": "Loisirs"
+  },
+  "common": {
+    "ongoing": "En cours",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "add": "Ajouter"
+  },
+  "personalInfo": {
+    "firstname": "Prénom",
+    "lastname": "Nom",
+    "name": "Nom complet",
+    "email": "Email",
+    "phoneNumber": "Numéro de téléphone",
+    "contact": "Contact",
+    "address": "Adresse",
+    "city": "Ville",
+    "zip": "Code postal",
+    "dateofBirth": "Date de naissance",
+    "nationality": "Nationalité"
+  },
+  "education": {
+    "degree": "Diplôme",
+    "customDegree": "Diplôme personnalisé",
+    "schoolName": "Nom de l'école",
+    "fieldOfStudy": "Domaine d'études",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "ongoing": "En cours d'études",
+    "achievements": "Réalisations"
+  },
+  "experience": {
+    "position": "Poste",
+    "companyName": "Nom de l'entreprise",
+    "location": "Lieu",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "ongoing": "Poste actuel",
+    "responsibilities": "Responsabilités"
+  },
+  "skills": {
+    "skillName": "Nom de la compétence",
+    "level": "Niveau",
+    "levels": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé",
+      "expert": "Expert"
     }
-  }
+  },
+  "languages": {
+    "language": "Langue",
+    "proficiency": "Niveau de maîtrise",
+    "levels": {
+      "A1": "Débutant (A1)",
+      "A2": "Élémentaire (A2)",
+      "B1": "Intermédiaire (B1)",
+      "B2": "Intermédiaire supérieur (B2)",
+      "C1": "Avancé (C1)",
+      "C2": "Maîtrise (C2)",
+      "Native": "Langue maternelle"
+    }
+  },
+  "hobbies": {
+    "hobby": "Loisir",
+    "addHobby": "Ajouter un loisir"
+  },
+  "title": "CV Editor",
+  "description": "Editez votre CV en ligne"
 } 

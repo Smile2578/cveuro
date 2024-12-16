@@ -378,12 +378,18 @@ const EducationForm = () => {
   const cvStore = useCVStore();
   const [isResetting, setIsResetting] = useState(false);
 
-  // Effet pour l'initialisation unique
+  // Effet d'initialisation
   useEffect(() => {
-    console.log('Initialisation effect - fields:', fields.length);
+    console.log('=== EducationForm - Initialisation ===', {
+      currentFields: fields,
+      storeData: cvStore.formData?.educations
+    });
+
     const currentEducations = getValues('educations');
-    console.log('Current educations:', currentEducations);
+    console.log('Éducations actuelles:', JSON.stringify(currentEducations, null, 2));
+
     if (!isResetting && (!currentEducations || currentEducations.length === 0)) {
+      console.log('Ajout d\'une éducation vide initiale');
       append({
         schoolName: '',
         degree: '',
@@ -401,7 +407,7 @@ const EducationForm = () => {
   // Effet pour synchroniser les erreurs avec le store
   useEffect(() => {
     if (errors?.educations) {
-      console.log('Education errors:', errors.educations);
+      console.log('Erreurs d\'éducation:', errors.educations);
       cvStore.setFormErrors({
         ...cvStore.formErrors,
         educations: errors.educations

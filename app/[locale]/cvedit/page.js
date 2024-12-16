@@ -1,16 +1,15 @@
 import { Suspense } from 'react';
+import { Box, CircularProgress, Typography, Button } from '@mui/material';
 import CVEditClient from "@/app/components/cvedit/CVEditClient";
-
-export const metadata = {
-  title: 'CV Editor',
-  description: 'Edit your CV online',
-};
+import { useTranslations } from 'next-intl';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 async function getCVData(userId) {
   if (!userId) return null;
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cvgen/getCV?userId=${userId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/cvedit/fetchCV?userId=${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -19,23 +18,47 @@ async function getCVData(userId) {
     });
 
     if (!response.ok) {
+      if (response.status === 404) {
+        return null;
+      }
       throw new Error('Failed to fetch CV');
     }
 
-    return response.json();
+    const data = await response.json();
+    return data;
   } catch (error) {
     console.error('Error fetching CV:', error);
     return null;
   }
 }
 
-export default async function CVEditPage({ searchParams }) {
+const LoadingFallback = () => (
+  <Box 
+    sx={{ 
+      display: 'flex', 
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      height: '100vh',
+      width: '100%',
+      backgroundColor: 'background.default'
+    }}
+  >
+    <CircularProgress size={60} thickness={4} />
+  </Box>
+);
+
+export default async function CVEditPage({ params: { locale }, searchParams }) {
   const { userId } = searchParams;
-  const cvData = userId ? await getCVData(userId) : null;
+  
+  if (!userId) {
+    redirect('/');
+  }
+
+  const cvData = await getCVData(userId);
 
   return (
-    <Suspense fallback={<div>Chargement...</div>}>
-      <CVEditClient initialData={cvData} />
+    <Suspense fallback={<LoadingFallback />}>
+      <CVEditClient initialData={cvData} locale={locale} />
     </Suspense>
   );
 } 

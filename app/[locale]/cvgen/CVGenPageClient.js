@@ -2,11 +2,12 @@
 
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import React, { Suspense, useState, useEffect, useCallback, useRef } from 'react';
 import { Container, Box, ThemeProvider, CssBaseline, CircularProgress } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 import { NextIntlClientProvider } from 'next-intl';
+import { useCVStore } from '../../store/cvStore';
 import theme from '../../theme';
 
 // Chargement dynamique des composants
@@ -76,6 +77,121 @@ const pageVariants = {
 
 export default function CVGenPageClient({ locale, messages }) {
   const [showWelcome, setShowWelcome] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const store = useCVStore();
+  const hasFetched = useRef(false);
+  const isMounted = useRef(false);
+
+  const transformData = useCallback((data) => {
+    if (!data) return null;
+    
+    return {
+      personalInfo: data.personalInfo || {},
+      educations: data.education?.map(edu => ({
+        ...edu,
+        degree: edu.degree || '',
+        customDegree: edu.customDegree === undefined ? '' : edu.customDegree,
+        fieldOfStudy: edu.fieldOfStudy || '',
+        startDate: edu.startDate || '',
+        endDate: edu.endDate || '',
+        ongoing: edu.ongoing || false,
+        achievements: edu.achievements || []
+      })) || [],
+      workExperience: {
+        hasWorkExperience: data.workExperience?.length > 0,
+        experiences: data.workExperience?.map(exp => ({
+          ...exp,
+          responsibilities: exp.responsibilities || []
+        })) || []
+      },
+      skills: data.skills?.map(skill => ({
+        ...skill,
+        level: skill.level || 'beginner'
+      })) || [],
+      languages: data.languages?.map(lang => ({
+        ...lang,
+        proficiency: lang.proficiency || '',
+        testName: lang.testName || '',
+        testScore: lang.testScore || ''
+      })) || [],
+      hobbies: data.hobbies || []
+    };
+  }, []);
+
+  const fetchCVData = useCallback(async () => {
+    const userId = localStorage.getItem('userId');
+    
+    // Vérifications optimisées pour éviter les fetchs inutiles
+    if (!userId || !isMounted.current) {
+      setIsLoading(false);
+      setShowWelcome(!userId);
+      return;
+    }
+
+    try {
+      hasFetched.current = true;
+      
+      const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        cache: 'no-store' // Désactive le cache pour ce fetch
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch CV');
+      }
+
+      const rawData = await response.json();
+      const transformedData = transformData(rawData);
+      
+      if (transformedData && isMounted.current) {
+        store.setFormData(transformedData);
+        store.setIsEditing(true);
+        store.setUserId(userId);
+        setShowWelcome(false);
+      }
+    } catch (error) {
+      console.error('Error fetching CV:', error);
+      if (isMounted.current) {
+        hasFetched.current = false;
+        setShowWelcome(true);
+      }
+    } finally {
+      if (isMounted.current) {
+        setIsLoading(false);
+      }
+    }
+  }, [store, transformData]);
+
+  useEffect(() => {
+    isMounted.current = true;
+    
+    if (typeof window !== 'undefined') {
+      fetchCVData();
+    }
+
+    return () => {
+      isMounted.current = false;
+    };
+  }, []); // Suppression de la dépendance fetchCVData
+
+  if (isLoading) {
+    return (
+      <Box 
+        sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '100vh',
+          background: theme.gradient.background
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>

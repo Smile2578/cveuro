@@ -392,7 +392,8 @@
     },
     "errors": {
       "hasErrors": "This language contains errors",
-      "checkFields": "Some languages contain errors"
+      "checkFields": "Some languages contain errors",
+      "required": "One language is required"
     },
     "suggestions": {
       "title": "Language suggestions",

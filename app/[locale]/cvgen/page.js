@@ -9,7 +9,5 @@ export default async function CVGenPage({ params: { locale } }) {
     validation: (await import(`../../../public/locales/${locale}/validation.json`)).default
   };
   
-  return (
-    <CVGenPageClient locale={locale} messages={messages} />
-  );
+  return <CVGenPageClient locale={locale} messages={messages} />;
 } 

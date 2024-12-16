@@ -68,33 +68,35 @@ const FormNavigation = ({
   const isFinalStep = isLastStep && isLastSubStep;
 
   const handleNext = async () => {
-    console.log('Navigation: handleNext called', { 
+    console.log('[FormNavigation] handleNext appelé', { 
       isLastStep,
       isLastSubStep,
       isFinalStep,
-      canGoNext
+      canGoNext,
+      isValidating,
+      isSubmitting
     });
     
     setIsValidating(true);
     try {
       if (customNext) {
-        console.log('Navigation: using customNext');
+        console.log('[FormNavigation] Utilisation de customNext');
         await customNext();
         return;
       }
 
       if (onValidate) {
-        console.log('Navigation: validating form');
+        console.log('[FormNavigation] Début de la validation');
         const isValid = await onValidate();
-        console.log('Navigation: validation result:', isValid);
+        console.log('[FormNavigation] Résultat de la validation:', isValid);
         if (!isValid) return;
       }
 
       if (isFinalStep && onSubmit) {
-        console.log('Navigation: submitting form');
+        console.log('[FormNavigation] Soumission du formulaire');
         await onSubmit();
       } else {
-        console.log('Navigation: proceeding to next step');
+        console.log('[FormNavigation] Passage à l\'étape suivante');
         goNext();
       }
     } finally {
@@ -103,6 +105,7 @@ const FormNavigation = ({
   };
 
   const handlePrevious = async () => {
+    console.log('[FormNavigation] handlePrevious appelé');
     if (customPrevious) {
       await customPrevious();
       return;
@@ -112,7 +115,7 @@ const FormNavigation = ({
   };
 
   const handleReset = async () => {
-    console.log('Navigation: handleReset called');
+    console.log('[FormNavigation] handleReset appelé');
     if (onReset) {
       await onReset();
     }

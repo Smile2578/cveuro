@@ -1,63 +1,89 @@
 {
   "editor": {
     "loading": "Loading your CV...",
-    "success": "You have now completed your CV! You can edit it or download it directly.",
+    "success": "Your CV has been updated successfully!",
     "backToForm": "Back to form",
-    "dragAndDrop": "You can modify the order of professional experiences or education with the arrows",
+    "dragAndDrop": "You can modify the order of sections using drag and drop",
+    "noUser": "No user specified",
+    "redirecting": "Redirecting to home page...",
     "print": {
       "button": "Download as PDF",
       "generating": "Generating PDF..."
     }
   },
-  "infos": {
-    "personalInfo": {
-      "title": "Personal Information",
-      "firstName": "First Name",
-      "lastName": "Last Name",
-      "email": "Email",
-      "phone": "Phone",
-      "address": "Address",
-      "birthDate": "Birth Date",
-      "birthPlace": "Birth Place",
-      "nationality": "Nationality",
-      "gender": "Gender"
-    },
-    "education": {
-      "title": "Education",
-      "school": "School",
-      "degree": "Degree",
-      "field": "Field of Study",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "ongoing": "Ongoing",
-      "achievements": "Achievements"
-    },
-    "experience": {
-      "title": "Work Experience",
-      "company": "Company",
-      "position": "Position",
-      "location": "Location",
-      "startDate": "Start Date",
-      "endDate": "End Date",
-      "ongoing": "Ongoing",
-      "responsibilities": "Responsibilities"
-    },
-    "skills": {
-      "title": "Skills",
-      "name": "Skill",
-      "level": "Level"
-    },
-    "languages": {
-      "title": "Languages",
-      "language": "Language",
-      "level": "Level",
-      "test": {
-        "name": "Test",
-        "score": "Score"
-      }
-    },
-    "hobbies": {
-      "title": "Hobbies"
+  "sections": {
+    "personalInfo": "Personal Information",
+    "education": "Education",
+    "experience": "Work Experience",
+    "skills": "Skills",
+    "languages": "Languages",
+    "hobbies": "Hobbies"
+  },
+  "common": {
+    "ongoing": "Ongoing",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add"
+  },
+  "personalInfo": {
+    "firstname": "First Name",
+    "lastname": "Last Name",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "address": "Address",
+    "city": "City",
+    "zip": "ZIP Code",
+    "dateofBirth": "Birth Date",
+    "nationality": "Nationality"
+  },
+  "education": {
+    "degree": "Degree",
+    "customDegree": "Custom Degree",
+    "schoolName": "School Name",
+    "fieldOfStudy": "Field of Study",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "ongoing": "Currently Studying",
+    "achievements": "Achievements"
+  },
+  "experience": {
+    "position": "Position",
+    "companyName": "Company Name",
+    "location": "Location",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "ongoing": "Currently Working",
+    "responsibilities": "Responsibilities"
+  },
+  "skills": {
+    "skillName": "Skill Name",
+    "level": "Level",
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
     }
-  }
+  },
+  "languages": {
+    "language": "Language",
+    "proficiency": "Proficiency Level",
+    "levels": {
+      "A1": "Basic (A1)",
+      "A2": "Elementary (A2)",
+      "B1": "Intermediate (B1)",
+      "B2": "Upper Intermediate (B2)",
+      "C1": "Advanced (C1)",
+      "C2": "Mastery (C2)",
+      "Native": "Native"
+    }
+  },
+  "hobbies": {
+    "hobby": "Hobby",
+    "addHobby": "Add a hobby"
+  },
+  "title": "CV Editor",
+  "description": "Edit your CV online"
 } 

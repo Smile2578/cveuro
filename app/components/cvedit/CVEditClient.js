@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useState, useEffect } from 'react';
 import { CssBaseline, Container, ThemeProvider, Box, CircularProgress } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -7,40 +8,65 @@ import NavBar from '../common/NavBar';
 import Footer from '../common/Footer';
 import CVEditor from './CVEditor';
 import theme from '../../theme';
+import { useRouter } from 'next/navigation';
 
-export default function CVEditClient() {
-  const [cvData, setCvData] = useState(null);
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showNavBar, setShowNavBar] = useState(false);
-  const t = useTranslations('cvedit.editor');
+export default function CVEditClient({ initialData, locale }) {
+  const [cvData, setCvData] = useState(initialData);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const router = useRouter();
+  const t = useTranslations('cvedit');
 
   useEffect(() => {
-    const fetchCVData = async () => {
-      if (typeof window !== 'undefined') {
-        const userId = localStorage.getItem('cvUserId');
-        if (userId) {
-          try {
-            const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
-            if (!response.ok) throw new Error('Failed to fetch CV data');
-            const data = await response.json();
-            setCvData(data);
-          } catch (error) {
-            console.error("Error fetching CV data:", error.message);
-          } finally {
-            setIsLoading(false);
-          }
-        } else {
+    if (!initialData) {
+      const fetchCVData = async () => {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          router.push('/cvgen');
+          return;
+        }
+
+        try {
+          const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
+          if (!response.ok) throw new Error('Failed to fetch CV data');
+          const data = await response.json();
+          setCvData(data);
+        } catch (error) {
+          console.error("Error fetching CV data:", error);
+        } finally {
           setIsLoading(false);
         }
-      }
-    };
-    
-    fetchCVData();
-  }, []);
+      };
+      
+      fetchCVData();
+    }
+  }, [initialData, router]);
+
+  const handleUpdate = async (updatedData) => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) return;
+
+    try {
+      const response = await fetch(`/api/cvedit/updateCV?userId=${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedData)
+      });
+
+      if (!response.ok) throw new Error('Failed to update CV');
+
+      setCvData(updatedData);
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
+    } catch (error) {
+      console.error("Error updating CV:", error);
+    }
+  };
 
   const containerVariants = {
-    hidden: { opacity: 0, y: 50 },
+    hidden: { opacity: 0, y: 20 },
     visible: { 
       opacity: 1, 
       y: 0,
@@ -52,12 +78,27 @@ export default function CVEditClient() {
     },
     exit: { 
       opacity: 0, 
-      y: -50,
+      y: -20,
       transition: {
         ease: "easeInOut"
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <Box 
+        sx={{ 
+          height: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -67,53 +108,39 @@ export default function CVEditClient() {
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between', 
-          background: theme.gradient.background,
+          background: theme.palette.background.default,
         }}
       >
-        <NavBar show={showNavBar} />
-        <AnimatePresence mode="wait">
-          <motion.div
-            key="cv-editor-container"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-          >
-            <Container
-              component="main" 
-              maxWidth="lg"
-              sx={{
-                mt: { xs: 8, sm: 12 }, 
-                mb: 4,
-                width: '90%',
-                backgroundColor: 'background.paper',
-                padding: { xs: 2, sm: 4 }, 
-                borderRadius: '24px',
-                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1), 0 1px 8px rgba(0, 0, 0, 0.06)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '60vh',
-              }}
+        <NavBar />
+        <Container 
+          component="main" 
+          maxWidth="xl" 
+          sx={{ 
+            mt: 4, 
+            mb: 4, 
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key="cv-editor"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{ flex: 1 }}
             >
-              {isLoading ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
-                  <CircularProgress />
-                  <span>{t('loading')}</span>
-                </Box>
-              ) : (
-                <CVEditor 
-                  cvData={cvData} 
-                  setCvData={setCvData} 
-                  setIsGeneratingPDF={setIsGeneratingPDF}
-                  setShowNavBar={setShowNavBar}
-                />
-              )}
-            </Container>
-          </motion.div>
-        </AnimatePresence>
+              <CVEditor 
+                cvData={cvData}
+                onUpdate={handleUpdate}
+                showSuccess={showSuccess}
+                locale={locale}
+              />
+            </motion.div>
+          </AnimatePresence>
+        </Container>
         <Footer />
       </Box>
     </ThemeProvider>

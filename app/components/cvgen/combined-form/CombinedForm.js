@@ -515,7 +515,14 @@ const CombinedForm = ({ onSubmit }) => {
   const tCommon = useTranslations('common');
   const store = useCVStore();
   const { currentSubStep: rawCurrentSubStep, isSubStep } = useFormProgress();
-  const { trigger, getValues, reset, handleSubmit } = useFormContext();
+  const { 
+    trigger, 
+    getValues, 
+    reset, 
+    handleSubmit, 
+    clearErrors,
+    formState: { errors, isDirty, dirtyFields, touchedFields } 
+  } = useFormContext();
   const [openResetDialog, setOpenResetDialog] = useState(false);
 
   console.log('[CombinedForm] État actuel:', { 
@@ -582,9 +589,49 @@ const CombinedForm = ({ onSubmit }) => {
   };
 
   const validateCurrentStep = async () => {
-    console.log('[CombinedForm] Validation de l\'étape courante:', currentSubStep);
+    console.log('[CombinedForm] Validation de l\'étape courante:', {
+      currentSubStep,
+      formState: {
+        isValid: getValues('languages')?.length > 0,
+        errors: errors?.languages,
+        isDirty,
+        dirtyFields,
+        touchedFields
+      }
+    });
+
     const currentStep = steps[currentSubStep];
     if (!currentStep?.validate) return true;
+    
+    // Gestion spéciale pour l'étape des langues
+    if (currentSubStep === 2) {
+      const languages = getValues('languages') || [];
+      console.log('[CombinedForm] Validation des langues:', {
+        nbLanguages: languages.length,
+        languages
+      });
+
+      // Si aucune langue n'est présente et que c'est la soumission finale
+      if (languages.length === 0) {
+        console.log('[CombinedForm] Pas de langues, validation échouée');
+        // On force une erreur de validation dans le formulaire
+        const errorMessage = t('languages.errors.required');
+        store.setFormErrors({
+          languages: { message: errorMessage }
+        });
+        // On met à jour l'état des erreurs du formulaire
+        trigger('languages');
+        return false;
+      }
+
+      // Si des langues sont présentes mais non touchées, on valide quand même
+      const hasBeenTouched = Object.keys(touchedFields.languages || {}).length > 0;
+      if (!hasBeenTouched && languages.length > 0) {
+        console.log('[CombinedForm] Langues non touchées mais présentes, validation OK');
+        clearErrors('languages');
+        return true;
+      }
+    }
     
     const result = await currentStep.validate();
     console.log('[CombinedForm] Résultat de la validation:', result);

@@ -73,10 +73,27 @@ export default async function handler(req, res) {
 
     console.log('Données finales à sauvegarder:', JSON.stringify(cvData, null, 2));
 
-    // Créer le document CV
+    // Transformer les données pour correspondre au schéma MongoDB
+    const transformedData = {
+      ...cvData,
+      // Transformer educations en education
+      education: cvData.educations,
+      // Transformer workExperience.experiences en workExperience
+      workExperience: cvData.workExperience?.experiences || [],
+    };
+
+    // Supprimer les anciennes clés
+    delete transformedData.educations;
+    if (transformedData.workExperience) {
+      delete transformedData.workExperience.experiences;
+    }
+
+    console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
+
+    // Créer le document CV avec les données transformées
     const cv = await CV.create({
       userId,
-      ...cvData
+      ...transformedData
     });
 
     console.log('CV créé avec succès. ID:', cv._id);

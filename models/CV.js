@@ -27,6 +27,7 @@ const CVSchema = new Schema({
   education: [{
     schoolName: String,
     degree: String,
+    customDegree: String,
     fieldOfStudy: String,
     startDate: String,
     endDate: String,
