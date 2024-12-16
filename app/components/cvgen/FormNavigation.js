@@ -49,7 +49,8 @@ const FormNavigation = ({
   onReset,
   showReset = true,
   customNext,
-  customPrevious
+  customPrevious,
+  onSubmit
 }) => {
   const t = useTranslations('common');
   const { formState: { errors } } = useFormContext();
@@ -59,25 +60,43 @@ const FormNavigation = ({
     canGoNext,
     canGoPrevious,
     goNext,
-    goPrevious
+    goPrevious,
+    isLastSubStep
   } = useFormProgress();
 
   const [isValidating, setIsValidating] = useState(false);
+  const isFinalStep = isLastStep && isLastSubStep;
 
   const handleNext = async () => {
+    console.log('Navigation: handleNext called', { 
+      isLastStep,
+      isLastSubStep,
+      isFinalStep,
+      canGoNext
+    });
+    
     setIsValidating(true);
     try {
       if (customNext) {
+        console.log('Navigation: using customNext');
         await customNext();
         return;
       }
 
       if (onValidate) {
+        console.log('Navigation: validating form');
         const isValid = await onValidate();
+        console.log('Navigation: validation result:', isValid);
         if (!isValid) return;
       }
 
-      goNext();
+      if (isFinalStep && onSubmit) {
+        console.log('Navigation: submitting form');
+        await onSubmit();
+      } else {
+        console.log('Navigation: proceeding to next step');
+        goNext();
+      }
     } finally {
       setIsValidating(false);
     }
@@ -93,6 +112,7 @@ const FormNavigation = ({
   };
 
   const handleReset = async () => {
+    console.log('Navigation: handleReset called');
     if (onReset) {
       await onReset();
     }
@@ -146,11 +166,11 @@ const FormNavigation = ({
       <LoadingButton
         variant="contained"
         onClick={handleNext}
-        disabled={!canGoNext || isLoading}
+        disabled={(isFinalStep ? false : !canGoNext) || isLoading}
         endIcon={<NavigateNext />}
-        isLoading={isLoading && canGoNext}
+        isLoading={isLoading && (isFinalStep || canGoNext)}
       >
-        {isLastStep ? t('buttons.save') : t('buttons.next')}
+        {isFinalStep ? t('buttons.save') : t('buttons.next')}
       </LoadingButton>
     </Box>
   );

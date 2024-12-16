@@ -12,7 +12,7 @@
   },
   "name": {
     "required": "Name is required",
-    "minLength": "Name must be at least 2 characters",
+    "minLength": "Name is required and must be at least 2 characters",
     "maxLength": "Name cannot exceed 50 characters",
     "format": "Name must contain only letters"
   },
@@ -61,6 +61,14 @@
       "format": "Invalid date format (MM/YYYY)",
       "future": "Date cannot be in the future",
       "beforeStart": "End date must be after start date"
+    },
+    "fieldOfStudy": {
+      "required": "Field of study is required",
+      "minLength": "Field of study must be at least 2 characters",
+      "maxLength": "Field of study cannot exceed 100 characters"
+    },
+    "dates": {
+      "chronology": "End date must be after start date"
     },
     "achievements": {
       "required": "Achievement is required",

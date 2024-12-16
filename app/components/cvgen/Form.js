@@ -1,7 +1,7 @@
 // app/components/cvgen/Form.js
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Box, Container } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -17,7 +17,7 @@ import CombinedForm from './combined-form/CombinedForm';
 import ProgressBar from './ProgressBar';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 
-const StepContent = ({ step }) => {
+const StepContent = ({ step, onSubmit }) => {
   switch (step) {
     case 0:
       return <PersonalInfoForm />;
@@ -26,7 +26,7 @@ const StepContent = ({ step }) => {
     case 2:
       return <WorkExperienceForm />;
     case 3:
-      return <CombinedForm />;
+      return <CombinedForm onSubmit={onSubmit} />;
     default:
       return null;
   }
@@ -82,9 +82,19 @@ const Form = () => {
   }, [methods.watch]);
 
   // Soumission finale du formulaire
-  const handleSubmit = async (data) => {
+  const handleSubmit = useCallback(async () => {
+    console.log('Form: handleSubmit called');
     try {
       store.setIsSubmitting(true);
+      
+      // Valider le formulaire complet
+      const isValid = await methods.trigger();
+      if (!isValid) {
+        console.log('Form: validation failed');
+        return;
+      }
+
+      const formData = methods.getValues();
       const userId = store.userId;
       
       const endpoint = userId 
@@ -98,7 +108,7 @@ const Form = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(formData)
       });
 
       if (!response.ok) {
@@ -120,27 +130,29 @@ const Form = () => {
     } finally {
       store.setIsSubmitting(false);
     }
-  };
+  }, [methods, store, router]);
 
   return (
     <FormProvider {...methods}>
-      <Container maxWidth="md" sx={{ overflowX: 'hidden', paddingRight: 'calc(100vw - 100%)' }}>
-        <ProgressBar />
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Container maxWidth="md" sx={{ overflowX: 'hidden', paddingRight: 'calc(100vw - 100%)' }}>
+          <ProgressBar />
 
-        <Box sx={{ minHeight: '60vh' }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentStep}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <StepContent step={currentStep} />
-            </motion.div>
-          </AnimatePresence>
-        </Box>
-      </Container>
+          <Box sx={{ minHeight: '60vh' }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStep}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <StepContent step={currentStep} onSubmit={handleSubmit} />
+              </motion.div>
+            </AnimatePresence>
+          </Box>
+        </Container>
+      </form>
     </FormProvider>
   );
 };

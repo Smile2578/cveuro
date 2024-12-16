@@ -31,9 +31,11 @@ const defaultFormData = {
     hasWorkExperience: false,
     experiences: []
   },
-  skills: [],
-  languages: [],
-  hobbies: []
+  combinedForm: {
+    skills: [],
+    languages: [],
+    hobbies: []
+  }
 };
 
 const useCVStore = create(
@@ -54,25 +56,29 @@ const useCVStore = create(
       // Nouvelles méthodes de gestion des étapes
       getStepInfo: () => {
         const state = get();
+        const isInPersonalInfo = state.activeStep === 0;
+        const isInCombinedForm = state.activeStep === TOTAL_STEPS - 1;
+        
         return {
           currentStep: state.activeStep,
-          currentSubStep: state.activeStep === 0 
+          currentSubStep: isInPersonalInfo 
             ? state.personalInfoStep 
-            : state.activeStep === TOTAL_STEPS - 1 
+            : isInCombinedForm 
               ? state.combinedFormStep 
               : null,
           totalSteps: TOTAL_STEPS,
-          totalSubSteps: state.activeStep === 0 
+          totalSubSteps: isInPersonalInfo 
             ? PERSONAL_INFO_SUBSTEPS 
-            : state.activeStep === TOTAL_STEPS - 1 
+            : isInCombinedForm 
               ? COMBINED_FORM_SUBSTEPS 
               : 0,
-          isLastStep: state.activeStep === TOTAL_STEPS - 1 && 
-                     state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1,
-          isLastSubStep: (state.activeStep === 0 && 
-                         state.personalInfoStep === PERSONAL_INFO_SUBSTEPS - 1) ||
-                        (state.activeStep === TOTAL_STEPS - 1 && 
-                         state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1)
+          isLastStep: state.activeStep === TOTAL_STEPS - 1,
+          isLastSubStep: (isInPersonalInfo && state.personalInfoStep === PERSONAL_INFO_SUBSTEPS - 1) ||
+                        (isInCombinedForm && state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1),
+          isLastStepAndSubStep: state.activeStep === TOTAL_STEPS - 1 && 
+                               state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1,
+          isFinalStep: state.activeStep === TOTAL_STEPS - 1 && 
+                      state.combinedFormStep === COMBINED_FORM_SUBSTEPS - 1
         };
       },
 

@@ -73,7 +73,7 @@ const ExperienceCard = React.memo(({
   remove, 
   errors, 
   isExpanded, 
-  onToggle, 
+  onToggle,
   onRemove,
   defaultValues 
 }) => {
@@ -111,8 +111,7 @@ const ExperienceCard = React.memo(({
   useEffect(() => {
     if (isOngoing) {
       setValue(`workExperience.experiences.${index}.endDate`, '', { 
-        shouldValidate: true,
-        shouldDirty: true 
+        shouldValidate: false
       });
     }
   }, [isOngoing, setValue, index]);
@@ -123,13 +122,13 @@ const ExperienceCard = React.memo(({
     if (hasFieldErrors && !isExpanded) {
       onToggle(index);
     }
-  }, [hasFieldErrors, isExpanded, onToggle]);
+  }, [hasFieldErrors, isExpanded, onToggle, index]);
 
   const handleDateChange = useCallback(async (field, date) => {
     setValue(
       `workExperience.experiences.${index}.${field}`,
       formatDateForValidation(date),
-      { shouldValidate: true }
+      { shouldValidate: false }
     );
   }, [setValue, index, formatDateForValidation]);
 
@@ -146,7 +145,7 @@ const ExperienceCard = React.memo(({
     setValue(
       `workExperience.experiences.${index}.responsibilities`,
       newResponsibilities,
-      { shouldValidate: true }
+      { shouldValidate: false }
     );
   }, [responsibilities, setValue, index]);
 
@@ -289,7 +288,7 @@ const ExperienceCard = React.memo(({
                   checked={isOngoing}
                   onChange={(e) => {
                     setValue(`workExperience.experiences.${index}.ongoing`, e.target.checked, {
-                      shouldValidate: true
+                      shouldValidate: false
                     });
                   }}
                 />
@@ -351,7 +350,7 @@ ExperienceCard.displayName = 'ExperienceCard';
 const WorkExperienceForm = () => {
   const { 
     control, 
-    formState: { errors }, 
+    formState: { errors, isSubmitted }, 
     watch, 
     setValue, 
     trigger,
@@ -371,32 +370,45 @@ const WorkExperienceForm = () => {
 
   const hasWorkExperience = watch('workExperience.hasWorkExperience', false);
 
-  // Effet pour synchroniser les erreurs avec le store
+  // Effet d'initialisation pour synchroniser avec le localStorage
   useEffect(() => {
-    if (errors?.workExperience) {
-      store.setFormErrors({
-        ...store.formErrors,
-        workExperience: errors.workExperience
+    const formData = store.formData;
+    console.log('WorkExperienceForm - Initialisation', {
+      storeData: formData?.workExperience,
+      currentFields: fields
+    });
+
+    if (formData?.workExperience?.hasWorkExperience && 
+        formData.workExperience.experiences?.length > 0 && 
+        fields.length === 0) {
+      console.log('WorkExperienceForm - Restauration des données');
+      setValue('workExperience.hasWorkExperience', true, { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
       });
-    } else {
-      store.clearFormErrors();
+      formData.workExperience.experiences.forEach(exp => {
+        append(exp, { shouldFocus: false });
+      });
     }
-  }, [errors?.workExperience]);
+  }, [store.formData, fields.length, setValue, append]);
 
+  // Effet pour synchroniser les erreurs avec le store uniquement quand nécessaire
   useEffect(() => {
-    if (isSubmitted && hasWorkExperience) {
-      trigger(['workExperience.hasWorkExperience', 'workExperience.experiences']);
-    }
-  }, [isSubmitted, trigger, hasWorkExperience]);
-
-  useEffect(() => {
-    if (errors?.workExperience?.experiences) {
-      const errorIndexes = Object.keys(errors.workExperience.experiences).map(Number);
-      if (errorIndexes.length > 0) {
-        setExpandedItems(prev => [...new Set([...prev, ...errorIndexes])]);
+    const hasErrors = !!errors?.workExperience;
+    const currentErrors = store.formErrors?.workExperience;
+    
+    // Ne mettre à jour que si l'état des erreurs a changé
+    if (hasErrors !== !!currentErrors) {
+      if (hasErrors) {
+        store.setFormErrors({
+          workExperience: errors.workExperience
+        });
+      } else {
+        store.clearFormErrors();
       }
     }
-  }, [errors?.workExperience?.experiences]);
+  }, [errors?.workExperience, store]);
 
   const handleToggle = useCallback((index) => {
     setExpandedItems(prev => {
@@ -408,8 +420,28 @@ const WorkExperienceForm = () => {
   }, []);
 
   const handleAddExperience = useCallback(async () => {
+    console.log('handleAddExperience - Début', {
+      fieldsLength: fields.length,
+      currentExperiences: getValues('workExperience.experiences')
+    });
+
     if (fields.length < 4) {
-      append({
+      // Vérifier si le store a des expériences mais que fields est vide
+      // Cela signifie qu'on ajoute la première expérience après une réinitialisation
+      const currentExperiences = getValues('workExperience.experiences');
+      if (fields.length === 0 && currentExperiences && currentExperiences.length > 0) {
+        // Réinitialiser complètement avant d'ajouter
+        store.setFormData({
+          ...getValues(),
+          workExperience: {
+            hasWorkExperience: true,
+            experiences: []
+          }
+        });
+        remove();
+      }
+
+      const newExperience = {
         companyName: '',
         position: '',
         location: '',
@@ -417,58 +449,137 @@ const WorkExperienceForm = () => {
         endDate: '',
         ongoing: false,
         responsibilities: []
-      });
+      };
+      
+      console.log('handleAddExperience - Avant append', { newExperience });
+      append(newExperience, { shouldFocus: false });
+      console.log('handleAddExperience - Après append');
+      
       setExpandedItems(prev => [...prev, fields.length]);
+
+      if (fields.length === 0) {
+        console.log('handleAddExperience - Activation du switch car première expérience');
+        setValue('workExperience.hasWorkExperience', true, { 
+          shouldValidate: false,
+          shouldDirty: false,
+          shouldTouch: false
+        });
+      }
     }
-  }, [fields.length, append]);
+  }, [fields.length, append, setValue, getValues, store, remove]);
 
   const handleExperienceToggle = useCallback(async (event) => {
     const newValue = event.target.checked;
+    console.log('handleExperienceToggle', { 
+      newValue, 
+      fieldsLength: fields.length,
+      currentExperiences: getValues('workExperience.experiences')
+    });
+
     if (!newValue && fields.length > 0) {
       setShowNoExpDialog(true);
     } else {
-      await setValue('workExperience.hasWorkExperience', newValue, { shouldValidate: true });
-      if (newValue && fields.length === 0) {
-        await handleAddExperience();
-      } else {
-        await trigger(['workExperience.hasWorkExperience', 'workExperience.experiences']);
-      }
+      setValue('workExperience.hasWorkExperience', newValue, { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
+      });
     }
-  }, [fields.length, setValue, handleAddExperience, trigger]);
+  }, [fields.length, setValue, getValues]);
 
   const handleRemoveExperience = useCallback(async (index) => {
-    remove(index);
-    if (fields.length === 1) {
-      await setValue('workExperience.hasWorkExperience', false, { shouldValidate: true });
-      await setValue('workExperience.experiences', [], { shouldValidate: true });
-    }
-    await trigger(['workExperience.hasWorkExperience', 'workExperience.experiences']);
-  }, [remove, fields.length, setValue, trigger]);
+    console.log('handleRemoveExperience - Début', { 
+      index,
+      fieldsLength: fields.length,
+      currentExperiences: getValues('workExperience.experiences')
+    });
 
-  const handleReset = async () => {
+    remove(index);
+    setExpandedItems(prev => prev.filter(i => i !== index).map(i => i > index ? i - 1 : i));
+    
+    if (fields.length === 1) {
+      console.log('handleRemoveExperience - Dernière expérience supprimée');
+      
+      // Réinitialiser le formulaire avec les valeurs actuelles sauf workExperience
+      const currentFormData = getValues();
+      const newFormData = {
+        ...currentFormData,
+        workExperience: {
+          hasWorkExperience: false,
+          experiences: []
+        }
+      };
+      
+      // Réinitialiser le store et le formulaire
+      store.setFormData(newFormData);
+      store.clearFormErrors();
+      
+      // Réinitialiser React Hook Form
+      setValue('workExperience', {
+        hasWorkExperience: false,
+        experiences: []
+      }, { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
+      });
+
+      // Forcer la réinitialisation du useFieldArray
+      remove();
+      
+      console.log('handleRemoveExperience - Store et formulaire mis à jour');
+    }
+  }, [remove, fields.length, setValue, store, getValues]);
+
+  const handleReset = useCallback(async () => {
     try {
-      await setValue('workExperience.hasWorkExperience', false, { shouldValidate: true });
-      await setValue('workExperience.experiences', [], { shouldValidate: true });
+      setValue('workExperience.hasWorkExperience', false, { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
+      });
+      setValue('workExperience.experiences', [], { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
+      });
       setExpandedItems([]);
     } catch (error) {
       console.error('Erreur lors du reset:', error);
     }
-  };
+  }, [setValue]);
 
-  const validateForm = async () => {
+  const validateForm = useCallback(async () => {
     if (!hasWorkExperience) return true;
     
-    // Valider tous les champs de toutes les expériences
     const result = await trigger(['workExperience.hasWorkExperience', 'workExperience.experiences']);
+    
+    if (!result && errors?.workExperience?.experiences) {
+      const errorIndexes = Object.keys(errors.workExperience.experiences).map(Number);
+      setExpandedItems(prev => [...new Set([...prev, ...errorIndexes])]);
+    }
+    
     return result;
-  };
+  }, [hasWorkExperience, trigger, errors?.workExperience?.experiences]);
 
   const confirmNoExperience = useCallback(async () => {
-    await setValue('workExperience.hasWorkExperience', false, { shouldValidate: true });
-    await setValue('workExperience.experiences', [], { shouldValidate: true });
+    console.log('confirmNoExperience - Début', {
+      currentExperiences: getValues('workExperience.experiences')
+    });
+
+    setValue('workExperience.hasWorkExperience', false, { 
+      shouldValidate: false,
+      shouldDirty: false,
+      shouldTouch: false
+    });
+    setValue('workExperience.experiences', [], { 
+      shouldValidate: false,
+      shouldDirty: false,
+      shouldTouch: false
+    });
     setShowNoExpDialog(false);
-    await trigger(['workExperience.hasWorkExperience', 'workExperience.experiences']);
-  }, [setValue, trigger]);
+    console.log('confirmNoExperience - Fin');
+  }, [setValue, getValues]);
 
   return (
     <Box sx={{ width: '100%', mb: 4 }}>
@@ -495,7 +606,7 @@ const WorkExperienceForm = () => {
           </Alert>
         )}
 
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {hasWorkExperience && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -505,27 +616,9 @@ const WorkExperienceForm = () => {
               <Stack spacing={2}>
                 {fields.map((field, index) => (
                   <Box key={field.id} sx={{ mb: 3, position: 'relative' }}>
-                    {hasErrors(index) && !expandedItems.includes(index) && (
-                      <Alert 
-                        severity="error" 
-                        sx={{ mb: 1 }}
-                        action={
-                          <Button 
-                            color="error" 
-                            size="small"
-                            onClick={() => handleToggle(index)}
-                          >
-                            {t('common.showDetails')}
-                          </Button>
-                        }
-                      >
-                        {t('experience.errors.hasErrors')}
-                      </Alert>
-                    )}
                     <ExperienceCard
-                      key={field.id}
                       index={index}
-                      remove={handleRemoveExperience}
+                      onRemove={handleRemoveExperience}
                       errors={errors}
                       isExpanded={expandedItems.includes(index)}
                       onToggle={handleToggle}

@@ -46,7 +46,8 @@ const InfoForm = () => {
 
   const genderOptions = [
     { value: 'male', label: t('personalInfo.info.gender.options.male') },
-    { value: 'female', label: t('personalInfo.info.gender.options.female') }
+    { value: 'female', label: t('personalInfo.info.gender.options.female') },
+    { value: 'other', label: t('personalInfo.info.gender.options.other') }
   ];
 
   const handleDateChange = (field, value) => {

@@ -17,13 +17,12 @@ import {
   useTheme,
   useMediaQuery,
   MobileStepper,
-  Paper,
-  Alert
+  Paper
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFormContext } from 'react-hook-form';
-import { Warning, KeyboardArrowLeft, KeyboardArrowRight } from '@mui/icons-material';
+import { Warning } from '@mui/icons-material';
 import { useCVStore } from '@/app/store/cvStore';
 import FormNavigation from '../FormNavigation';
 import { useFormProgress } from '@/app/hooks/useFormProgress';

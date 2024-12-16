@@ -2,7 +2,7 @@
 
 "use client";
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import {
@@ -23,6 +23,11 @@ import {
   Select,
   Stack,
   TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -32,6 +37,7 @@ import { useCVStore } from '@/app/store/cvStore';
 import { motion, AnimatePresence } from 'framer-motion';
 import FormNavigation from '../FormNavigation';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
+import LanguagesForm from './LanguagesForm';
 
 const STUDENT_SKILLS = [
   { skillName: 'skills.suggestions.items.office', level: 'intermediate' },
@@ -52,7 +58,7 @@ const STUDENT_SKILLS = [
 ];
 
 const SKILL_LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'];
-const PROFICIENCY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2'];
+const PROFICIENCY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Native'];
 
 
 const COMMON_HOBBIES = [
@@ -504,11 +510,22 @@ const HobbiesStep = () => {
   );
 };
 
-const CombinedForm = () => {
+const CombinedForm = ({ onSubmit }) => {
   const t = useTranslations('cvform');
+  const tCommon = useTranslations('common');
   const store = useCVStore();
-  const { currentSubStep, isSubStep } = useFormProgress();
-  const { trigger } = useFormContext();
+  const { currentSubStep: rawCurrentSubStep, isSubStep } = useFormProgress();
+  const { trigger, getValues, reset, handleSubmit } = useFormContext();
+  const [openResetDialog, setOpenResetDialog] = useState(false);
+
+  console.log('[CombinedForm] État actuel:', { 
+    currentSubStep: rawCurrentSubStep,
+    isSubStep,
+    onSubmit
+  });
+
+  const currentSubStep = typeof rawCurrentSubStep === 'number' ? 
+    Math.min(Math.max(0, rawCurrentSubStep), 2) : 0;
 
   const steps = [
     {
@@ -523,24 +540,55 @@ const CombinedForm = () => {
     },
     {
       label: t('steps.languages'),
-      component: <LanguagesStep />,
+      component: <LanguagesForm />,
       validate: () => trigger('languages')
     }
   ];
 
   const handleReset = async () => {
+    setOpenResetDialog(true);
+  };
+
+  const handleConfirmReset = async () => {
     try {
-      store.resetForm();
+      // Réinitialiser uniquement les données de l'étape actuelle
+      const currentData = getValues();
+      const newData = { ...currentData };
+      
+      switch (currentSubStep) {
+        case 0:
+          newData.skills = [];
+          break;
+        case 1:
+          newData.hobbies = [];
+          break;
+        case 2:
+          newData.languages = [];
+          break;
+      }
+
+      // Mettre à jour le store et le formulaire
+      store.setFormData(newData);
+      reset(newData);
+      
+      setOpenResetDialog(false);
     } catch (error) {
       console.error('Erreur lors du reset:', error);
     }
   };
 
+  const handleCancelReset = () => {
+    setOpenResetDialog(false);
+  };
+
   const validateCurrentStep = async () => {
+    console.log('[CombinedForm] Validation de l\'étape courante:', currentSubStep);
     const currentStep = steps[currentSubStep];
     if (!currentStep?.validate) return true;
     
     const result = await currentStep.validate();
+    console.log('[CombinedForm] Résultat de la validation:', result);
+
     return result;
   };
 
@@ -579,8 +627,31 @@ const CombinedForm = () => {
       <FormNavigation
         onValidate={validateCurrentStep}
         onReset={handleReset}
+        onSubmit={onSubmit}
         showReset={true}
       />
+
+      <Dialog
+        open={openResetDialog}
+        onClose={handleCancelReset}
+      >
+        <DialogTitle>
+          {tCommon('buttons.reset')}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {tCommon('confirmations.reset')}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelReset}>
+            {tCommon('buttons.cancel')}
+          </Button>
+          <Button onClick={handleConfirmReset} color="error" variant="contained">
+            {tCommon('buttons.reset')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

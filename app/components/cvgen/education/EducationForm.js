@@ -82,6 +82,7 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
   const isOngoing = watch(`educations.${index}.ongoing`);
   const endDate = watch(`educations.${index}.endDate`);
   const startDate = watch(`educations.${index}.startDate`);
+  const fieldOfStudy = watch(`educations.${index}.fieldOfStudy`);
 
   const degreeOptions = [
     { value: 'baccalaureat', label: t('education.degree.options.baccalaureat') },
@@ -91,11 +92,6 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
     { value: 'doctorat', label: t('education.degree.options.doctorat') },
     { value: 'other', label: t('education.degree.options.other') }
   ];
-
-  // Fonctions de formatage des dates - maintenant utilisent le useCallback pour éviter les re-renders
-  const formatDateForValidation = useCallback((date) => {
-    return date ? dayjs(date).format('MM/YYYY') : '';
-  }, []);
 
   const formatDateForDisplay = useCallback((date) => {
     return date ? dayjs(date, 'MM/YYYY') : null;
@@ -115,20 +111,16 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
     }
   }, [isOngoing, setValue, index]);
 
-  const shouldShowError = useCallback((fieldName) => {
-    return isSubmitted || (touchedFields?.educations?.[index]?.[fieldName]);
-  }, [isSubmitted, touchedFields, index]);
-
   const handleDateChange = useCallback((fieldName, date) => {
     setValue(
       fieldName,
       date ? dayjs(date).format('MM/YYYY') : '',
       { 
-        shouldValidate: shouldShowError(fieldName.split('.').pop()),
+        shouldValidate: true,
         shouldTouch: true 
       }
     );
-  }, [setValue, shouldShowError]);
+  }, [setValue]);
   const handleOngoingChange = useCallback((e) => {
     setValue(`educations.${index}.ongoing`, e.target.checked, { 
       shouldValidate: false // On ne valide pas immédiatement au changement
@@ -225,6 +217,19 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
             </Box>
           </Stack>
 
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+            <Box sx={{ width: '100%', minHeight: '80px' }}>
+              <StyledTextField
+                {...register(`educations.${index}.fieldOfStudy`)}
+                fullWidth
+                label={t('education.fieldOfStudy.label')}
+                placeholder={t('education.fieldOfStudy.placeholder')}
+                error={errors?.educations?.[index]?.fieldOfStudy}
+                helperText={errors?.educations?.[index]?.fieldOfStudy?.message}
+              />
+            </Box>
+          </Stack>
+
           {/* Deuxième ligne : Dates de début et fin */}
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <Box sx={{ width: '100%', minHeight: '80px' }}>
@@ -238,8 +243,8 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                     fullWidth: true,
                     required: true,
                     placeholder: t('education.dates.startDate.placeholder'),
-                    error: shouldShowError('startDate') && !!errors?.educations?.[index]?.startDate,
-                    helperText: shouldShowError('startDate') && errors?.educations?.[index]?.startDate?.message
+                    error: !!errors?.educations?.[index]?.startDate,
+                    helperText: errors?.educations?.[index]?.startDate?.message
                   }
                 }}
               />
@@ -258,8 +263,8 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                       fullWidth: true,
                       required: !isOngoing,
                       placeholder: t('education.dates.endDate.placeholder'),
-                      error: shouldShowError('endDate') && !isOngoing && !!errors?.educations?.[index]?.endDate,
-                      helperText: shouldShowError('endDate') && !isOngoing && errors?.educations?.[index]?.endDate?.message
+                      error: !isOngoing && !!errors?.educations?.[index]?.endDate,
+                      helperText: !isOngoing && errors?.educations?.[index]?.endDate?.message
                     }
                   }}
                 />
@@ -362,7 +367,7 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
 EducationCard.displayName = 'EducationCard';
 
 const EducationForm = () => {
-  const { control, formState: { errors }, trigger, getValues, reset: formReset } = useFormContext();
+  const { control, formState: { errors, isSubmitted }, trigger, getValues, reset } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "educations"
@@ -373,25 +378,30 @@ const EducationForm = () => {
   const cvStore = useCVStore();
   const [isResetting, setIsResetting] = useState(false);
 
-  // Effet pour l'initialisation unique - maintenant vérifie isResetting
+  // Effet pour l'initialisation unique
   useEffect(() => {
-    if (!isResetting && (!fields || fields.length === 0)) {
+    console.log('Initialisation effect - fields:', fields.length);
+    const currentEducations = getValues('educations');
+    console.log('Current educations:', currentEducations);
+    if (!isResetting && (!currentEducations || currentEducations.length === 0)) {
       append({
         schoolName: '',
         degree: '',
         startDate: '',
         endDate: '',
+        fieldOfStudy: '',
         ongoing: false,
         achievements: [],
         customDegree: ''
       });
       setExpandedItems([0]);
     }
-  }, [isResetting, fields, append]);
+  }, [isResetting, append, getValues]);
 
   // Effet pour synchroniser les erreurs avec le store
   useEffect(() => {
     if (errors?.educations) {
+      console.log('Education errors:', errors.educations);
       cvStore.setFormErrors({
         ...cvStore.formErrors,
         educations: errors.educations
@@ -402,21 +412,95 @@ const EducationForm = () => {
   }, [errors?.educations]);
 
   const handleAddEducation = useCallback(() => {
+    console.log('Adding education - current fields:', fields.length);
     if (fields.length < 4) {
-      append({
+      // Désactiver temporairement la validation
+      const newEducation = {
+        schoolName: '',
+        degree: '',
+        startDate: '',
+        endDate: '',
+        fieldOfStudy: '',
+        ongoing: false,
+        achievements: [],
+        customDegree: null
+      };
+      
+      append(newEducation, { shouldFocus: false });
+      const newIndex = fields.length;
+      setExpandedItems(prev => [...prev, newIndex]);
+      
+      // Nettoyer les erreurs pour la nouvelle formation
+      if (errors?.educations) {
+        const newErrors = { ...errors };
+        delete newErrors.educations[fields.length];
+        cvStore.setFormErrors(newErrors);
+      }
+    }
+  }, [fields.length, append, errors, cvStore]);
+
+  // Fonction de réinitialisation
+  const handleReset = useCallback(async () => {
+    console.log('Resetting education form');
+    try {
+      setIsResetting(true);
+      
+      // Réinitialiser avec une seule formation vide
+      const emptyEducation = {
         schoolName: '',
         degree: '',
         startDate: '',
         endDate: '',
         ongoing: false,
         achievements: [],
-        customDegree: ''
+        customDegree: null
+      };
+      
+      // Réinitialiser le formulaire complet
+      await reset({
+        educations: [emptyEducation]
+      }, {
+        keepDefaultValues: true,
+        keepErrors: false,
+        keepDirty: false,
+        keepTouched: false,
+        keepIsValid: false,
+        keepIsSubmitted: false
       });
-      // Ajouter automatiquement la nouvelle éducation aux éléments déployés
-      const newIndex = fields.length;
-      setExpandedItems(prev => [...prev, newIndex]);
+      
+      // Réinitialiser l'état local
+      setExpandedItems([0]);
+      cvStore.clearFormErrors();
+    } catch (error) {
+      console.error('Reset error:', error);
+    } finally {
+      setIsResetting(false);
     }
-  }, [fields.length, append]);
+  }, [reset, cvStore]);
+
+  // Validation du formulaire
+  const validateForm = useCallback(async () => {
+    console.log('Validating education form');
+    if (fields.length === 0) return false;
+    
+    // Valider toutes les formations
+    const result = await trigger('educations', { shouldFocus: true });
+    console.log('Validation result:', result, 'Errors:', errors?.educations);
+    
+    // Si la validation échoue, déployer les cartes avec des erreurs
+    if (!result && errors?.educations) {
+      const errorIndexes = Object.keys(errors.educations)
+        .filter(key => typeof errors.educations[key] === 'object')
+        .map(Number);
+      
+      if (errorIndexes.length > 0) {
+        console.log('Expanding cards with errors:', errorIndexes);
+        setExpandedItems(prev => [...new Set([...prev, ...errorIndexes])]);
+      }
+    }
+    
+    return result;
+  }, [fields.length, trigger, errors?.educations]);
 
   // Gestion de la suppression d'une éducation
   const handleRemove = useCallback((index) => {
@@ -439,51 +523,6 @@ const EducationForm = () => {
       return [...prev, index];
     });
   }, []);
-
-  // Fonction de réinitialisation optimisée pour éviter la duplication
-  const handleReset = useCallback(async () => {
-      try {
-        setIsResetting(true);
-        
-        // Utiliser la méthode reset de useFormContext pour réinitialiser proprement le formulaire
-        const { reset } = useFormContext();
-        
-        reset({
-          educations: [{
-            schoolName: '',
-            degree: '',
-            startDate: '',
-            endDate: '',
-            ongoing: false,
-            achievements: [],
-            customDegree: ''
-          }]
-        }, {
-          keepDefaultValues: true,
-          keepIsSubmitted: false,
-          keepTouched: false,
-          keepDirty: false,
-          keepErrors: false,
-          keepIsValid: false
-        });
-    
-        // Réinitialiser l'expansion et les erreurs
-        setExpandedItems([0]);
-        cvStore.clearFormErrors();
-        
-      } catch (error) {
-        console.error('Erreur lors du reset:', error);
-      } finally {
-        setIsResetting(false);
-      }
-    }, []);
-
-  // Validation du formulaire
-  const validateForm = useCallback(async () => {
-    if (fields.length === 0) return false;
-    const result = await trigger('educations');
-    return result;
-  }, [fields.length, trigger]);
 
   // Fonction utilitaire pour vérifier la présence d'erreurs
   const hasErrors = useCallback((index) => {

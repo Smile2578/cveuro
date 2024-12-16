@@ -99,10 +99,35 @@ export const createValidators = (t) => {
       ),
     endDate: z.string().nullable(),
     ongoing: z.boolean().default(false),
+    fieldOfStudy: z.string()
+      .min(2, { message: t('education.fieldOfStudy.minLength') })
+      .max(100, { message: t('education.fieldOfStudy.maxLength') }),
     customDegree: z.string()
-      .min(2, { message: t('education.customDegree.minLength') })
-      .max(100, { message: t('education.customDegree.maxLength') })
-      .optional(),
+      .nullable()
+      .optional()
+      .superRefine((val, ctx) => {
+        // Ne valider que si le champ est rempli
+        if (val && val.trim() !== '') {
+          if (val.length < 2) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.too_small,
+              minimum: 2,
+              type: "string",
+              inclusive: true,
+              message: t('education.customDegree.minLength')
+            });
+          }
+          if (val.length > 100) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.too_big,
+              maximum: 100,
+              type: "string",
+              inclusive: true,
+              message: t('education.customDegree.maxLength')
+            });
+          }
+        }
+      }),
     achievements: z.array(
       z.string()
         .min(1, { message: t('education.achievements.required') })
@@ -112,13 +137,15 @@ export const createValidators = (t) => {
   .min(1, { message: t('education.required') })
   .superRefine((educations, ctx) => {
     educations.forEach((education, index) => {
-      // Validation du diplôme personnalisé si "other" est sélectionné
-      if (education.degree === 'other' && !education.customDegree) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: t('education.customDegree.required'),
-          path: [`${index}.customDegree`]
-        });
+      // Validation du diplôme personnalisé uniquement si "other" est sélectionné
+      if (education.degree === 'other') {
+        if (!education.customDegree || education.customDegree.trim() === '') {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: t('education.customDegree.required'),
+            path: [`${index}.customDegree`]
+          });
+        }
       }
 
       // Validation de la date de fin uniquement si ongoing est false
@@ -259,7 +286,7 @@ export const createValidators = (t) => {
       language: z.string()
         .min(2, { message: t('combined.languages.name.minLength') })
         .max(50, { message: t('combined.languages.name.maxLength') }),
-      proficiency: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2'], {
+      proficiency: z.enum(['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Native'], {
         required_error: t('combined.languages.proficiency.required'),
         invalid_type_error: t('combined.languages.proficiency.invalid')
       }),

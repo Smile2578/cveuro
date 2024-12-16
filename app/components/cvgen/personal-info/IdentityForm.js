@@ -6,9 +6,8 @@ import React, { useState, useEffect } from 'react';
 import { Box, Stack, TextField, Typography, Paper, useTheme, useMediaQuery, Alert } from '@mui/material';
 import { useFormContext, Controller } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { motion } from 'framer-motion';
 import { Person } from '@mui/icons-material';
-import { useFormProgress } from '@/app/hooks/useFormProgress';
+
 
 const IdentityForm = () => {
   const t = useTranslations('cvform');
@@ -31,8 +30,6 @@ const IdentityForm = () => {
     const hasError = Boolean(errors?.personalInfo?.[field]);
     return hasError && (touchedFields?.personalInfo?.[field] || hasAttemptedValidation || isSubmitted);
   };
-
-  const hasErrors = Boolean(errors?.personalInfo?.firstname || errors?.personalInfo?.lastname);
 
   return (
     <Paper 

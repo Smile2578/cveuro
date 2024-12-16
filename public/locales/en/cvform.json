@@ -188,7 +188,7 @@
       "required": "Please specify your degree",
       "error": "Please specify your degree"
     },
-    "field": {
+    "fieldOfStudy": {
       "label": "Field of Study",
       "placeholder": "Ex: Computer Science, Law, Business...",
       "minLength": "Field of study must be at least 2 characters",
@@ -367,7 +367,8 @@
         "B1": "Intermediate (B1)",
         "B2": "Upper Intermediate (B2)",
         "C1": "Advanced (C1)",
-        "C2": "Mastery (C2)"
+        "C2": "Mastery (C2)",
+        "Native": "Native"
       }
     },
     "test": {
@@ -379,6 +380,9 @@
         "label": "Score/Level Achieved (Optional)",
         "placeholder": "Ex: 95/120, B2..."
       }
+    },
+    "validation": {
+      "required": "This field is required"
     },
     "actions": {
       "add": "Add language",
@@ -403,7 +407,8 @@
         "russian": "Russian",
         "chinese": "Chinese",
         "japanese": "Japanese",
-        "arabic": "Arabic"
+        "arabic": "Arabic",
+        "french": "French"
       }
     }
   },

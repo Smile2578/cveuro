@@ -204,6 +204,14 @@
       "required": "Veuillez préciser votre diplôme",
       "error": "Veuillez préciser votre diplôme"
     },
+    "fieldOfStudy": {
+      "label": "Domaine d'étude",
+      "placeholder": "Ex: Informatique, Marketing, etc.",
+      "minLength": "Le domaine d'étude doit contenir au moins 2 caractères",
+      "maxLength": "Le domaine d'étude ne peut pas dépasser 100 caractères",
+      "required": "Le domaine d'étude est requis",
+      "error": "Le domaine d'étude est requis"
+    },
     "dates": {
       "startDate": {
         "label": "Date de début",
@@ -360,7 +368,8 @@
         "B1": "Intermédiaire (B1)",
         "B2": "Intermédiaire avancé (B2)",
         "C1": "Avancé (C1)",
-        "C2": "Maîtrise (C2)"
+        "C2": "Maîtrise (C2)",
+        "Native": "Langue maternelle"
       }
     },
     "test": {
@@ -396,8 +405,12 @@
         "russian": "Russe",
         "chinese": "Chinois",
         "japanese": "Japonais",
-        "arabic": "Arabe"
+        "arabic": "Arabe",
+        "french": "Français"
       }
+    },
+    "validation": {
+      "required": "Ce champ est requis"
     }
   },
   "hobbies": {

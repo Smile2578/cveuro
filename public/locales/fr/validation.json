@@ -12,7 +12,7 @@
   },
   "name": {
     "required": "Le nom est requis",
-    "minLength": "Le nom doit contenir au moins 2 caractères",
+    "minLength": "Le nom est requis et doit contenir au moins 2 caractères",
     "maxLength": "Le nom ne doit pas dépasser 50 caractères",
     "format": "Le nom ne doit contenir que des lettres"
   },
@@ -61,6 +61,14 @@
       "format": "Format de date invalide (MM/AAAA)",
       "future": "La date ne peut pas être dans le futur",
       "beforeStart": "La date de fin doit être après la date de début"
+    },
+    "fieldOfStudy": {
+      "required": "Le domaine d'étude est requis",
+      "minLength": "Le domaine d'étude doit contenir au moins 2 caractères",
+      "maxLength": "Le domaine d'étude ne peut pas dépasser 100 caractères"
+    },
+    "dates": {
+      "chronology": "La date de fin doit être après la date de début"
     },
     "achievements": {
       "required": "La réalisation est requise",
