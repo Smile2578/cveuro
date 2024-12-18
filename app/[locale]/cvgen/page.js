@@ -1,7 +1,10 @@
 // app/[locale]/cvgen/page.js
 import CVGenPageClient from './CVGenPageClient';
+import { setRequestLocale } from 'next-intl/server';
 
 export default async function CVGenPage({ params: { locale } }) {
+  setRequestLocale(locale);
+
   const messages = {
     welcome: (await import(`../../../public/locales/${locale}/welcome.json`)).default,
     common: (await import(`../../../public/locales/${locale}/common.json`)).default,
@@ -10,4 +13,8 @@ export default async function CVGenPage({ params: { locale } }) {
   };
   
   return <CVGenPageClient locale={locale} messages={messages} />;
+}
+
+export function generateStaticParams() {
+  return [{ locale: 'fr' }, { locale: 'en' }];
 } 

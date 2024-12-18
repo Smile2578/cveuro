@@ -81,7 +81,7 @@ const SkillItem = React.memo(({ index, onRemove, errors }) => {
     e.preventDefault();
     e.stopPropagation();
     onRemove(index);
-  }, [onRemove, index, getValues, errors]);
+  }, [onRemove, index]);
 
   return (
     <Paper

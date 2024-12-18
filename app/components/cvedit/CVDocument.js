@@ -283,6 +283,7 @@ const CVDocument = memo(({ data, locale }) => {
             <Image
               src="/logo.png"
               style={styles.logo}
+              alt="Logo"
             />
             <Text style={styles.name}>
               {data?.personalInfo?.firstname || ''}{' '}{data?.personalInfo?.lastname || ''}
@@ -359,7 +360,7 @@ const CVDocument = memo(({ data, locale }) => {
               {data?.languages?.length > 0 && (
                 <View style={styles.section}>
                   <View style={styles.sectionTitle}>
-                    <Image src="/icons/language.png" style={styles.sectionIcon} />
+                    <Image src="/icons/language.png" style={styles.sectionIcon} alt="Language Icon" />
                     <Text>{t('sections.languages')}</Text>
                   </View>
                   <View style={styles.chipsContainer}>
@@ -383,7 +384,7 @@ const CVDocument = memo(({ data, locale }) => {
               {data?.skills?.length > 0 && (
                 <View style={styles.section}>
                   <View style={styles.sectionTitle}>
-                    <Image src="/icons/skill.png" style={styles.sectionIcon} />
+                    <Image src="/icons/skill.png" style={styles.sectionIcon} alt="Skill Icon" />
                     <Text>{t('sections.skills')}</Text>
                   </View>
                   <View style={styles.chipsContainer}>
@@ -406,7 +407,7 @@ const CVDocument = memo(({ data, locale }) => {
                 <View style={[styles.section, { breakInside: 'avoid', pageBreakInside: 'avoid' }]} wrap={false}>
                   <View style={[styles.sectionContent, { breakInside: 'avoid', pageBreakInside: 'avoid' }]}>
                     <View style={styles.sectionTitle}>
-                      <Image src="/icons/hobby.png" style={styles.sectionIcon} />
+                      <Image src="/icons/hobby.png" style={styles.sectionIcon} alt="Hobby Icon" />
                       <Text>{t('sections.hobbies')}</Text>
                     </View>
                     <View style={styles.chipsContainer}>
@@ -426,7 +427,7 @@ const CVDocument = memo(({ data, locale }) => {
               {data?.education?.length > 0 && (
                 <View style={styles.section}>
                   <View style={styles.sectionTitle}>
-                    <Image src="/icons/education.png" style={styles.sectionIcon} />
+                    <Image src="/icons/education.png" style={styles.sectionIcon} alt="Education Icon" />
                     <Text>{t('sections.education')}</Text>
                   </View>
                   {data.education.map((edu, index) => (
@@ -457,7 +458,7 @@ const CVDocument = memo(({ data, locale }) => {
                 <View style={[styles.section, { breakInside: 'avoid', pageBreakInside: 'avoid' }]} wrap={false}>
                   <View style={[styles.sectionContent, { breakInside: 'avoid', pageBreakInside: 'avoid' }]}>
                     <View style={styles.sectionTitle}>
-                      <Image src="/icons/work.png" style={styles.sectionIcon} />
+                      <Image src="/icons/work.png" style={styles.sectionIcon} alt="Work Icon" />
                       <Text>{t('sections.experience')}</Text>
                     </View>
                     {data.workExperience.map((exp, index) => (

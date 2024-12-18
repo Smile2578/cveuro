@@ -121,8 +121,7 @@ export default function CVGenPageClient({ locale, messages }) {
   const fetchCVData = useCallback(async () => {
     const userId = localStorage.getItem('userId');
     
-    // Vérifications optimisées pour éviter les fetchs inutiles
-    if (!userId || !isMounted.current) {
+    if (!userId || !isMounted.current || hasFetched.current) {
       setIsLoading(false);
       setShowWelcome(!userId);
       return;
@@ -136,7 +135,7 @@ export default function CVGenPageClient({ locale, messages }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        cache: 'no-store' // Désactive le cache pour ce fetch
+        cache: 'no-store'
       });
 
       if (!response.ok) {
@@ -163,19 +162,19 @@ export default function CVGenPageClient({ locale, messages }) {
         setIsLoading(false);
       }
     }
-  }, [store, transformData]);
+  }, [store, transformData, setShowWelcome, setIsLoading]);
 
   useEffect(() => {
     isMounted.current = true;
     
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !hasFetched.current) {
       fetchCVData();
     }
 
     return () => {
       isMounted.current = false;
     };
-  }, []); // Suppression de la dépendance fetchCVData
+  }, [fetchCVData]);
 
   if (isLoading) {
     return (
