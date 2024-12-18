@@ -1,14 +1,31 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { CssBaseline, Container, ThemeProvider, Box, CircularProgress, Typography } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import NavBar from '../common/NavBar';
-import Footer from '../common/Footer';
-import CVEditor from './CVEditor';
-import theme from '../../theme';
+import dynamic from 'next/dynamic';
+import theme from '@/app/theme';
 import { useRouter } from 'next/navigation';
+
+// Import dynamique des composants qui utilisent next-intl
+const NavBar = dynamic(() => import('../common/NavBar'), {
+  ssr: false,
+  loading: () => <Box sx={{ height: '64px' }} />
+});
+
+const Footer = dynamic(() => import('../common/Footer'), {
+  ssr: false
+});
+
+const CVEditor = dynamic(() => import('./CVEditor'), {
+  ssr: false,
+  loading: () => (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+      <CircularProgress />
+    </Box>
+  )
+});
 
 export default function CVEditClient({ initialData, locale, userId }) {
   const [cvData, setCvData] = useState(initialData);
@@ -95,37 +112,41 @@ export default function CVEditClient({ initialData, locale, userId }) {
 
   if (isLoading) {
     return (
-      <Box 
-        sx={{ 
-          height: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          flexDirection: 'column',
-          gap: 2
-        }}
-      >
-        <CircularProgress />
-        <Typography>{t('editor.loading')}</Typography>
-      </Box>
+      <ThemeProvider theme={theme}>
+        <Box 
+          sx={{ 
+            height: '100vh', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            flexDirection: 'column',
+            gap: 2
+          }}
+        >
+          <CircularProgress />
+          <Typography>{t('editor.loading')}</Typography>
+        </Box>
+      </ThemeProvider>
     );
   }
 
   if (error === 'notFound') {
     return (
-      <Box 
-        sx={{ 
-          height: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          flexDirection: 'column',
-          gap: 2
-        }}
-      >
-        <Typography variant="h6">{t('editor.noUser')}</Typography>
-        <Typography>{t('editor.redirecting')}</Typography>
-      </Box>
+      <ThemeProvider theme={theme}>
+        <Box 
+          sx={{ 
+            height: '100vh', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            flexDirection: 'column',
+            gap: 2
+          }}
+        >
+          <Typography variant="h6">{t('editor.noUser')}</Typography>
+          <Typography>{t('editor.redirecting')}</Typography>
+        </Box>
+      </ThemeProvider>
     );
   }
 
@@ -137,7 +158,7 @@ export default function CVEditClient({ initialData, locale, userId }) {
           minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
-          background: theme.palette.background.default,
+          background: 'background.default',
         }}
       >
         <NavBar />

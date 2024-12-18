@@ -5,11 +5,16 @@
     "backToForm": "Retour au formulaire",
     "dragAndDrop": "Vous pouvez modifier l'ordre des sections par glisser-déposer",
     "noUser": "Aucun utilisateur spécifié",
-    "redirecting": "Redirection vers la page d'accueil...",
+    "printError": "Une erreur est survenue lors de la génération du PDF. Veuillez réessayer.",
+    "showEdit": "Afficher le mode édition",
+    "hideEdit": "Masquer le mode édition",
+    "textPreview": "Vous pouvez modifier votre CV ci-dessous ou le voir ici",
     "print": {
-      "button": "Télécharger en PDF",
-      "generating": "Génération du PDF en cours..."
-    }
+      "error": "Veuillez réessayer.",
+      "button": "Télécharger le CV",
+      "generating": "Génération en cours..."
+    },
+    "redirecting": "Redirection vers la page d'accueil..."
   },
   "sections": {
     "personalInfo": "Informations Personnelles",

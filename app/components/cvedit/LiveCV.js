@@ -9,7 +9,7 @@ import {
   Divider,
   Chip,
   useTheme,
-  Grid
+  useMediaQuery
 } from '@mui/material';
 import {
   School as SchoolIcon,
@@ -22,6 +22,7 @@ import {
 const LiveCV = ({ data, locale }) => {
   const t = useTranslations('cvedit');
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -30,19 +31,19 @@ const LiveCV = ({ data, locale }) => {
     const parts = dateString.split('/');
     if (parts.length === 3) {
       const [day, month, year] = parts;
-      const date = new Intl.DateTimeFormat(locale, { 
+      const date = new Date(year, month - 1, day);
+      return new Intl.DateTimeFormat(locale, { 
         year: 'numeric', 
         month: 'long',
         day: 'numeric'
-      }).format(new Date(year, month - 1));
-      return date.charAt(0).toUpperCase() + date.slice(1);
+      }).format(date);
     } else if (parts.length === 2) {
       const [month, year] = parts;
-      const date = new Intl.DateTimeFormat(locale, { 
+      const date = new Date(year, month - 1);
+      return new Intl.DateTimeFormat(locale, { 
         year: 'numeric', 
         month: 'long'
-      }).format(new Date(year, month - 1));
-      return date.charAt(0).toUpperCase() + date.slice(1);
+      }).format(date);
     }
     return dateString;
   };
@@ -67,7 +68,7 @@ const LiveCV = ({ data, locale }) => {
     const { personalInfo } = data;
 
     return (
-      <Box sx={{ mb: 3, textAlign: 'center' }}>
+      <Box sx={{ mb: 3, textAlign: 'center', position: 'relative' }}>
         <Typography variant="h2" gutterBottom sx={{ 
           fontWeight: 700,
           letterSpacing: 1,
@@ -94,6 +95,51 @@ const LiveCV = ({ data, locale }) => {
         }}>
           {personalInfo.address}, {personalInfo.city} {personalInfo.zip}
         </Typography>
+        {(personalInfo.linkedIn || personalInfo.personalWebsite) && (
+          <Stack 
+            direction="row" 
+            spacing={2} 
+            justifyContent="center" 
+            sx={{ mt: 1 }}
+          >
+            {personalInfo.linkedIn && (
+              <Typography 
+                component="a"
+                href={personalInfo.linkedIn.startsWith('http') ? personalInfo.linkedIn : `https://linkedin.com/in/${personalInfo.linkedIn}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ 
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                LinkedIn
+              </Typography>
+            )}
+            {personalInfo.personalWebsite && (
+              <Typography 
+                component="a"
+                href={personalInfo.personalWebsite.startsWith('http') ? personalInfo.personalWebsite : `https://${personalInfo.personalWebsite}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                variant="body2"
+                sx={{ 
+                  color: theme.palette.primary.main,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline'
+                  }
+                }}
+              >
+                {personalInfo.personalWebsite}
+              </Typography>
+            )}
+          </Stack>
+        )}
         <Stack direction="row" spacing={2} justifyContent="center" sx={{ mt: 1 }}>
           {personalInfo.dateofBirth && (
             <Typography variant="body2" sx={{ 
@@ -275,7 +321,13 @@ const LiveCV = ({ data, locale }) => {
                 backgroundColor: `${getSkillColor(skill.level)}15`,
                 color: getSkillColor(skill.level),
                 border: `1px solid ${getSkillColor(skill.level)}`,
-                fontWeight: 500
+                fontWeight: 500,
+                height: 'auto',
+                '& .MuiChip-label': {
+                  whiteSpace: 'normal',
+                  display: 'block',
+                  padding: '8px 12px'
+                }
               }}
             />
           ))}
@@ -318,8 +370,8 @@ const LiveCV = ({ data, locale }) => {
             <Chip
               key={index}
               label={
-                `${lang.language} - ${t(`languages.levels.${lang.proficiency}`)}${
-                  lang.testName ? ` (${lang.testName}: ${lang.testScore})` : ''
+                `${lang.language} - ${lang.proficiency}${
+                  lang.testName && lang.testScore ? `\n${lang.testName}: ${lang.testScore}` : ''
                 }`
               }
               sx={{ 
@@ -327,7 +379,13 @@ const LiveCV = ({ data, locale }) => {
                 backgroundColor: `${getProficiencyColor(lang.proficiency)}15`,
                 color: getProficiencyColor(lang.proficiency),
                 border: `1px solid ${getProficiencyColor(lang.proficiency)}`,
-                fontWeight: 500
+                fontWeight: 500,
+                whiteSpace: 'pre-line',
+                height: 'auto',
+                '& .MuiChip-label': {
+                  display: 'block',
+                  whiteSpace: 'pre-line'
+                }
               }}
             />
           ))}
@@ -365,7 +423,13 @@ const LiveCV = ({ data, locale }) => {
                 backgroundColor: `${theme.palette.primary.main}15`,
                 color: theme.palette.primary.main,
                 border: `1px solid ${theme.palette.primary.main}`,
-                fontWeight: 500
+                fontWeight: 500,
+                height: 'auto',
+                '& .MuiChip-label': {
+                  whiteSpace: 'normal',
+                  display: 'block',
+                  padding: '8px 12px'
+                }
               }}
             />
           ))}
@@ -414,44 +478,77 @@ const LiveCV = ({ data, locale }) => {
   return (
     <Paper 
       elevation={3} 
+      id="live-cv-container"
       sx={{ 
-        p: 4,
+        p: { xs: 2, md: 4 },
         backgroundColor: 'background.paper',
         position: 'relative',
         borderRadius: 2,
-        minHeight: '297mm',
-        maxWidth: '210mm',
-        margin: '0 auto'
+        minHeight: { xs: 'auto', md: '297mm' },
+        maxWidth: { xs: '100%', md: '210mm' },
+        margin: '0 auto',
+        transform: { xs: 'scale(0.85)', md: 'none' },
+        transformOrigin: 'top center',
       }}
     >
       {renderPersonalInfo()}
       <Divider sx={{ 
-        my: 3,
+        my: { xs: 2, md: 3 },
         '&::before, &::after': {
           borderColor: theme.palette.primary.main
         }
       }} />
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Stack spacing={4}>
+      <Stack 
+        direction={{ xs: 'column', md: 'row' }}
+        spacing={{ xs: 2, md: 3 }}
+        sx={{ width: '100%' }}
+      >
+        <Box sx={{ 
+          width: { xs: '100%', md: '33.33%' },
+          '& .MuiTypography-h2': {
+            fontSize: { xs: '1.5rem', md: '2.125rem' }
+          },
+          '& .MuiTypography-h6': {
+            fontSize: { xs: '1rem', md: '1.25rem' }
+          },
+          '& .MuiTypography-body1': {
+            fontSize: { xs: '0.875rem', md: '1rem' }
+          },
+          '& .MuiTypography-body2': {
+            fontSize: { xs: '0.75rem', md: '0.875rem' }
+          }
+        }}>
+          <Stack spacing={{ xs: 2, md: 4 }}>
             {renderLanguages()}
             {renderSkills()}
             {renderHobbies()}
           </Stack>
-        </Grid>
-        <Grid item xs={12} md={8} sx={{ 
-          borderLeft: { xs: 'none', md: `2px solid ${theme.palette.divider}` },
-          pl: { xs: 2, md: 4 },
-          '& > div': {
-            pr: { xs: 0, md: 2 }
-          }
-        }}>
-          <Stack spacing={4}>
+        </Box>
+        <Box 
+          sx={{ 
+            width: { xs: '100%', md: '66.67%' },
+            borderLeft: { xs: 'none', md: `2px solid ${theme.palette.divider}` },
+            pl: { xs: 1, md: 4 },
+            '& .MuiTypography-h5': {
+              fontSize: { xs: '1.25rem', md: '1.5rem' }
+            },
+            '& .MuiTypography-h6': {
+              fontSize: { xs: '1rem', md: '1.25rem' }
+            },
+            '& .MuiTypography-body1, & .MuiTypography-subtitle1': {
+              fontSize: { xs: '0.875rem', md: '1rem' }
+            },
+            '& .MuiTypography-body2': {
+              fontSize: { xs: '0.75rem', md: '0.875rem' }
+            }
+          }}
+        >
+          <Stack spacing={{ xs: 2, md: 4 }}>
             {renderEducation()}
             {renderWorkExperience()}
           </Stack>
-        </Grid>
-      </Grid>
+        </Box>
+      </Stack>
     </Paper>
   );
 };

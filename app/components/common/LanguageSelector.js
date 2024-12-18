@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { Button, ButtonGroup, Box } from '@mui/material';
 import Image from 'next/image';
@@ -8,11 +8,16 @@ import Image from 'next/image';
 export default function LanguageSelector() {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const currentLocale = useLocale();
 
   const handleLocaleChange = (newLocale) => {
     const newPath = pathname.replace(`/${currentLocale}`, `/${newLocale}`);
-    router.push(newPath);
+    
+    const params = searchParams.toString();
+    const fullPath = params ? `${newPath}?${params}` : newPath;
+    
+    router.push(fullPath);
   };
 
   return (

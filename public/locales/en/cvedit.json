@@ -6,9 +6,14 @@
     "dragAndDrop": "You can modify the order of sections using drag and drop",
     "noUser": "No user specified",
     "redirecting": "Redirecting to home page...",
+    "printError": "An error occurred while generating the PDF. Please try again.",
+    "showEdit": "Show edit mode",
+    "hideEdit": "Hide edit mode",
+    "textPreview": "You can edit your CV below or view it here",
     "print": {
       "button": "Download as PDF",
-      "generating": "Generating PDF..."
+      "generating": "Generating PDF...",
+      "error": "Please try again."
     }
   },
   "sections": {
@@ -29,7 +34,9 @@
     "delete": "Delete",
     "add": "Add",
     "dragHandle": "Move",
-    "select": "Select"
+    "select": "Select",
+    "confirmDelete": "Confirm Delete",
+    "deleteWarning": "Are you sure you want to delete this item?"
   },
   "personalInfo": {
     "firstname": "First Name",
@@ -150,4 +157,5 @@
     "checkFields": "Please check the fields",
     "zipFormat": "Invalid ZIP code format (format: 12345)"
   }
+  
 } 
