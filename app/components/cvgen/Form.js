@@ -146,9 +146,29 @@ const Form = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={(e) => e.preventDefault()}>
-        <Container maxWidth="md" sx={{ overflowX: 'hidden', paddingRight: 'calc(100vw - 100%)' }}>
+        <Container 
+          maxWidth="md" 
+          sx={{ 
+            overflowX: 'hidden',
+            px: { xs: 2, sm: 3 },
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: '100vh',
+            width: '100%'
+          }}
+        >
           <ProgressBar />
-          <Box sx={{ minHeight: '60vh' }}>
+          <Box 
+            sx={{ 
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              width: '100%',
+              py: { xs: 2, sm: 4 }
+            }}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}
@@ -156,6 +176,7 @@ const Form = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
+                style={{ width: '100%' }}
               >
                 {MemoizedStepContent}
               </motion.div>

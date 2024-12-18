@@ -29,15 +29,14 @@ export default async function handler(req, res) {
         ...edu,
         customDegree: edu.customDegree || null // Préserver le customDegree
       })),
-      // Transformer workExperience.experiences en workExperience
-      workExperience: req.body.workExperience?.experiences || [],
+      // Préserver workExperience tel quel s'il existe, sinon utiliser un tableau vide
+      workExperience: Array.isArray(req.body.workExperience) 
+        ? req.body.workExperience 
+        : (req.body.workExperience?.experiences || [])
     };
 
-    // Supprimer les anciennes clés
+    // Supprimer uniquement la clé educations car elle a été transformée
     delete transformedData.educations;
-    if (transformedData.workExperience) {
-      delete transformedData.workExperience.experiences;
-    }
 
     console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
 

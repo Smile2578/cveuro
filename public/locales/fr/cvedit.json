@@ -16,8 +16,10 @@
     "education": "Formation",
     "experience": "Expérience Professionnelle",
     "skills": "Compétences",
+    "workExperience": "Expérience Professionnelle",
     "languages": "Langues",
-    "hobbies": "Loisirs"
+    "hobbies": "Loisirs",
+    "null": "Null"
   },
   "common": {
     "ongoing": "En cours",
@@ -25,7 +27,11 @@
     "cancel": "Annuler",
     "edit": "Modifier",
     "delete": "Supprimer",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "dragHandle": "Déplacer",
+    "confirmDelete": "Confirmer la suppression",
+    "deleteWarning": "Êtes-vous sûr de vouloir supprimer cet élément ?",
+    "select": "Sélectionner"
   },
   "personalInfo": {
     "firstname": "Prénom",
@@ -38,17 +44,47 @@
     "city": "Ville",
     "zip": "Code postal",
     "dateofBirth": "Date de naissance",
-    "nationality": "Nationalité"
+    "placeofBirth": "Lieu de naissance",
+    "nationality": "Nationalité",
+    "sex": {
+      "label": "Genre",
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre"
+    },
+    "linkedIn": "LinkedIn",
+    "personalWebsite": "Site web personnel",
+    "identity": "Identité",
+    "info": "Info",
+    "social": "Social"
   },
   "education": {
-    "degree": "Diplôme",
+    "degree": {
+      "label": "Diplôme",
+      "placeholder": "Sélectionnez votre diplôme",
+      "minLength": "Le diplôme doit contenir au moins 2 caractères",
+      "maxLength": "Le diplôme ne peut excéder 100 caractères",
+      "required": "Le diplôme est requis",
+      "error": "Le diplôme est requis",
+      "options": {
+        "baccalaureat": "Baccalauréat",
+        "licence": "Licence",
+        "bachelor": "Bachelor",
+        "master": "Master",
+        "doctorat": "Doctorat",
+        "other": "Autre"
+      }
+    },
     "customDegree": "Diplôme personnalisé",
     "schoolName": "Nom de l'école",
     "fieldOfStudy": "Domaine d'études",
     "startDate": "Date de début",
     "endDate": "Date de fin",
     "ongoing": "En cours d'études",
-    "achievements": "Réalisations"
+    "achievements": "Réalisations",
+    "add": "Ajouter une formation",
+    "addAchievement": "Ajouter une réalisation",
+    "achievementPlaceholder": "Décrivez votre réalisation..."
   },
   "experience": {
     "position": "Poste",
@@ -57,7 +93,10 @@
     "startDate": "Date de début",
     "endDate": "Date de fin",
     "ongoing": "Poste actuel",
-    "responsibilities": "Responsabilités"
+    "responsibilities": "Responsabilités",
+    "add": "Ajouter une expérience",
+    "addResponsibility": "Ajouter une responsabilité",
+    "responsibilityPlaceholder": "Décrivez votre responsabilité..."
   },
   "skills": {
     "skillName": "Nom de la compétence",
@@ -67,7 +106,9 @@
       "intermediate": "Intermédiaire",
       "advanced": "Avancé",
       "expert": "Expert"
-    }
+    },
+    "add": "Ajouter une compétence",
+    "name": "Nom de la compétence"
   },
   "languages": {
     "language": "Langue",
@@ -80,12 +121,40 @@
       "C1": "Avancé (C1)",
       "C2": "Maîtrise (C2)",
       "Native": "Langue maternelle"
+    },
+    "add": "Ajouter une langue",
+    "test": {
+      "name": {
+        "label": "Nom du test",
+        "placeholder": "Ex: TOEFL, IELTS..."
+      },
+      "score": {
+        "label": "Score obtenu",
+        "placeholder": "Ex: 95/120, C1..."
+      }
     }
   },
   "hobbies": {
     "hobby": "Loisir",
-    "addHobby": "Ajouter un loisir"
+    "add": "Ajouter un loisir",
+    "placeholder": "Ex: Lecture, Voyages, Sport..."
   },
-  "title": "CV Editor",
-  "description": "Editez votre CV en ligne"
+  "title": "Éditeur de CV",
+  "description": "Éditez votre CV en ligne",
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalidEmail": "Email invalide",
+    "invalidPhone": "Numéro de téléphone invalide",
+    "invalidDate": "Format de date invalide (MM/YYYY)",
+    "invalidLevel": "Niveau invalide",
+    "dateFormat": "Format : MM/YYYY",
+    "birthDateFormat": "Format : JJ/MM/YYYY",
+    "errorTitle": "Erreurs de validation",
+    "errorMessage": "Veuillez corriger les erreurs avant de sauvegarder",
+    "invalidUrl": "Format d'URL invalide",
+    "invalidNationality": "Format de nationalité invalide",
+    "error": "Erreur",
+    "checkFields": "Veuillez vérifier les champs",
+    "zipFormat": "Format de code postal invalide (format: 12345)"
+  }
 } 

@@ -23,7 +23,8 @@ import {
   useTheme,
   Alert,
   Switch,
-  Tooltip
+  Tooltip,
+  useMediaQuery
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers';
 import { 
@@ -50,16 +51,21 @@ const StyledTextField = React.forwardRef(({ error, helperText, ...props }, ref) 
       error={!!error}
       helperText={helperText}
       sx={{
+        width: '100%',
         '& .MuiOutlinedInput-root': {
           transition: 'all 0.3s ease',
           '&:hover, &.Mui-focused': {
-            backgroundColor: 'rgba(0, 0, 0, 0.02)'
+            backgroundColor: theme.palette.action.hover
           },
           ...(error && {
             '& fieldset': {
               borderColor: theme.palette.error.main
             }
           })
+        },
+        '& .MuiFormHelperText-root': {
+          marginLeft: 0,
+          marginRight: 0
         }
       }}
     />
@@ -69,18 +75,17 @@ const StyledTextField = React.forwardRef(({ error, helperText, ...props }, ref) 
 StyledTextField.displayName = 'StyledTextField';
 
 const ExperienceCard = React.memo(({ 
-  index, 
-  remove, 
+  index,  
   errors, 
   isExpanded, 
   onToggle,
   onRemove,
-  defaultValues 
 }) => {
   const t = useTranslations('validation');
   const tForm = useTranslations('cvform');
   const theme = useTheme();
-  const { register, watch, setValue, trigger } = useFormContext();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { register, watch, setValue } = useFormContext();
 
   const formatDateForValidation = useCallback((date) => {
     return date ? dayjs(date).format('MM/YYYY') : '';
@@ -153,44 +158,76 @@ const ExperienceCard = React.memo(({
     <Paper
       elevation={2}
       sx={{ 
-        p: 3, 
+        p: { xs: 2, sm: 3 }, 
         mb: 3, 
         position: 'relative',
         borderLeft: `4px solid ${
           hasFieldErrors ? theme.palette.error.main : theme.palette.primary.main
         }`,
+        transition: 'box-shadow 0.3s ease',
         '&:hover': {
           boxShadow: theme.shadows[4]
         }
       }}
     >
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        justifyContent: 'space-between', 
+        alignItems: { xs: 'flex-start', sm: 'center' }, 
+        gap: 2,
+        mb: 2 
+      }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 1,
+          width: { xs: '100%', sm: 'auto' }
+        }}>
           <WorkIcon color="primary" />
-          <Typography variant="subtitle1" color="primary">
+          <Typography 
+            variant="subtitle1" 
+            color="primary"
+            sx={{ 
+              flex: 1,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
             {companyName || position ? 
               `${companyName}${position ? ` - ${position}` : ''}` 
               : `${tForm('experience.main.title')} ${index + 1}`}
           </Typography>
-          {hasFieldErrors && !isExpanded && (
-            <Alert 
-              severity="error" 
-              sx={{ ml: 2 }}
-              action={
-                <Button 
-                  color="error" 
-                  size="small"
-                  onClick={() => onToggle(index)}
-                >
-                  {tForm('common.showDetails')}
-                </Button>
-              }
-            >
-              {tForm('experience.errors.hasErrors')}
-            </Alert>
-          )}
         </Box>
-        <Box sx={{ display: 'flex', gap: 1 }}>
+
+        {hasFieldErrors && !isExpanded && (
+          <Alert 
+            severity="error" 
+            sx={{ 
+              width: { xs: '100%', sm: 'auto' },
+              py: 0
+            }}
+            action={
+              <Button 
+                color="error" 
+                size="small"
+                onClick={() => onToggle(index)}
+              >
+                {tForm('common.showDetails')}
+              </Button>
+            }
+          >
+            {tForm('experience.errors.hasErrors')}
+          </Alert>
+        )}
+
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 1,
+          ml: { xs: 0, sm: 2 },
+          alignSelf: { xs: 'flex-end', sm: 'center' }
+        }}>
           <Tooltip title={tForm('experience.actions.remove')}>
             <IconButton 
               onClick={() => onRemove(index)} 
@@ -215,7 +252,6 @@ const ExperienceCard = React.memo(({
           <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
             <StyledTextField
               {...register(`workExperience.experiences.${index}.companyName`)}
-              fullWidth
               label={tForm('experience.company.label')}
               placeholder={tForm('experience.company.placeholder')}
               error={!!errors?.workExperience?.experiences?.[index]?.companyName}
@@ -223,7 +259,6 @@ const ExperienceCard = React.memo(({
             />
             <StyledTextField
               {...register(`workExperience.experiences.${index}.position`)}
-              fullWidth
               label={tForm('experience.position.label')}
               placeholder={tForm('experience.position.placeholder')}
               error={!!errors?.workExperience?.experiences?.[index]?.position}
@@ -233,7 +268,6 @@ const ExperienceCard = React.memo(({
 
           <StyledTextField
             {...register(`workExperience.experiences.${index}.location`)}
-            fullWidth
             label={tForm('experience.location.label')}
             placeholder={tForm('experience.location.placeholder')}
             error={!!errors?.workExperience?.experiences?.[index]?.location}
@@ -254,7 +288,8 @@ const ExperienceCard = React.memo(({
                     required: true,
                     error: !!errors?.workExperience?.experiences?.[index]?.startDate,
                     helperText: errors?.workExperience?.experiences?.[index]?.startDate?.message,
-                    placeholder: tForm('experience.dates.startDate.placeholder')
+                    placeholder: tForm('experience.dates.startDate.placeholder'),
+                    size: isMobile ? 'small' : 'medium'
                   }
                 }}
               />
@@ -274,14 +309,19 @@ const ExperienceCard = React.memo(({
                     required: !isOngoing,
                     error: !isOngoing && !!errors?.workExperience?.experiences?.[index]?.endDate,
                     helperText: !isOngoing ? errors?.workExperience?.experiences?.[index]?.endDate?.message : '',
-                    placeholder: tForm('experience.dates.endDate.placeholder')
+                    placeholder: tForm('experience.dates.endDate.placeholder'),
+                    size: isMobile ? 'small' : 'medium'
                   }
                 }}
               />
             </Box>
           </Stack>
 
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            justifyContent: { xs: 'flex-start', sm: 'flex-end' },
+            mt: { xs: 1, sm: 0 }
+          }}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -291,6 +331,7 @@ const ExperienceCard = React.memo(({
                       shouldValidate: false
                     });
                   }}
+                  size={isMobile ? 'small' : 'medium'}
                 />
               }
               label={tForm('experience.dates.ongoing')}
@@ -298,25 +339,33 @@ const ExperienceCard = React.memo(({
             />
           </Box>
 
-          <Box>
-            <Typography variant="subtitle2" gutterBottom>
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant="subtitle2" color="secondary" gutterBottom align="center">
               {tForm('experience.responsibilities.label')}
             </Typography>
-            <Stack spacing={2}>
+            <Stack spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
               {(responsibilities || []).map((_, respIndex) => (
-                <Box key={respIndex} sx={{ display: 'flex', gap: 1 }}>
+                <Box key={respIndex} sx={{ 
+                  display: 'flex',
+                  flexDirection: { xs: 'column', sm: 'row' },
+                  gap: 1,
+                  width: '100%',
+                  justifyContent: 'center'
+                }}>
                   <StyledTextField
                     {...register(`workExperience.experiences.${index}.responsibilities.${respIndex}`)}
-                    fullWidth
                     multiline
                     rows={2}
                     placeholder={tForm('experience.responsibilities.placeholder')}
                     error={!!errors?.workExperience?.experiences?.[index]?.responsibilities?.[respIndex]}
                     helperText={errors?.workExperience?.experiences?.[index]?.responsibilities?.[respIndex]?.message}
+                    size={isMobile ? 'small' : 'medium'}
+                    sx={{ width: '100%' }}
                   />
                   <IconButton 
                     onClick={() => handleResponsibilityChange(respIndex, 'remove')}
                     aria-label={tForm('common.delete')}
+                    sx={{ alignSelf: { xs: 'flex-end', sm: 'center' } }}
                   >
                     <DeleteIcon />
                   </IconButton>
@@ -327,13 +376,14 @@ const ExperienceCard = React.memo(({
                   startIcon={<AddIcon />}
                   onClick={() => handleResponsibilityChange(null, 'add')}
                   variant="outlined"
-                  size="small"
+                  size={isMobile ? 'small' : 'medium'}
+                  sx={{ borderRadius: 6 }}
                 >
                   {tForm('experience.responsibilities.add')}
                 </Button>
               )}
               {responsibilities?.length >= 5 && (
-                <Alert severity="info">
+                <Alert severity="info" sx={{ mt: 2, width: '100%' }}>
                   {t('experience.responsibilities.maxItems')}
                 </Alert>
               )}
@@ -347,7 +397,7 @@ const ExperienceCard = React.memo(({
 
 ExperienceCard.displayName = 'ExperienceCard';
 
-const WorkExperienceForm = () => {
+const WorkExperienceForm = ({ hideFormNavigation }) => {
   const { 
     control, 
     formState: { errors, isSubmitted }, 
@@ -367,49 +417,37 @@ const WorkExperienceForm = () => {
   const [expandedItems, setExpandedItems] = useState([0]);
   const [showNoExpDialog, setShowNoExpDialog] = useState(false);
   const { isMainStep } = useFormProgress();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const hasWorkExperience = watch('workExperience.hasWorkExperience', false);
 
-  // Effet d'initialisation pour synchroniser avec le localStorage
   useEffect(() => {
     const formData = store.formData;
-    console.log('WorkExperienceForm - Initialisation', {
-      storeData: formData?.workExperience,
-      currentFields: fields,
-      hasWorkExperience
-    });
-
-    // Vérifier s'il y a des expériences dans le store
     const hasExistingExperiences = formData?.workExperience?.experiences?.length > 0;
     const shouldInitialize = hasExistingExperiences && 
                            (!hasWorkExperience || fields.length === 0) && 
-                           !fields.some(field => field.companyName); // Vérifie si les champs sont vides
+                           !fields.some(field => field.companyName);
 
     if (shouldInitialize) {
-      console.log('WorkExperienceForm - Restauration des données et activation du switch');
-      // Activer le switch
       setValue('workExperience.hasWorkExperience', true, { 
         shouldValidate: false,
         shouldDirty: false,
         shouldTouch: false
       });
 
-      // Nettoyer les champs existants avant d'ajouter
       remove();
 
-      // Ajouter les expériences existantes
       formData.workExperience.experiences.forEach(exp => {
         append(exp, { shouldFocus: false });
       });
     }
   }, [store.formData, fields.length, setValue, append, hasWorkExperience, remove]);
 
-  // Effet pour synchroniser les erreurs avec le store uniquement quand nécessaire
   useEffect(() => {
     const hasErrors = !!errors?.workExperience;
     const currentErrors = store.formErrors?.workExperience;
     
-    // Ne mettre à jour que si l'état des erreurs a changé
     if (hasErrors !== !!currentErrors) {
       if (hasErrors) {
         store.setFormErrors({
@@ -431,17 +469,9 @@ const WorkExperienceForm = () => {
   }, []);
 
   const handleAddExperience = useCallback(async () => {
-    console.log('handleAddExperience - Début', {
-      fieldsLength: fields.length,
-      currentExperiences: getValues('workExperience.experiences')
-    });
-
     if (fields.length < 4) {
-      // Vérifier si le store a des expériences mais que fields est vide
-      // Cela signifie qu'on ajoute la première expérience après une réinitialisation
       const currentExperiences = getValues('workExperience.experiences');
       if (fields.length === 0 && currentExperiences && currentExperiences.length > 0) {
-        // Réinitialiser complètement avant d'ajouter
         store.setFormData({
           ...getValues(),
           workExperience: {
@@ -462,14 +492,10 @@ const WorkExperienceForm = () => {
         responsibilities: []
       };
       
-      console.log('handleAddExperience - Avant append', { newExperience });
       append(newExperience, { shouldFocus: false });
-      console.log('handleAddExperience - Après append');
-      
       setExpandedItems(prev => [...prev, fields.length]);
 
       if (fields.length === 0) {
-        console.log('handleAddExperience - Activation du switch car première expérience');
         setValue('workExperience.hasWorkExperience', true, { 
           shouldValidate: false,
           shouldDirty: false,
@@ -481,12 +507,6 @@ const WorkExperienceForm = () => {
 
   const handleExperienceToggle = useCallback(async (event) => {
     const newValue = event.target.checked;
-    console.log('handleExperienceToggle', { 
-      newValue, 
-      fieldsLength: fields.length,
-      currentExperiences: getValues('workExperience.experiences')
-    });
-
     if (!newValue && fields.length > 0) {
       setShowNoExpDialog(true);
     } else {
@@ -496,22 +516,13 @@ const WorkExperienceForm = () => {
         shouldTouch: false
       });
     }
-  }, [fields.length, setValue, getValues]);
+  }, [fields.length, setValue]);
 
   const handleRemoveExperience = useCallback(async (index) => {
-    console.log('handleRemoveExperience - Début', { 
-      index,
-      fieldsLength: fields.length,
-      currentExperiences: getValues('workExperience.experiences')
-    });
-
     remove(index);
     setExpandedItems(prev => prev.filter(i => i !== index).map(i => i > index ? i - 1 : i));
     
     if (fields.length === 1) {
-      console.log('handleRemoveExperience - Dernière expérience supprimée');
-      
-      // Réinitialiser le formulaire avec les valeurs actuelles sauf workExperience
       const currentFormData = getValues();
       const newFormData = {
         ...currentFormData,
@@ -521,11 +532,9 @@ const WorkExperienceForm = () => {
         }
       };
       
-      // Réinitialiser le store et le formulaire
       store.setFormData(newFormData);
       store.clearFormErrors();
       
-      // Réinitialiser React Hook Form
       setValue('workExperience', {
         hasWorkExperience: false,
         experiences: []
@@ -535,10 +544,7 @@ const WorkExperienceForm = () => {
         shouldTouch: false
       });
 
-      // Forcer la réinitialisation du useFieldArray
       remove();
-      
-      console.log('handleRemoveExperience - Store et formulaire mis à jour');
     }
   }, [remove, fields.length, setValue, store, getValues]);
 
@@ -574,10 +580,6 @@ const WorkExperienceForm = () => {
   }, [hasWorkExperience, trigger, errors?.workExperience?.experiences]);
 
   const confirmNoExperience = useCallback(async () => {
-    console.log('confirmNoExperience - Début', {
-      currentExperiences: getValues('workExperience.experiences')
-    });
-
     setValue('workExperience.hasWorkExperience', false, { 
       shouldValidate: false,
       shouldDirty: false,
@@ -589,14 +591,26 @@ const WorkExperienceForm = () => {
       shouldTouch: false
     });
     setShowNoExpDialog(false);
-    console.log('confirmNoExperience - Fin');
-  }, [setValue, getValues]);
+  }, [setValue]);
 
   return (
-    <Box sx={{ width: '100%', mb: 4 }}>
+    <Box sx={{ 
+      width: '100%', 
+      mb: 4,
+      px: { xs: 2, sm: 3 },
+      py: { xs: 2, sm: 4 }
+    }}>
       <Stack spacing={3}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography variant="h5">
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: { xs: 'column', sm: 'row' },
+          justifyContent: 'space-between', 
+          alignItems: { xs: 'flex-start', sm: 'center' },
+          gap: 2
+        }}>
+          <Typography variant="h5" component="h2" sx={{ 
+            fontSize: { xs: '1.25rem', sm: '1.5rem' }
+          }}>
             {t('experience.main.title')}
           </Typography>
           <FormControlLabel
@@ -605,14 +619,23 @@ const WorkExperienceForm = () => {
                 checked={hasWorkExperience}
                 onChange={handleExperienceToggle}
                 color="primary"
+                size={isMobile ? 'small' : 'medium'}
               />
             }
             label={t('experience.main.hasExperience')}
+            sx={{ m: 0 }}
           />
         </Box>
 
         {hasWorkExperience && errors?.workExperience && (
-          <Alert severity="error">
+          <Alert 
+            severity="error"
+            sx={{ 
+              '& .MuiAlert-message': {
+                width: '100%'
+              }
+            }}
+          >
             {errors.workExperience.message || t('experience.errors.checkFields')}
           </Alert>
         )}
@@ -623,10 +646,11 @@ const WorkExperienceForm = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
             >
               <Stack spacing={2}>
                 {fields.map((field, index) => (
-                  <Box key={field.id} sx={{ mb: 3, position: 'relative' }}>
+                  <Box key={field.id} sx={{ position: 'relative' }}>
                     <ExperienceCard
                       index={index}
                       onRemove={handleRemoveExperience}
@@ -642,9 +666,15 @@ const WorkExperienceForm = () => {
                   <Button
                     startIcon={<AddIcon />}
                     onClick={handleAddExperience}
-                    variant="outlined"
+                    variant="contained"
                     fullWidth
-                    sx={{ mb: 4 }}
+                    size={isMobile ? 'small' : 'medium'}
+                    sx={{ 
+                      mb: 4,
+                      p: 4,
+                      height: { xs: 40, sm: 48 },
+                      borderRadius: 6
+                    }}
                   >
                     {fields.length === 0
                       ? t('experience.actions.addFirst')
@@ -653,7 +683,14 @@ const WorkExperienceForm = () => {
                 )}
 
                 {fields.length >= 4 && (
-                  <Alert severity="info">
+                  <Alert 
+                    severity="info"
+                    sx={{ 
+                      '& .MuiAlert-message': {
+                        width: '100%'
+                      }
+                    }}
+                  >
                     {t('experience.actions.maxLength')}
                   </Alert>
                 )}
@@ -663,7 +700,14 @@ const WorkExperienceForm = () => {
         </AnimatePresence>
 
         {!hasWorkExperience && (
-          <Alert severity="info">
+          <Alert 
+            severity="info"
+            sx={{ 
+              '& .MuiAlert-message': {
+                width: '100%'
+              }
+            }}
+          >
             {t('experience.main.noExperienceMessage')}
           </Alert>
         )}
@@ -672,6 +716,12 @@ const WorkExperienceForm = () => {
       <Dialog
         open={showNoExpDialog}
         onClose={() => setShowNoExpDialog(false)}
+        PaperProps={{
+          sx: {
+            width: { xs: '90%', sm: 'auto' },
+            minWidth: { sm: 400 }
+          }
+        }}
       >
         <DialogTitle>
           {t('experience.main.confirmNoExperienceTitle')}
@@ -681,21 +731,31 @@ const WorkExperienceForm = () => {
             {t('experience.main.confirmNoExperience')}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowNoExpDialog(false)}>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button 
+            onClick={() => setShowNoExpDialog(false)}
+            size={isMobile ? 'small' : 'medium'}
+          >
             {t('common.cancel')}
           </Button>
-          <Button onClick={confirmNoExperience} color="primary">
+          <Button 
+            onClick={confirmNoExperience} 
+            color="primary"
+            variant="contained"
+            size={isMobile ? 'small' : 'medium'}
+          >
             {t('common.confirm')}
           </Button>
         </DialogActions>
       </Dialog>
 
-      <FormNavigation
-        onValidate={validateForm}
-        onReset={handleReset}
-        showReset={hasWorkExperience}
-      />
+      {!hideFormNavigation && (
+        <FormNavigation
+          onValidate={validateForm}
+          onReset={handleReset}
+          showReset={true}
+        />
+      )}
     </Box>
   );
 };

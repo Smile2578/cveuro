@@ -35,53 +35,63 @@ const IdentityForm = () => {
     <Paper 
       elevation={0}
       sx={{ 
-        p: { xs: 2, sm: 3 }, 
+        p: { xs: 3, sm: 3 }, 
         borderRadius: { xs: 2, sm: 4 },
         background: (theme) => theme.palette.background.paper,
-        width: '100%'
+        width: '100%',
+        mx: 'auto'
       }}
     >
       <Stack spacing={3}>
         <Box sx={{ 
           display: 'flex', 
-          alignItems: { xs: 'flex-start', sm: 'center' }, 
+          alignItems: { xs: 'center', sm: 'center' }, 
           flexDirection: { xs: 'column', sm: 'row' },
           gap: 2,
           mb: 2,
           pb: 2,
           borderBottom: '1px solid',
-          borderColor: 'divider'
+          borderColor: 'divider',
+          textAlign: { xs: 'center', sm: 'left' }
         }}>
           <Person sx={{ 
-            fontSize: { xs: 24, sm: 28 }, 
-            color: 'primary.main',
-            mt: { xs: 0.5, sm: 0 }
+            fontSize: { xs: 32, sm: 28 }, 
+            color: 'primary.main'
           }} />
           <Box>
             <Typography 
               variant={isMobile ? "subtitle1" : "h6"} 
               color="primary.main" 
               gutterBottom
+              sx={{ textAlign: { xs: 'center', sm: 'left' } }}
             >
               {t('personalInfo.identity.title')}
             </Typography>
             <Typography 
               variant="body2" 
               color="text.secondary"
-              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+              sx={{ 
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
             >
               {t('personalInfo.identity.description')}
             </Typography>
           </Box>
         </Box>
 
-        <Stack spacing={3}>
-          <Box sx={{ flex: 1, minHeight: { xs: '100px', sm: '85px' }, position: 'relative' }}>
+        <Stack spacing={4}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            mb: { xs: 3, sm: 2 }
+          }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
               gap: 1, 
-              mb: 1 
+              mb: 1
             }}>
               <Typography 
                 variant="caption" 
@@ -106,42 +116,51 @@ const IdentityForm = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder={t('personalInfo.identity.firstName.placeholder')}
-                  error={shouldShowFieldError('personalInfo.firstname')}
-                  helperText={shouldShowFieldError('personalInfo.firstname') && errors?.personalInfo?.firstname?.message}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: { xs: 1.5, sm: 2 },
-                      backgroundColor: 'background.default',
-                      fontSize: { xs: '0.875rem', sm: '1rem' },
-                      '&:hover': {
-                        backgroundColor: 'action.hover',
-                      },
-                      '&.Mui-focused': {
+                <Box sx={{ width: '100%' }}>
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t('personalInfo.identity.firstName.placeholder')}
+                    error={shouldShowFieldError('personalInfo.firstname')}
+                    helperText={shouldShowFieldError('personalInfo.firstname') && errors?.personalInfo?.firstname?.message}
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: { xs: 1.5, sm: 2 },
                         backgroundColor: 'background.default',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        height: { xs: '48px', sm: '56px' },
+                        '&:hover': {
+                          backgroundColor: 'action.hover',
+                        },
+                        '&.Mui-focused': {
+                          backgroundColor: 'background.default',
+                        }
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        marginLeft: 1,
+                        marginTop: 1,
+                        position: 'static'
                       }
-                    },
-                    '& .MuiFormHelperText-root': {
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      marginLeft: 1,
-                      position: 'absolute',
-                      bottom: { xs: '-24px', sm: '-20px' }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </Box>
               )}
             />
           </Box>
 
-          <Box sx={{ flex: 1, minHeight: { xs: '100px', sm: '85px' }, position: 'relative' }}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            mb: { xs: 3, sm: 2 }
+          }}>
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
               gap: 1, 
-              mb: 1 
+              mb: 1
             }}>
               <Typography 
                 variant="caption" 
@@ -166,32 +185,36 @@ const IdentityForm = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  placeholder={t('personalInfo.identity.lastName.placeholder')}
-                  error={shouldShowFieldError('personalInfo.lastname')}
-                  helperText={shouldShowFieldError('personalInfo.lastname') && errors?.personalInfo?.lastname?.message}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: { xs: 1.5, sm: 2 },
-                      backgroundColor: 'background.default',
-                      fontSize: { xs: '0.875rem', sm: '1rem' },
-                      '&:hover': {
-                        backgroundColor: 'action.hover',
-                      },
-                      '&.Mui-focused': {
+                <Box sx={{ width: '100%' }}>
+                  <TextField
+                    {...field}
+                    fullWidth
+                    placeholder={t('personalInfo.identity.lastName.placeholder')}
+                    error={shouldShowFieldError('personalInfo.lastname')}
+                    helperText={shouldShowFieldError('personalInfo.lastname') && errors?.personalInfo?.lastname?.message}
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: { xs: 1.5, sm: 2 },
                         backgroundColor: 'background.default',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        height: { xs: '48px', sm: '56px' },
+                        '&:hover': {
+                          backgroundColor: 'action.hover',
+                        },
+                        '&.Mui-focused': {
+                          backgroundColor: 'background.default',
+                        }
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        marginLeft: 1,
+                        marginTop: 1,
+                        position: 'static'
                       }
-                    },
-                    '& .MuiFormHelperText-root': {
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      marginLeft: 1,
-                      position: 'absolute',
-                      bottom: { xs: '-24px', sm: '-20px' }
-                    }
-                  }}
-                />
+                    }}
+                  />
+                </Box>
               )}
             />
           </Box>

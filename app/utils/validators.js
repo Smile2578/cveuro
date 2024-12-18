@@ -272,12 +272,12 @@ export const createValidators = (t) => {
   const combinedValidationSchema = z.object({
     skills: z.array(z.object({
       skillName: z.string()
-        .min(2, { message: t('skills.name.minLength') })
+        .min(1, { message: t('skills.name.minLength') })
         .max(50, { message: t('skills.name.maxLength') }),
       level: z.enum(['beginner', 'intermediate', 'advanced', 'expert'], {
         required_error: t('skills.level.required'),
         invalid_type_error: t('skills.level.invalid')
-      })
+      }).optional()
     }))
     .optional()
     .default([]),

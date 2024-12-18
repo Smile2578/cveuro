@@ -143,6 +143,10 @@
     "zip": {
       "required": "Zip code is required",
       "format": "Zip code must contain 5 digits"
+    },
+    "url": {
+      "required": "URL is required",
+      "invalid": "URL is invalid"
     }
   },
   "experience": {
@@ -215,7 +219,8 @@
     "hobbies": {
       "maxItems": "You cannot add more than 5 hobbies",
       "minLength": "Hobby must be at least 2 characters long",
-      "maxLength": "Hobby cannot exceed 50 characters"
+      "maxLength": "Hobby cannot exceed 50 characters",
+      "required": "Hobby is required"
     }
   }
 }

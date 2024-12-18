@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CssBaseline, Container, ThemeProvider, Box, CircularProgress } from '@mui/material';
+import { CssBaseline, Container, ThemeProvider, Box, CircularProgress, Typography } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import NavBar from '../common/NavBar';
@@ -10,9 +10,10 @@ import CVEditor from './CVEditor';
 import theme from '../../theme';
 import { useRouter } from 'next/navigation';
 
-export default function CVEditClient({ initialData, locale }) {
+export default function CVEditClient({ initialData, locale, userId }) {
   const [cvData, setCvData] = useState(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
+  const [error, setError] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const router = useRouter();
   const t = useTranslations('cvedit');
@@ -20,19 +21,26 @@ export default function CVEditClient({ initialData, locale }) {
   useEffect(() => {
     if (!initialData) {
       const fetchCVData = async () => {
-        const userId = localStorage.getItem('userId');
         if (!userId) {
-          router.push('/cvgen');
+          router.push('/');
           return;
         }
 
         try {
           const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`);
+          if (response.status === 404) {
+            setError('notFound');
+            setTimeout(() => {
+              router.push('/cvgen');
+            }, 3000);
+            return;
+          }
           if (!response.ok) throw new Error('Failed to fetch CV data');
           const data = await response.json();
           setCvData(data);
         } catch (error) {
           console.error("Error fetching CV data:", error);
+          setError('fetch');
         } finally {
           setIsLoading(false);
         }
@@ -40,10 +48,9 @@ export default function CVEditClient({ initialData, locale }) {
       
       fetchCVData();
     }
-  }, [initialData, router]);
+  }, [initialData, router, userId]);
 
   const handleUpdate = async (updatedData) => {
-    const userId = localStorage.getItem('userId');
     if (!userId) return;
 
     try {
@@ -62,6 +69,7 @@ export default function CVEditClient({ initialData, locale }) {
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
       console.error("Error updating CV:", error);
+      setError('update');
     }
   };
 
@@ -92,10 +100,31 @@ export default function CVEditClient({ initialData, locale }) {
           height: '100vh', 
           display: 'flex', 
           alignItems: 'center', 
-          justifyContent: 'center' 
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: 2
         }}
       >
         <CircularProgress />
+        <Typography>{t('editor.loading')}</Typography>
+      </Box>
+    );
+  }
+
+  if (error === 'notFound') {
+    return (
+      <Box 
+        sx={{ 
+          height: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          flexDirection: 'column',
+          gap: 2
+        }}
+      >
+        <Typography variant="h6">{t('editor.noUser')}</Typography>
+        <Typography>{t('editor.redirecting')}</Typography>
       </Box>
     );
   }

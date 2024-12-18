@@ -143,6 +143,10 @@
     "zip": {
       "required": "Veuillez saisir votre code postal",
       "format": "Le code postal doit contenir 5 chiffres"
+    },
+    "url": {
+      "required": "L'URL est requise",
+      "invalid": "L'URL n'est pas valide"
     }
   },
   "experience": {
@@ -165,6 +169,12 @@
       "required": "La responsabilité ne peut pas être vide",
       "minLength": "Les responsabilités doivent contenir au moins 10 caractères",
       "maxLength": "Les responsabilités ne peuvent pas dépasser 500 caractères"
+    },
+    "endDate": {
+      "required": "La date de fin est requise",
+      "format": "Format de date invalide (MM/AAAA)",
+      "future": "La date ne peut pas être dans le futur",
+      "beforeStart": "La date de fin doit être après la date de début"
     },
     "achievements": {
       "required": "La réalisation est requise",
@@ -218,7 +228,8 @@
     "hobbies": {
       "maxItems": "Vous ne pouvez pas ajouter plus de 5 centres d'intérêt",
       "minLength": "Le centre d'intérêt doit contenir au moins 2 caractères",
-      "maxLength": "Le centre d'intérêt ne peut pas dépasser 50 caractères"
+      "maxLength": "Le centre d'intérêt ne peut pas dépasser 50 caractères",
+      "required": "Le centre d'intérêt est requis"
     }
   }
 }

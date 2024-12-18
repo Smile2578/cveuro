@@ -79,20 +79,72 @@ const InfoForm = () => {
   };
 
   return (
-    <Paper elevation={0} sx={{ p: { xs: 2, sm: 3 }, borderRadius: { xs: 2, sm: 4 }, background: (theme) => theme.palette.background.paper }}>
+    <Paper elevation={0} sx={{ 
+      p: { xs: 3, sm: 3 }, 
+      borderRadius: { xs: 2, sm: 4 }, 
+      background: (theme) => theme.palette.background.paper,
+      width: '100%',
+      mx: 'auto'
+    }}>
       <Stack spacing={3}>
-        <Box sx={{ display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 2, pb: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
-          <Info sx={{ fontSize: { xs: 24, sm: 28 }, color: 'primary.main', mt: { xs: 0.5, sm: 0 } }} />
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: { xs: 'center', sm: 'center' }, 
+          flexDirection: { xs: 'column', sm: 'row' }, 
+          gap: 2, 
+          mb: 2, 
+          pb: 2, 
+          borderBottom: '1px solid', 
+          borderColor: 'divider',
+          textAlign: { xs: 'center', sm: 'left' }
+        }}>
+          <Info sx={{ 
+            fontSize: { xs: 32, sm: 28 }, 
+            color: 'primary.main'
+          }} />
           <Box>
-            <Typography variant="h6" color="primary.main" gutterBottom sx={{ fontSize: { xs: '1.125rem', sm: '1.25rem' } }}>{t('personalInfo.info.title')}</Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>{t('personalInfo.info.description')}</Typography>
+            <Typography 
+              variant="h6" 
+              color="primary.main" 
+              gutterBottom 
+              sx={{ 
+                fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
+            >
+              {t('personalInfo.info.title')}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              color="text.secondary" 
+              sx={{ 
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                textAlign: { xs: 'center', sm: 'left' }
+              }}
+            >
+              {t('personalInfo.info.description')}
+            </Typography>
           </Box>
         </Box>
 
-        <Stack spacing={3}>
-          <Box sx={{ minHeight: '85px', position: 'relative' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+        <Stack spacing={4}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            mb: { xs: 3, sm: 2 }
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1, 
+              mb: 1 
+            }}>
+              <Typography 
+                variant="caption" 
+                color="text.secondary" 
+                sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 {t('personalInfo.info.birthDate.label')}
               </Typography>
               <Typography variant="caption" color="error">*</Typography>
@@ -102,49 +154,67 @@ const InfoForm = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
-                  <DatePicker
-                    value={parseDateValue(field.value)}
-                    onChange={(newValue) => handleDateChange(field, newValue)}
-                    format="DD/MM/YYYY"
-                    slotProps={{
-                      textField: {
-                        fullWidth: true,
-                        error: shouldShowFieldError('personalInfo.dateofBirth'),
-                        helperText: shouldShowFieldError('personalInfo.dateofBirth') && errors?.personalInfo?.dateofBirth?.message,
-                        required: true,
-                        inputProps: {
-                          placeholder: 'JJ/MM/AAAA'
-                        },
-                        sx: {
-                          '& .MuiFormHelperText-root': {
-                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                            marginLeft: 1,
-                            position: 'absolute',
-                            bottom: '-20px'
+                <Box sx={{ width: '100%' }}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fr">
+                    <DatePicker
+                      value={parseDateValue(field.value)}
+                      onChange={(newValue) => handleDateChange(field, newValue)}
+                      format="DD/MM/YYYY"
+                      slotProps={{
+                        textField: {
+                          fullWidth: true,
+                          error: shouldShowFieldError('personalInfo.dateofBirth'),
+                          helperText: shouldShowFieldError('personalInfo.dateofBirth') && errors?.personalInfo?.dateofBirth?.message,
+                          required: true,
+                          inputProps: {
+                            placeholder: 'JJ/MM/AAAA'
+                          },
+                          sx: {
+                            width: '100%',
+                            '& .MuiFormHelperText-root': {
+                              fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                              marginLeft: 1,
+                              marginTop: 1,
+                              position: 'static'
+                            }
                           }
                         }
-                      }
-                    }}
-                    sx={{
-                      width: '100%',
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: { xs: 1.5, sm: 2 },
-                        backgroundColor: 'background.default',
-                        fontSize: { xs: '0.875rem', sm: '1rem' },
-                        '&:hover': { backgroundColor: 'action.hover' },
-                        '&.Mui-focused': { backgroundColor: 'background.default' }
-                      }
-                    }}
-                  />
-                </LocalizationProvider>
+                      }}
+                      sx={{
+                        width: '100%',
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: { xs: 1.5, sm: 2 },
+                          backgroundColor: 'background.default',
+                          fontSize: { xs: '0.875rem', sm: '1rem' },
+                          height: { xs: '48px', sm: '56px' },
+                          '&:hover': { backgroundColor: 'action.hover' },
+                          '&.Mui-focused': { backgroundColor: 'background.default' }
+                        }
+                      }}
+                    />
+                  </LocalizationProvider>
+                </Box>
               )}
             />
           </Box>
 
-          <Box sx={{ minHeight: '85px', position: 'relative' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            mb: { xs: 3, sm: 2 }
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1, 
+              mb: 1 
+            }}>
+              <Typography 
+                variant="caption" 
+                color="text.secondary" 
+                sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 {t('personalInfo.info.gender.label')}
               </Typography>
               <Typography variant="caption" color="error">*</Typography>
@@ -154,43 +224,61 @@ const InfoForm = () => {
               control={control}
               defaultValue=""
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  select
-                  fullWidth
-                  placeholder={t('personalInfo.info.gender.placeholder')}
-                  error={shouldShowFieldError('personalInfo.sex')}
-                  helperText={shouldShowFieldError('personalInfo.sex') && errors?.personalInfo?.sex?.message}
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: { xs: 1.5, sm: 2 },
-                      backgroundColor: 'background.default',
-                      fontSize: { xs: '0.875rem', sm: '1rem' },
-                      '&:hover': { backgroundColor: 'action.hover' },
-                      '&.Mui-focused': { backgroundColor: 'background.default' }
-                    },
-                    '& .MuiFormHelperText-root': {
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                      marginLeft: 1,
-                      position: 'absolute',
-                      bottom: '-20px'
-                    }
-                  }}
-                >
-                  {genderOptions.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                      {option.label}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                <Box sx={{ width: '100%' }}>
+                  <TextField
+                    {...field}
+                    select
+                    fullWidth
+                    placeholder={t('personalInfo.info.gender.placeholder')}
+                    error={shouldShowFieldError('personalInfo.sex')}
+                    helperText={shouldShowFieldError('personalInfo.sex') && errors?.personalInfo?.sex?.message}
+                    required
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: { xs: 1.5, sm: 2 },
+                        backgroundColor: 'background.default',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        height: { xs: '48px', sm: '56px' },
+                        '&:hover': { backgroundColor: 'action.hover' },
+                        '&.Mui-focused': { backgroundColor: 'background.default' }
+                      },
+                      '& .MuiFormHelperText-root': {
+                        fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                        marginLeft: 1,
+                        marginTop: 1,
+                        position: 'static'
+                      }
+                    }}
+                  >
+                    {genderOptions.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                        {option.label}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Box>
               )}
             />
           </Box>
 
-          <Box sx={{ minHeight: '85px', position: 'relative' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-              <Typography variant="caption" color="text.secondary" sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            mb: { xs: 3, sm: 2 }
+          }}>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1, 
+              mb: 1 
+            }}>
+              <Typography 
+                variant="caption" 
+                color="text.secondary" 
+                sx={{ ml: 1, fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 {t('personalInfo.info.nationality.label')}
               </Typography>
               <Typography variant="caption" color="error">*</Typography>
@@ -200,40 +288,44 @@ const InfoForm = () => {
               control={control}
               defaultValue={[]}
               render={({ field: { onChange, value } }) => (
-                <Autocomplete
-                  multiple
-                  options={nationalities[locale]}
-                  value={value || []}
-                  onChange={(_, newValue) => onChange(newValue)}
-                  getOptionLabel={(option) => option.label}
-                  isOptionEqualToValue={(option, value) => option.code === value.code}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder={t('personalInfo.info.nationality.placeholder')}
-                      error={shouldShowFieldError('personalInfo.nationality')}
-                      helperText={shouldShowFieldError('personalInfo.nationality') && errors?.personalInfo?.nationality?.message}
-                      required
-                      sx={{
-                        '& .MuiFormHelperText-root': {
-                          fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                          marginLeft: 1,
-                          position: 'absolute',
-                          bottom: '-20px'
-                        }
-                      }}
-                    />
-                  )}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: { xs: 1.5, sm: 2 },
-                      backgroundColor: 'background.default',
-                      fontSize: { xs: '0.875rem', sm: '1rem' },
-                      '&:hover': { backgroundColor: 'action.hover' },
-                      '&.Mui-focused': { backgroundColor: 'background.default' }
-                    }
-                  }}
-                />
+                <Box sx={{ width: '100%' }}>
+                  <Autocomplete
+                    multiple
+                    options={nationalities[locale]}
+                    value={value || []}
+                    onChange={(_, newValue) => onChange(newValue)}
+                    getOptionLabel={(option) => option.label}
+                    isOptionEqualToValue={(option, value) => option.code === value.code}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder={t('personalInfo.info.nationality.placeholder')}
+                        error={shouldShowFieldError('personalInfo.nationality')}
+                        helperText={shouldShowFieldError('personalInfo.nationality') && errors?.personalInfo?.nationality?.message}
+                        required
+                        sx={{
+                          '& .MuiFormHelperText-root': {
+                            fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                            marginLeft: 1,
+                            marginTop: 1,
+                            position: 'static'
+                          }
+                        }}
+                      />
+                    )}
+                    sx={{
+                      width: '100%',
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: { xs: 1.5, sm: 2 },
+                        backgroundColor: 'background.default',
+                        fontSize: { xs: '0.875rem', sm: '1rem' },
+                        minHeight: { xs: '48px', sm: '56px' },
+                        '&:hover': { backgroundColor: 'action.hover' },
+                        '&.Mui-focused': { backgroundColor: 'background.default' }
+                      }
+                    }}
+                  />
+                </Box>
               )}
             />
           </Box>

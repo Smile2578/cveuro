@@ -127,12 +127,16 @@ const FormNavigation = ({
     <Box
       sx={{
         display: 'flex',
+        flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between',
         alignItems: 'center',
-        mt: 4,
+        gap: { xs: 2, sm: 0 },
+        mt: { xs: 2, sm: 4 },
         pt: 2,
         borderTop: '1px solid',
-        borderColor: 'divider'
+        borderRadius: 4,
+        borderColor: 'divider',
+        width: '100%'
       }}
     >
       <LoadingButton
@@ -141,6 +145,11 @@ const FormNavigation = ({
         disabled={!canGoPrevious || isLoading}
         startIcon={<NavigateBefore />}
         isLoading={isLoading && !canGoNext}
+        sx={{
+          width: { xs: '100%', sm: 'auto' },
+          order: { xs: 2, sm: 1 },
+          borderRadius: 4
+        }}
       >
         {t('buttons.previous')}
       </LoadingButton>
@@ -150,7 +159,8 @@ const FormNavigation = ({
           display: 'flex', 
           gap: 2,
           justifyContent: 'center',
-          flex: 1
+          width: { xs: '100%', sm: 'auto' },
+          order: { xs: 1, sm: 2 }
         }}
       >
         {showReset && (
@@ -160,6 +170,10 @@ const FormNavigation = ({
             onClick={handleReset}
             disabled={isLoading}
             isLoading={isLoading && !canGoNext && !canGoPrevious}
+            sx={{
+              width: { xs: '100%', sm: 'auto' },
+              borderRadius: 6
+            }}
           >
             {t('buttons.reset')}
           </LoadingButton>
@@ -172,6 +186,11 @@ const FormNavigation = ({
         disabled={(isFinalStep ? false : !canGoNext) || isLoading}
         endIcon={<NavigateNext />}
         isLoading={isLoading && (isFinalStep || canGoNext)}
+        sx={{
+          width: { xs: '100%', sm: 'auto' },
+          order: { xs: 3, sm: 3 },
+          borderRadius: 6
+        }}
       >
         {isFinalStep ? t('buttons.save') : t('buttons.next')}
       </LoadingButton>

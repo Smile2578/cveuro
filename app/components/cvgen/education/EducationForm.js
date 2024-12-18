@@ -299,11 +299,11 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
           )}
 
           {/* Section des réalisations */}
-          <Box sx={{ width: '100%' }}>
-            <Typography variant="subtitle2" gutterBottom>
+          <Box sx={{ width: '100%', textAlign: 'center' }}>
+            <Typography variant="subtitle2" color="secondary" gutterBottom>
               {t('education.achievements.label')}
             </Typography>
-            <Stack spacing={2} sx={{ width: '100%' }}>
+            <Stack spacing={2} sx={{ width: '100%', alignItems: 'center' }}>
               {achievements.map((achievement, achievementIndex) => (
                 <Box 
                   key={`${index}-${achievementIndex}`} 
@@ -311,7 +311,8 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                     display: 'flex', 
                     gap: 1, 
                     width: '100%',
-                    minHeight: '80px'
+                    minHeight: '80px',
+                    justifyContent: 'center'
                   }}
                 >
                   <StyledTextField
@@ -352,6 +353,7 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
                   }}
                   variant="outlined"
                   size="small"
+                  sx={{ borderRadius: 6 }}
                 >
                   {t('education.achievements.add')}
                 </Button>
@@ -366,13 +368,15 @@ const EducationCard = React.memo(({ index, remove, errors, isExpanded, onToggle 
 
 EducationCard.displayName = 'EducationCard';
 
-const EducationForm = () => {
-  const { control, formState: { errors, isSubmitted }, trigger, getValues, reset } = useFormContext();
+const EducationForm = ({ hideFormNavigation }) => {
+  const { control, formState: { errors }, trigger, getValues, reset } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "educations"
   });
   const t = useTranslations('cvform');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [expandedItems, setExpandedItems] = useState([0]);
   const educationsErrors = errors?.educations;
   const cvStore = useCVStore();
@@ -554,57 +558,116 @@ const EducationForm = () => {
   }, [educationsErrors, t, getValues]);
 
   return (
-    <Box sx={{ width: '100%', mb: 4 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        {t('education.main.title')}
-      </Typography>
-
-      {fields.map((field, index) => (
-        <Box key={field.id} sx={{ mb: 3, position: 'relative' }}>
-          {hasErrors(index) && !expandedItems.includes(index) && (
-            <Alert 
-              severity="error" 
-              sx={{ mb: 1 }}
-              action={
-                <Button 
-                  color="error" 
-                  size="small"
-                  onClick={() => handleToggle(index)}
-                >
-                  {t('common.showDetails')}
-                </Button>
-              }
-            >
-              {getErrorMessage(index)}
-            </Alert>
-          )}
-          <EducationCard
-            index={index}
-            remove={handleRemove}
-            errors={errors}
-            isExpanded={expandedItems.includes(index)}
-            onToggle={handleToggle}
-          />
+    <Box 
+      sx={{ 
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: { xs: 2, sm: 3 }
+      }}
+    >
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: { xs: 'column', sm: 'row' },
+        alignItems: { xs: 'flex-start', sm: 'center' },
+        gap: { xs: 1, sm: 2 },
+        mb: { xs: 2, sm: 3 }
+      }}>
+        <SchoolIcon 
+          sx={{ 
+            fontSize: { xs: '2rem', sm: '2.125rem' },
+            color: 'primary.main'
+          }}
+        />
+        <Box>
+          <Typography 
+            variant="h5" 
+            sx={{ 
+              fontSize: { xs: '1.25rem', sm: '1.5rem' },
+              fontWeight: 600,
+              color: 'primary.main'
+            }}
+          >
+            {t('education.main.title')}
+          </Typography>
+          <Typography 
+            variant="body2" 
+            color="text.secondary"
+            sx={{ 
+              mt: 0.5,
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}
+          >
+            {t('education.main.description')}
+          </Typography>
         </Box>
-      ))}
+      </Box>
+
+      <Stack spacing={{ xs: 2, sm: 3 }}>
+        {fields.map((field, index) => (
+          <Box key={field.id}>
+            {hasErrors(index) && !expandedItems.includes(index) && (
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  mb: { xs: 1, sm: 1.5 },
+                  '& .MuiAlert-message': {
+                    width: '100%'
+                  }
+                }}
+                action={
+                  <Button 
+                    color="error" 
+                    size={isMobile ? "medium" : "small"}
+                    onClick={() => handleToggle(index)}
+                    sx={{
+                      minWidth: { xs: '100%', sm: 'auto' },
+                      mt: { xs: 1, sm: 0 },
+                      borderRadius: 6
+                    }}
+                  >
+                    {t('common.showDetails')}
+                  </Button>
+                }
+              >
+                {getErrorMessage(index)}
+              </Alert>
+            )}
+            <EducationCard
+              index={index}
+              remove={handleRemove}
+              errors={errors}
+              isExpanded={expandedItems.includes(index)}
+              onToggle={handleToggle}
+            />
+          </Box>
+        ))}
+      </Stack>
 
       <Button
         startIcon={<AddIcon />}
         onClick={handleAddEducation}
-        variant="outlined"
+        variant="contained"
         color="primary"
-        fullWidth
-        sx={{ mt: 2, mb: 4 }}
+        size={isMobile ? "large" : "medium"}
+        sx={{ 
+          mt: { xs: 1, sm: 2 },
+          mb: { xs: 2, sm: 3 },
+          height: { xs: '48px', sm: '42px' },
+          borderRadius: 6
+        }}
         disabled={fields.length >= 4}
       >
         {t('education.actions.add')}
       </Button>
 
-      <FormNavigation
-        onValidate={validateForm}
-        onReset={handleReset}
-        showReset={true}
-      />
+      {!hideFormNavigation && (
+        <FormNavigation
+          onValidate={validateForm}
+          onReset={handleReset}
+          showReset={true}
+        />
+      )}
     </Box>
   );
 };

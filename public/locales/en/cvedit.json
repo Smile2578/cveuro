@@ -17,7 +17,9 @@
     "experience": "Work Experience",
     "skills": "Skills",
     "languages": "Languages",
-    "hobbies": "Hobbies"
+    "hobbies": "Hobbies",
+    "workExperience": "Work Experience",
+    "null": "Null"
   },
   "common": {
     "ongoing": "Ongoing",
@@ -25,28 +27,61 @@
     "cancel": "Cancel",
     "edit": "Edit",
     "delete": "Delete",
-    "add": "Add"
+    "add": "Add",
+    "dragHandle": "Move",
+    "select": "Select"
   },
   "personalInfo": {
     "firstname": "First Name",
     "lastname": "Last Name",
+    "name": "Full Name",
     "email": "Email",
     "phoneNumber": "Phone Number",
+    "contact": "Contact",
     "address": "Address",
     "city": "City",
     "zip": "ZIP Code",
     "dateofBirth": "Birth Date",
-    "nationality": "Nationality"
+    "placeofBirth": "Place of Birth",
+    "nationality": "Nationality",
+    "sex": {
+      "label": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "linkedIn": "LinkedIn",
+    "personalWebsite": "Personal Website",
+    "identity": "Identity",
+    "info": "Info",
+    "social": "Social"
   },
   "education": {
-    "degree": "Degree",
+    "degree": {
+      "label": "Degree",
+      "placeholder": "Select your degree",
+      "minLength": "Degree must be at least 2 characters",
+      "maxLength": "Degree cannot exceed 100 characters",
+      "required": "Degree is required",
+      "error": "Degree is required",
+      "options": {
+        "baccalaureat": "High School Diploma",
+        "licence": "Bachelor's Degree",
+        "bachelor": "Bachelor's Degree",
+        "master": "Master's Degree",
+        "doctorat": "Doctorate",
+        "other": "Other"
+      }
+    },
     "customDegree": "Custom Degree",
     "schoolName": "School Name",
     "fieldOfStudy": "Field of Study",
     "startDate": "Start Date",
     "endDate": "End Date",
     "ongoing": "Currently Studying",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "add": "Add Education",
+    "addAchievement": "Add Achievement"
   },
   "experience": {
     "position": "Position",
@@ -55,7 +90,9 @@
     "startDate": "Start Date",
     "endDate": "End Date",
     "ongoing": "Currently Working",
-    "responsibilities": "Responsibilities"
+    "responsibilities": "Responsibilities",
+    "add": "Add Experience",
+    "addResponsibility": "Add Responsibility"
   },
   "skills": {
     "skillName": "Skill Name",
@@ -65,7 +102,9 @@
       "intermediate": "Intermediate",
       "advanced": "Advanced",
       "expert": "Expert"
-    }
+    },
+    "add": "Add Skill",
+    "name": "Skill Name"
   },
   "languages": {
     "language": "Language",
@@ -78,12 +117,37 @@
       "C1": "Advanced (C1)",
       "C2": "Mastery (C2)",
       "Native": "Native"
+    },
+    "add": "Add Language",
+    "test": {
+      "name": {
+        "label": "Test Name",
+        "placeholder": "Ex: TOEFL, IELTS..."
+      },
+      "score": {
+        "label": "Test Score",
+        "placeholder": "Ex: 95/120, C1..."
+      }
     }
   },
   "hobbies": {
     "hobby": "Hobby",
-    "addHobby": "Add a hobby"
+    "addHobby": "Add a hobby",
+    "add": "Add Hobby"
   },
   "title": "CV Editor",
-  "description": "Edit your CV online"
+  "description": "Edit your CV online",
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "invalidPhone": "Invalid phone number",
+    "invalidDate": "Invalid date (format: DD/MM/YYYY)",
+    "invalidPostalCode": "Invalid postal code",
+    "invalidUrl": "Invalid URL format",
+    "dateFormat": "Invalid date format (format: MM/YYYY)",
+    "birthDateFormat": "Invalid date format (format: DD/MM/YYYY)",
+    "error": "Error",
+    "checkFields": "Please check the fields",
+    "zipFormat": "Invalid ZIP code format (format: 12345)"
+  }
 } 
