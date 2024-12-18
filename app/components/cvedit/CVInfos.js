@@ -120,19 +120,6 @@ const CVInfos = ({ cvData, onEdit, selectedSection, setSelectedSection, locale }
   return (
     <FormProvider {...methods}>
       <Box>
-        <Button
-          startIcon={<ArrowBackIcon />}
-          onClick={() => router.push('/cvgen')}
-          sx={{ 
-            color: theme.palette.primary.main,
-            '&:hover': {
-              backgroundColor: theme.palette.primary.light
-            },
-            mb: 3
-          }}
-        >
-          {t('editor.backToForm')}
-        </Button>
 
         <PersonalInfoSection 
           data={cvData.personalInfo}

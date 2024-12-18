@@ -41,6 +41,8 @@
     "step": "Step {current} of {total}",
     "subStep": "Sub-step {current} of {total}",
     "completion": "Progress: {percentage}%",
+    "previous": "Previous",
+    "next": "Next",
     "quality": {
       "0": "Let's start!",
       "25": "Good start!",

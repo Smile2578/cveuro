@@ -10,6 +10,11 @@
     "showEdit": "Show edit mode",
     "hideEdit": "Hide edit mode",
     "textPreview": "You can edit your CV below or view it here",
+    "viewPreview": "View preview",
+    "hidePreview": "Hide preview",
+    "chooseView": "Choose a view",
+    "chooseViewDescription": "Click on one of the buttons above to display the preview of your CV or edit it",
+    "editCV": "Edit CV",
     "print": {
       "button": "Download as PDF",
       "generating": "Generating PDF...",

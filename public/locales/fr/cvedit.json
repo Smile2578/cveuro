@@ -9,6 +9,10 @@
     "showEdit": "Afficher le mode édition",
     "hideEdit": "Masquer le mode édition",
     "textPreview": "Vous pouvez modifier votre CV ci-dessous ou le voir ici",
+    "viewPreview": "Voir le CV",
+    "chooseView": "Choisir une vue",
+    "chooseViewDescription": "Cliquez sur l'un des boutons ci-dessus pour afficher la prévisualisation de votre CV ou l'éditer",
+    "editCV": "Éditer le CV",
     "print": {
       "error": "Veuillez réessayer.",
       "button": "Télécharger le CV",

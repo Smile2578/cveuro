@@ -8,8 +8,6 @@ import {
   Alert,
   useTheme,
   Typography,
-  IconButton,
-  Collapse,
   useMediaQuery,
   Button
 } from '@mui/material';
@@ -18,13 +16,11 @@ import { useRouter } from 'next/navigation';
 import { 
   ArrowBack as ArrowBackIcon,
   Edit as EditIcon,
-  ExpandMore as ExpandMoreIcon,
-  ExpandLess as ExpandLessIcon
+  Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import dynamic from 'next/dynamic';
 import CVInfos from './CVInfos';
 import PrintButton from './PrintButton';
-import { motion } from 'framer-motion';
 
 // Importation dynamique de LiveCV pour éviter les problèmes d'hydratation
 const LiveCV = dynamic(() => import('./LiveCV'), {
@@ -47,6 +43,7 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [printError, setPrintError] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(!isMobile);
+  const [activeView, setActiveView] = useState(null);
 
   const handleSectionUpdate = async (sectionName, newData) => {
     // Mettre à jour les données localement d'abord
@@ -74,83 +71,172 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
     setPrintError(error);
   };
 
-  const renderMobileLayout = () => (
-    <Stack direction="column" spacing={3}>
 
-      {/* PrintButton */}
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center',
-        width: '100%',
-        px: 2
-      }}>
-        <PrintButton 
-          data={localCvData}
-          locale={locale}
-          onError={handlePrintError}
-        />
-      </Box>
+  const renderMobileLayout = () => {
+    return (
+      <Stack direction="column" spacing={2} sx= {{ mt: 4 }}>
+        {/* En-tête avec les boutons d'action */}
+        <Box sx={{ 
+          display: 'flex', 
+          flexDirection: 'column',
+          gap: 2,
+          px: 2,
+        }}>
 
-      {/* LiveCV adapté pour mobile */}
-      <Box sx={{ 
-        width: '100%',
-        overflow: 'auto',
-        maxWidth: '100vw',
-      }}>
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: 2,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            position: 'relative',
-            width: '100%',
-          }}
-        >
-          <Typography variant="h6" sx={{ textAlign: 'center' }}>
-            {t('editor.textPreview')}
-          </Typography>
-          <LiveCV 
+          {/* Bouton retour */}
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => router.push('/cvgen')}
+            sx={{ 
+              color: theme.palette.primary.main,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.light
+              }
+            }}
+          >
+            {t('editor.backToForm')}
+          </Button>
+
+          {/* PrintButton */}
+          <PrintButton 
             data={localCvData}
             locale={locale}
+            onError={handlePrintError}
           />
-        </Paper>
-      </Box>
 
-      {/* Bouton d'édition */}
-      <Box sx={{ px: 2 }}>
-        <Button
-          fullWidth
-          variant="outlined"
-          onClick={() => setIsEditOpen(!isEditOpen)}
-          startIcon={isEditOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          color="primary"
-        >
-          {isEditOpen ? t('editor.hideEdit') : t('editor.showEdit')}
-        </Button>
-      </Box>
 
-      {/* Panneau d'édition collapsable */}
-      <Collapse in={isEditOpen} sx={{ width: '100%' }}>
-        <Paper 
-          elevation={3} 
-          sx={{ 
-            p: 3,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-          }}
-        >
-          <CVInfos
-            cvData={localCvData}
-            onEdit={handleSectionUpdate}
-            selectedSection={selectedSection}
-            setSelectedSection={setSelectedSection}
-            locale={locale}
-          />
-        </Paper>
-      </Collapse>
-    </Stack>
-  );
+          {/* Boutons de basculement */}
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 2,
+            mt: 1
+          }}>
+            <Button
+              fullWidth
+              variant={activeView === 'preview' ? 'contained' : 'outlined'}
+              onClick={() => setActiveView(activeView === 'preview' ? null : 'preview')}
+              startIcon={<VisibilityIcon />}
+              sx={{
+                borderRadius: 2,
+                py: 1.5,
+                boxShadow: activeView === 'preview' ? 4 : 0,
+                transition: 'all 0.3s ease',
+                backgroundColor: activeView === 'preview' ? theme.palette.primary.main : 'transparent',
+                '&:hover': {
+                  backgroundColor: activeView === 'preview' 
+                    ? theme.palette.primary.dark 
+                    : theme.palette.primary.light,
+                  transform: 'translateY(-2px)',
+                  boxShadow: 6
+                }
+              }}
+            >
+              {activeView === 'preview' ? t('editor.hidePreview') : t('editor.viewPreview')}
+            </Button>
+            <Button
+              fullWidth
+              variant={activeView === 'edit' ? 'contained' : 'outlined'}
+              onClick={() => setActiveView(activeView === 'edit' ? null : 'edit')}
+              startIcon={<EditIcon />}
+              sx={{
+                borderRadius: 2,
+                py: 1.5,
+                boxShadow: activeView === 'edit' ? 4 : 0,
+                transition: 'all 0.3s ease',
+                backgroundColor: activeView === 'edit' ? theme.palette.primary.main : 'transparent',
+                '&:hover': {
+                  backgroundColor: activeView === 'edit' 
+                    ? theme.palette.primary.dark 
+                    : theme.palette.primary.light,
+                  transform: 'translateY(-2px)',
+                  boxShadow: 6
+                }
+              }}
+            >
+              {activeView === 'edit' ? t('editor.hideEdit') : t('editor.editCV')}
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Message initial ou contenu */}
+        <Box sx={{ px: 2 }}>
+          {!activeView ? (
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 4,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2
+              }}
+            >
+              <Typography variant="h6" color="text.secondary">
+                {t('editor.chooseView')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '80%' }}>
+                {t('editor.chooseViewDescription')}
+              </Typography>
+            </Paper>
+          ) : activeView === 'preview' ? (
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 2,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+                position: 'relative',
+                width: '100%',
+                overflow: 'hidden',
+                '& > div': {
+                  maxWidth: '100%',
+                  overflowX: 'auto',
+                  WebkitOverflowScrolling: 'touch',
+                  '& > div': {
+                    transform: 'none !important',
+                    maxWidth: '100% !important',
+                    margin: '0 !important',
+                    minHeight: 'auto !important',
+                    height: 'auto !important',
+                    transform: 'none !important',
+                    '& *': {
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word'
+                    }
+                  }
+                }
+              }}
+            >
+              <LiveCV 
+                data={localCvData}
+                locale={locale}
+              />
+            </Paper>
+          ) : (
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                p: 3,
+                backgroundColor: theme.palette.background.paper,
+                borderRadius: 2,
+              }}
+            >
+              <CVInfos
+                cvData={localCvData}
+                onEdit={handleSectionUpdate}
+                selectedSection={selectedSection}
+                setSelectedSection={setSelectedSection}
+                locale={locale}
+              />
+            </Paper>
+          )}
+        </Box>
+      </Stack>
+    );
+  };
 
   const renderDesktopLayout = () => (
     <Stack direction="row" spacing={3}>
@@ -166,6 +252,20 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
             position: 'relative'
           }}
         >
+                    {/* Bouton retour */}
+          <Button
+            startIcon={<ArrowBackIcon />}
+            onClick={() => router.push('/cvgen')}
+            sx={{ 
+              color: theme.palette.primary.main,
+              '&:hover': {
+                backgroundColor: theme.palette.primary.light
+              }
+            }}
+          >
+            {t('editor.backToForm')}
+          </Button>
+
           <CVInfos
             cvData={localCvData}
             onEdit={handleSectionUpdate}
@@ -184,7 +284,9 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
             p: 4,
             backgroundColor: theme.palette.background.paper,
             borderRadius: 2,
-            position: 'relative'
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column'
           }}
         >
           <Box sx={{ 
@@ -199,10 +301,12 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
               onError={handlePrintError}
             />
           </Box>
-          <LiveCV 
-            data={localCvData}
-            locale={locale}
-          />
+          <Box sx={{ flexGrow: 1 }}>
+            <LiveCV 
+              data={localCvData}
+              locale={locale}
+            />
+          </Box>
         </Paper>
       </Box>
     </Stack>

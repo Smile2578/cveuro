@@ -68,7 +68,7 @@ const LiveCV = ({ data, locale }) => {
     const { personalInfo } = data;
 
     return (
-      <Box sx={{ mb: 3, textAlign: 'center', position: 'relative' }}>
+      <Box sx={{ mb: 1, textAlign: 'center', position: 'relative' }}>
         <Typography variant="h2" gutterBottom sx={{ 
           fontWeight: 700,
           letterSpacing: 1,
@@ -487,7 +487,7 @@ const LiveCV = ({ data, locale }) => {
         minHeight: { xs: 'auto', md: '297mm' },
         maxWidth: { xs: '100%', md: '210mm' },
         margin: '0 auto',
-        transform: { xs: 'scale(0.85)', md: 'none' },
+        transform: { xs: 'none', md: 'none' },
         transformOrigin: 'top center',
       }}
     >
