@@ -14,6 +14,7 @@
     "hidePreview": "Hide preview",
     "chooseView": "Choose a view",
     "chooseViewDescription": "Click on one of the buttons above to display the preview of your CV or edit it",
+    "chooseViewDescriptionBis": "Attention: The preview on mobile is not optimized. Downloading the PDF will give you a better rendering.",
     "editCV": "Edit CV",
     "print": {
       "button": "Download as PDF",

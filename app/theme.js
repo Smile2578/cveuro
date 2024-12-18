@@ -21,6 +21,7 @@ palette: {
     text: {
       primary: '#333333', // Dark text for readability on light background
       secondary: '#1976d2', // Couleur de texte secondaire en bleu
+      third: '#FF0000', // Couleur de texte secondaire en rouge
     },
   },
 

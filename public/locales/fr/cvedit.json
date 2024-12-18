@@ -10,8 +10,10 @@
     "hideEdit": "Masquer le mode édition",
     "textPreview": "Vous pouvez modifier votre CV ci-dessous ou le voir ici",
     "viewPreview": "Voir le CV",
+    "hidePreview": "Masquer le CV",
     "chooseView": "Choisir une vue",
     "chooseViewDescription": "Cliquez sur l'un des boutons ci-dessus pour afficher la prévisualisation de votre CV ou l'éditer",
+    "chooseViewDescriptionBis": "Attention: Le visuel sur Mobile n'est pas optimisé. En téléchargeant le PDF, vous obtiendrez un meilleur rendu.",
     "editCV": "Éditer le CV",
     "print": {
       "error": "Veuillez réessayer.",

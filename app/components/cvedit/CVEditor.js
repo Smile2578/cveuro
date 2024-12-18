@@ -180,6 +180,9 @@ const CVEditor = ({ cvData: initialCvData, onUpdate, showSuccess, locale }) => {
               <Typography variant="body2" color="text.secondary" sx={{ maxWidth: '80%' }}>
                 {t('editor.chooseViewDescription')}
               </Typography>
+              <Typography variant="body2" color="text.third" sx={{ maxWidth: '80%' }}>
+                {t('editor.chooseViewDescriptionBis')}
+              </Typography>
             </Paper>
           ) : activeView === 'preview' ? (
             <Paper 
