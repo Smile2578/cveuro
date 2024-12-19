@@ -190,7 +190,7 @@ export default function CVGenPageClient({ locale, messages }) {
           justifyContent: 'center', 
           alignItems: 'center', 
           height: '100vh',
-          background: theme.gradient.background
+          background: theme.palette.background.gradient
         }}
       >
         <CircularProgress />
@@ -208,7 +208,7 @@ export default function CVGenPageClient({ locale, messages }) {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            background: theme.gradient.background,
+            background: theme.palette.background.gradient,
             width: '100%',
             overflowX: 'hidden'
           }}
@@ -223,7 +223,7 @@ export default function CVGenPageClient({ locale, messages }) {
             sx={{
               mt: { xs: 7, sm: 12 },
               mb: 2,
-              backgroundColor: 'background.default',
+              backgroundColor: 'background.paper',
               padding: { xs: 2, sm: 3 },
               borderRadius: '24px',
               boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1), 0 10px 15px rgba(0, 0, 0, 0.06)',

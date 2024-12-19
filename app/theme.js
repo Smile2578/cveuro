@@ -1,58 +1,138 @@
 import { createTheme } from '@mui/material/styles';
 
 const theme = createTheme({
-
-typography: {
-        fontFamily: [
-          'Work Sans',
-          'sans-serif',
-        ].join(','),
-      },
-palette: {
-    // Define your color palette here
+  palette: {
     primary: {
-      main: '#1976d2', // Example primary color
-      alt: '#00BA88', // Example secondary color
-      dark: '#004ba0', // Example dark color
-    },
-    background: {
-      default: '#ffffff', // Light background color for contrast
+      main: '#1976d2',
+      dark: '#0d47a1',
+      contrastText: '#ffffff'
     },
     text: {
-      primary: '#333333', // Dark text for readability on light background
-      secondary: '#1976d2', // Couleur de texte secondaire en bleu
-      third: '#FF0000', // Couleur de texte secondaire en rouge
+      primary: '#1a1a1a',
+      secondary: '#424242'
     },
+    background: {
+      default: '#ffffff',
+      paper: '#ffffff',
+      gradient: 'linear-gradient(45deg, #C1F0F6 10%, #F0FBFD 50%, #79E0EB 100%)'
+    }
   },
-
-  gradient: {
-    background: 'linear-gradient(45deg, #C1F0F6 10%, #F0FBFD 50%, #79E0EB 100%)',
-  },
-
-
-components: {
-    MuiRadio: {
+  components: {
+    MuiButton: {
       styleOverrides: {
         root: {
-          // Remove the default color from radio button if not selected
-          color: 'rgba(0, 0, 0, 0.54)',
-          '&.Mui-checked': {
-            // Apply primary color when the radio button is checked
-            color: '#1976d2',
+          fontSize: '1rem',
+          padding: '8px 16px',
+          '&:focus-visible': {
+            outline: '2px solid currentColor',
+            outlineOffset: '2px'
+          }
+        }
+      }
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '&:hover fieldset': {
+              borderColor: '#1976d2',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#1976d2',
+              borderWidth: 2,
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#424242',
+            '&.Mui-focused': {
+              color: '#1976d2',
+            },
           },
         },
       },
     },
-    MuiFormControlLabel: {
+    MuiCard: {
       styleOverrides: {
-        label: {
-          // Label color same as your text.secondary or any suitable color for readability
+        root: {
+          '&:focus-within': {
+            outline: '2px solid #1976d2',
+            outlineOffset: '2px',
+          },
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
           color: '#1976d2',
+          textDecoration: 'none',
+          '&:hover': {
+            textDecoration: 'underline',
+          },
+          '&:focus-visible': {
+            outline: '2px solid currentColor',
+            outlineOffset: '2px',
+          },
         },
       },
     },
   },
-  // Add more theme customizations here if needed
+  typography: {
+    h1: {
+      fontSize: '2.5rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
+      '@media (max-width:600px)': {
+        fontSize: '2rem',
+      },
+    },
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 600,
+      lineHeight: 1.3,
+      '@media (max-width:600px)': {
+        fontSize: '1.75rem',
+      },
+    },
+    h3: {
+      fontSize: '1.75rem',
+      fontWeight: 600,
+      lineHeight: 1.3,
+      '@media (max-width:600px)': {
+        fontSize: '1.5rem',
+      },
+    },
+    body1: {
+      fontSize: '1rem',
+      lineHeight: 1.5,
+      color: '#1a1a1a',
+    },
+    body2: {
+      fontSize: '0.875rem',
+      lineHeight: 1.43,
+      color: '#424242',
+    },
+  },
+  shape: {
+    borderRadius: 8,
+  },
+  spacing: 8,
+  breakpoints: {
+    values: {
+      xs: 0,
+      sm: 600,
+      md: 960,
+      lg: 1280,
+      xl: 1920,
+    },
+  },
+  zIndex: {
+    appBar: 1200,
+    drawer: 1100,
+    modal: 1300,
+    snackbar: 1400,
+    tooltip: 1500,
+  },
 });
 
 export default theme;

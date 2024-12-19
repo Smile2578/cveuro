@@ -41,8 +41,17 @@ export default function NavBar({ show = true }) {
           justifyContent: 'space-between', 
           alignItems: 'center' 
         }}>
-          <Link href="/" passHref>
-            <Image src="/logo.png" alt="GEDS Logo" width={130} height={110} priority/>
+          <Link href="/" passHref style={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ position: 'relative', width: 130, height: 110 }}>
+              <Image
+                src="/logo.png"
+                alt="GEDS Logo"
+                fill
+                sizes="130px"
+                style={{ objectFit: 'contain' }}
+                priority
+              />
+            </Box>
           </Link>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <LanguageSelector />

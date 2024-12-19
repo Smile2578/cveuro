@@ -10,6 +10,7 @@
   "landing": {
     "title": "Créez votre CV professionnel en quelques clics",
     "subtitle": "Un outil simple et intuitif pour créer un CV qui vous ressemble. Suivez nos étapes guidées et obtenez un CV professionnel en quelques minutes.",
+    "mainContent": "Contenu principal",
     "features": {
       "personalInfo": {
         "title": "Informations Personnelles",
@@ -103,6 +104,10 @@
     "reset": "Êtes-vous sûr de vouloir réinitialiser le formulaire ? Toutes les données seront perdues.",
     "delete": "Êtes-vous sûr de vouloir supprimer cet élément ?",
     "unsavedChanges": "Vous avez des modifications non enregistrées. Voulez-vous vraiment quitter ?"
+  },
+  "accessibility": {
+    "skipToContent": "Passer au contenu principal"
   }
+
 }
   
