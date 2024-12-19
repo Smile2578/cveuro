@@ -32,6 +32,31 @@
       "languages": "🗣️ Languages • Proficiency Levels",
       "technical": "💻 Expertise • Technical Skills",
       "hobbies": "🎨 Interests • Hobbies"
+    },
+    "talents": {
+      "title": "🎯 Talents & Passions",
+      "description": "Showcase your unique strengths and passions",
+      "skills": {
+        "title": "💪 Skills • Unique Talents",
+        "description": "Showcase your unique strengths",
+        "technical": "💻 Expertise • Technical Skills",
+        "soft": "🤝 Soft Skills • Interpersonal Abilities",
+        "other": "🎯 Other Talents • Unique Strengths"
+      },
+      "languages": {
+        "title": "🗣️ Languages • Proficiency Levels",
+        "description": "Showcase your language skills",
+        "native": "🇺🇸 Native Language",
+        "foreign": "🌍 Foreign Languages",
+        "certifications": "📜 Certifications • Language Proficiency"
+      },
+      "hobbies": {
+        "title": "🎨 Interests • Hobbies",
+        "description": "Showcase your hobbies and interests",
+        "interests": "🎯 Interests • Hobbies",
+        "activities": "🏆 Achievements • Hobbies and Interests",
+        "achievements": "🏆 Achievements • Hobbies and Interests"
+      }
     }
   },
   "buttons": {

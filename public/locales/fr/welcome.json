@@ -32,6 +32,31 @@
       "languages": "🗣️ Langues • Niveaux de maîtrise",
       "technical": "💻 Expertise • Compétences techniques",
       "hobbies": "🎨 Loisirs • Centres d'intérêt"
+    },
+    "talents": {
+      "title": "🎯 Talents & Passions",
+      "description": "Montrez vos atouts uniques et vos passions",
+      "skills": {
+        "title": "💪 Skills • Atouts uniques",
+        "description": "Montrez vos atouts uniques",
+        "technical": "💻 Expertise • Compétences techniques",
+        "soft": "🤝 Soft Skills • Compétences interpersonnelles",
+        "other": "🎯 Autres Talents • Atouts uniques"
+      },
+      "languages": {
+        "title": "🗣️ Langues • Niveaux de maîtrise",
+        "description": "Montrez vos compétences linguistiques",
+        "native": "🇺🇸 Langue maternelle",
+        "foreign": "🌍 Langues étrangères",
+        "certifications": "📜 Certifications • Niveaux de maîtrise"
+      },
+      "hobbies": {
+        "title": "🎨 Loisirs • Centres d'intérêt",
+        "description": "Montrez vos loisirs et centres d'intérêt",
+        "interests": "🎯 Intérêts • Loisirs",
+        "activities": "🏆 Réalisations • Loisirs et Intérêts",
+        "achievements": "🏆 Réalisations • Loisirs et Intérêts"
+      }
     }
   }
 }

@@ -2,6 +2,11 @@
 import CVGenPageClient from './CVGenPageClient';
 import { setRequestLocale } from 'next-intl/server';
 
+export const metadata = {
+  title: 'Créer votre CV - CV Builder',
+  description: 'Créez votre CV professionnel en quelques étapes simples'
+};
+
 export default async function CVGenPage({ params: { locale } }) {
   setRequestLocale(locale);
 

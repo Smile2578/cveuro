@@ -12,13 +12,6 @@ export const metadata = {
   title: 'CV Builder - Créateur de CV Professionnel',
   description: 'Créez votre CV professionnel facilement et rapidement',
   manifest: '/manifest.json',
-  themeColor: '#1976d2',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: 'no'
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -27,6 +20,19 @@ export const metadata = {
   formatDetection: {
     telephone: false
   }
+};
+
+/** @type {import('next').Viewport} */
+export const viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#1976d2' },
+    { media: '(prefers-color-scheme: dark)', color: '#1976d2' }
+  ],
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  colorScheme: 'light'
 };
 
 export function generateStaticParams() {
@@ -55,7 +61,6 @@ export default async function LocaleLayout({ children, params: { locale } }) {
     <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#1976d2" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
