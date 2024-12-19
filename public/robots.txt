@@ -1,0 +1,19 @@
+# https://www.robotstxt.org/robotstxt.html
+
+User-agent: *
+Allow: /
+Allow: /fr
+Allow: /en
+Allow: /fr/cvgen
+Allow: /en/cvgen
+
+# Sitemap
+Sitemap: https://www.cveuro.com/sitemap.xml
+
+# Ressources à ne pas crawler
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+
+# Temps d'attente entre les requêtes
+Crawl-delay: 1 

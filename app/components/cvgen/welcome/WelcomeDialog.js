@@ -6,12 +6,8 @@ import React from 'react';
 import { 
   Box, 
   Typography, 
-  Paper, 
+  Paper,
   Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Stack
 } from '@mui/material';
 import { useTranslations } from 'next-intl';
@@ -69,96 +65,165 @@ const WelcomeGuide = ({ onClose }) => {
   return (
     <Paper 
       elevation={0} 
+      component="main"
+      id="main-content"
+      role="main"
+      aria-labelledby="welcome-title"
       sx={{ 
         p: { xs: 2, sm: 3 }, 
         borderRadius: '16px',
         maxWidth: '100%',
-        mx: 'auto'
+        mx: 'auto',
+        height: { xs: 'auto', sm: '80vh' },
+        overflow: 'auto'
       }}
     >
       <Typography 
-        variant="h4" 
-        component="h1"
+        variant="h1" 
+        id="welcome-title"
         sx={{ 
           mb: 4,
           fontSize: { xs: '1.5rem', sm: '2rem' },
           textAlign: 'center',
-          fontWeight: 600
+          fontWeight: 600,
+          height: 'auto',
+          minHeight: { xs: '2rem', sm: '3rem' }
         }}
       >
         {t('title')}
       </Typography>
 
-      <List sx={{ width: '100%' }}>
+      <Stack 
+        component="section" 
+        spacing={3} 
+        sx={{ width: '100%', mb: 4 }}
+      >
         {sections.map((section) => (
-          <Box key={section.key} sx={{ mb: 3 }}>
-            <ListItem 
-              sx={{ 
-                bgcolor: 'background.paper',
-                borderRadius: 2,
-                mb: 1
-              }}
-            >
-              <Stack spacing={1} width="100%">
+          <Box 
+            key={section.key} 
+            component="article"
+            sx={{ 
+              bgcolor: 'background.paper',
+              borderRadius: 2,
+              p: 2,
+              minHeight: section.items?.length ? '120px' : '80px'
+            }}
+          >
+            <Stack direction="row" spacing={2} alignItems="flex-start">
+              <Box component="span" role="img" aria-hidden="true">
+                {section.icon}
+              </Box>
+              <Stack spacing={1} flex={1}>
                 <Typography
-                  variant="h6"
-                  component="h2"
-                  sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' } }}
+                  variant="h2"
+                  sx={{ 
+                    fontSize: { xs: '1.1rem', sm: '1.25rem' },
+                    minHeight: '1.5rem'
+                  }}
                 >
                   {t(`steps.${section.key}.title`)}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography 
+                  variant="body2" 
+                  color="text.secondary"
+                  component="p"
+                  sx={{ minHeight: '3rem' }}
+                >
                   {t(`steps.${section.key}.description`)}
                 </Typography>
+
+                {section.items?.length > 0 && (
+                  <Box component="ul" sx={{ pl: 2, mt: 1, listStyle: 'none' }}>
+                    {section.items.map((item) => (
+                      <Box 
+                        component="li" 
+                        key={item}
+                        sx={{ 
+                          '&::before': {
+                            content: '"•"',
+                            display: 'inline-block',
+                            width: '1em',
+                            marginLeft: '-1em'
+                          }
+                        }}
+                      >
+                        <Typography 
+                          variant="body2" 
+                          color="text.secondary"
+                          component="span"
+                        >
+                          {t(`steps.${section.key}.${item}`)}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                )}
+
+                {section.subsections?.map((subsection) => (
+                  <Box 
+                    key={subsection.key} 
+                    component="section"
+                    sx={{ pl: 2, mt: 1 }}
+                  >
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Box component="span" role="img" aria-hidden="true">
+                        {subsection.icon}
+                      </Box>
+                      <Typography variant="h3" color="primary" sx={{ fontSize: '1rem' }}>
+                        {t(`steps.${section.key}.${subsection.key}.title`)}
+                      </Typography>
+                    </Stack>
+                    <Box component="ul" sx={{ pl: 4, mt: 0.5, listStyle: 'none' }}>
+                      {subsection.items?.map((item) => (
+                        <Box 
+                          component="li" 
+                          key={item}
+                          sx={{ 
+                            '&::before': {
+                              content: '"•"',
+                              display: 'inline-block',
+                              width: '1em',
+                              marginLeft: '-1em'
+                            }
+                          }}
+                        >
+                          <Typography 
+                            variant="body2" 
+                            color="text.secondary"
+                            component="span"
+                          >
+                            {t(`steps.${section.key}.${subsection.key}.${item}`)}
+                          </Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  </Box>
+                ))}
               </Stack>
-            </ListItem>
-
-            {section.items?.length > 0 && (
-              <List dense sx={{ pl: 6 }}>
-                {section.items.map((item) => (
-                  <ListItem key={item} sx={{ py: 0.5 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      {t(`steps.${section.key}.${item}`)}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            )}
-
-            {section.subsections?.map((subsection) => (
-              <List key={subsection.key} dense sx={{ pl: 6 }}>
-                <ListItem>
-                  <ListItemIcon sx={{ minWidth: 36 }}>
-                    {subsection.icon}
-                  </ListItemIcon>
-                  <Typography variant="subtitle2" color="primary">
-                    {t(`steps.${section.key}.${subsection.key}.title`)}
-                  </Typography>
-                </ListItem>
-                {subsection.items?.map((item) => (
-                  <ListItem key={item} sx={{ pl: 7, py: 0.5 }}>
-                    <Typography variant="body2" color="text.secondary">
-                      {t(`steps.${section.key}.${subsection.key}.${item}`)}
-                    </Typography>
-                  </ListItem>
-                ))}
-              </List>
-            ))}
+            </Stack>
           </Box>
         ))}
-      </List>
+      </Stack>
 
       <Box 
+        component="footer"
         sx={{ 
-          mt: 4, 
           display: 'flex', 
-          justifyContent: 'center'
+          justifyContent: 'center',
+          position: 'sticky',
+          bottom: 0,
+          pt: 2,
+          pb: 1,
+          bgcolor: 'background.paper',
+          borderTop: '1px solid',
+          borderColor: 'divider'
         }}
       >
         <Button 
           variant="contained" 
           color="primary"
           onClick={onClose}
+          aria-label={t('startButton')}
           sx={{ 
             minWidth: 200,
             py: 1.5,
