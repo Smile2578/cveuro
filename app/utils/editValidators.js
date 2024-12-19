@@ -5,7 +5,7 @@ const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 const monthYearRegex = /^\d{2}\/\d{4}$/;
 const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
 const nameRegex = /^[a-zA-ZÀ-ÿ\s-]+$/;
-const zipRegex = /^\d{5}$/;
+const zipRegex = /^\d{4,5}(-\d{3})?$/;
 
 export const createEditValidators = (t) => {
   // Validateurs de base avec traduction pour personalInfo

@@ -128,7 +128,7 @@ const FormNavigation = ({
 
   const isLoading = isSubmitting || isValidating;
 
-  return (
+  const navigationButtons = (
     <Box
       sx={{
         display: 'flex',
@@ -136,10 +136,18 @@ const FormNavigation = ({
         justifyContent: 'space-between',
         alignItems: 'center',
         gap: { xs: 1, sm: 2 },
-        pt: 2,
-        borderTop: '1px solid',
-        borderColor: 'divider',
-        width: '100%'
+        width: '100%',
+        ...(isMobile && {
+          position: 'fixed',
+          left: 0,
+          right: 0,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: '100%',
+          padding: '0 16px',
+          zIndex: 1000,
+          justifyContent: 'space-between',
+        })
       }}
     >
       <LoadingButton
@@ -150,27 +158,17 @@ const FormNavigation = ({
         isLoading={isLoading && !canGoNext}
         sx={{
           minWidth: { xs: '40px', sm: '120px' },
-          borderRadius: 4
+          borderRadius: 4,
+          ...(isMobile && {
+            backgroundColor: 'background.paper',
+            boxShadow: 3,
+            position: 'fixed',
+            left: '16px'
+          })
         }}
       >
         {!isMobile && t('buttons.previous')}
       </LoadingButton>
-
-      {showReset && (
-        <LoadingButton
-          startIcon={<Refresh />}
-          color="error"
-          onClick={handleReset}
-          disabled={isLoading}
-          isLoading={isLoading && !canGoNext && !canGoPrevious}
-          sx={{
-            minWidth: { xs: '40px', sm: '120px' },
-            borderRadius: 6
-          }}
-        >
-          {!isMobile && t('buttons.reset')}
-        </LoadingButton>
-      )}
 
       <LoadingButton
         variant="contained"
@@ -182,6 +180,11 @@ const FormNavigation = ({
         sx={{
           minWidth: { xs: isFinalStep ? '80px' : '40px', sm: '120px' },
           borderRadius: 6,
+          ...(isMobile && {
+            boxShadow: 3,
+            position: 'fixed',
+            right: '16px'
+          }),
           ...(isFinalStep && {
             background: theme => `linear-gradient(45deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`,
             boxShadow: theme => `0 4px 10px ${theme.palette.success.main}40`,
@@ -193,6 +196,44 @@ const FormNavigation = ({
       >
         {isMobile ? (isFinalStep ? t('buttons.save') : '') : (isFinalStep ? t('buttons.save') : t('buttons.next'))}
       </LoadingButton>
+    </Box>
+  );
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 2, sm: 3 },
+        width: '100%',
+        pt: 2,
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        position: 'relative'
+      }}
+    >
+      {navigationButtons}
+      
+      {showReset && (
+        <LoadingButton
+          startIcon={<Refresh />}
+          color="error"
+          onClick={handleReset}
+          disabled={isLoading}
+          isLoading={isLoading && !canGoNext && !canGoPrevious}
+          sx={{
+            minWidth: { xs: '40px', sm: '120px' },
+            borderRadius: 6,
+            ...(isMobile && {
+              position: 'static',
+              mt: 2
+            })
+          }}
+        >
+          {!isMobile && t('buttons.reset')}
+        </LoadingButton>
+      )}
     </Box>
   );
 };
