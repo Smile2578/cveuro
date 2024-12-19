@@ -46,6 +46,35 @@ const Icons = {
   Timeline
 };
 
+const MainTitle = memo(({ title }) => (
+  <Typography 
+    variant="h1"
+    component="h1"
+    sx={{ 
+      color: theme.palette.primary.dark,
+      fontSize: { xs: '1.75rem', sm: '2.5rem' },
+      textAlign: 'center',
+      fontWeight: 700,
+      mb: 3,
+      maxWidth: '800px',
+      mx: 'auto',
+      lineHeight: { xs: 1.3, sm: 1.4 },
+      letterSpacing: '-0.02em',
+      textRendering: 'optimizeLegibility',
+      WebkitFontSmoothing: 'antialiased',
+      height: { xs: 'auto', sm: '80px' },
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}
+    tabIndex={0}
+  >
+    {title}
+  </Typography>
+));
+
+MainTitle.displayName = 'MainTitle';
+
 const FeatureCard = memo(({ feature, IconComponent, t }) => (
   <Card
     role="article"
@@ -160,27 +189,23 @@ export default function LandingPageClient() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          pt: { xs: '110px', sm: '120px' },
+          pt: { xs: '80px', sm: '120px' },
           pb: { xs: 4, sm: 6 },
         }}
       >
-        <Container maxWidth="lg">
-          <Typography 
-            variant="h1" 
-            sx={{ 
-              color: theme.palette.primary.dark,
-              fontSize: { xs: '2rem', sm: '2.5rem' },
-              textAlign: 'center',
-              fontWeight: 'bold',
-              mb: 3,
-            }}
-            tabIndex={0}
-          >
-            {t('landing.title')}
-          </Typography>
+        <Container 
+          maxWidth="lg"
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
+          <MainTitle title={t('landing.title')} />
           
           <Typography 
             variant="h2" 
+            component="p"
             sx={{ 
               mb: 5, 
               textAlign: 'center', 
