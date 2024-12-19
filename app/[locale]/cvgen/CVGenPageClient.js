@@ -221,7 +221,7 @@ export default function CVGenPageClient({ locale, messages }) {
             component="main"
             maxWidth="md"
             sx={{
-              mt: { xs: 7, sm: 12 },
+              mt: { xs: 12, sm: 12 },
               mb: 2,
               backgroundColor: 'background.paper',
               padding: { xs: 2, sm: 3 },

@@ -7,9 +7,9 @@ console.log('validators - Initialisation des schémas de validation');
 // Expressions régulières
 const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 const monthYearRegex = /^\d{2}\/\d{4}$/;
-const phoneRegex = /^(\+\d{1,3}[- ]?)?\d{10}$/;
+const phoneRegex = /^(\+?\d{1,3}[-.\s]?)?\d{8,14}$/;
 const nameRegex = /^[a-zA-ZÀ-ÿ\s-]+$/;
-const zipRegex = /^\d{4,5}(-\d{3})?$/;
+const zipRegex = /^(\d{5}|\d{4}-\d{3,4})$/;
 
 export const createValidators = (t) => {
   // Validateurs de base avec traduction
