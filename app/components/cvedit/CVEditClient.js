@@ -166,7 +166,7 @@ export default function CVEditClient({ initialData, locale, userId }) {
           component="main" 
           maxWidth="xl" 
           sx={{ 
-            mt: 4, 
+            mt: { xs: 1, md: 4 },
             mb: 4, 
             flex: 1,
             display: 'flex',

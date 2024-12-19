@@ -29,7 +29,7 @@ const ProgressBar = () => {
   return (
     <Box sx={{ 
       width: '100%', 
-      mb: 4,
+      mb: 1,
       position: 'sticky',
       top: 0,
       backgroundColor: 'background.paper',

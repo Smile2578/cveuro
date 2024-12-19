@@ -64,13 +64,43 @@ const useCVStore = create(
       // Actions optimisées
       setFormData: (data) => {
         const currentData = get().formData;
-        // Vérifier si les données ont réellement changé
-        if (JSON.stringify(currentData) !== JSON.stringify(data)) {
+        // Fusion profonde des données
+        const newData = {
+          personalInfo: {
+            ...currentData.personalInfo,
+            ...data.personalInfo
+          },
+          educations: data.educations?.length > 0 
+            ? data.educations 
+            : currentData.educations,
+          workExperience: {
+            hasWorkExperience: data.workExperience?.hasWorkExperience ?? currentData.workExperience?.hasWorkExperience,
+            experiences: data.workExperience?.experiences?.length > 0 
+              ? data.workExperience.experiences 
+              : currentData.workExperience?.experiences || []
+          },
+          skills: data.skills?.length > 0 
+            ? data.skills 
+            : currentData.skills,
+          languages: data.languages?.length > 0 
+            ? data.languages 
+            : currentData.languages,
+          hobbies: data.hobbies?.length > 0 
+            ? data.hobbies 
+            : currentData.hobbies
+        };
+
+        // Ne mettre à jour que si les données ont changé
+        if (JSON.stringify(currentData) !== JSON.stringify(newData)) {
           set({ 
-            formData: data,
+            formData: newData,
             isFormDirty: true,
             lastSaved: new Date().toISOString()
           });
+          // Sauvegarder dans le localStorage
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('cvFormData', JSON.stringify(newData));
+          }
         }
       },
 

@@ -219,7 +219,7 @@ const SkillsForm = () => {
   }, [fields.length, append]);
 
   const handleQuickAdd = useCallback((skill) => {
-    if (fields.length < 15) {
+    if (fields.length < 8) {
       const translatedSkill = {
         ...skill,
         skillName: t(skill.skillName)

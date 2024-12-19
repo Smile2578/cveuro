@@ -120,10 +120,11 @@ export default function CVGenPageClient({ locale, messages }) {
 
   const fetchCVData = useCallback(async () => {
     const userId = localStorage.getItem('userId');
+    const welcomeSeen = localStorage.getItem('welcomeSeen');
     
     if (!userId || !isMounted.current || hasFetched.current) {
       setIsLoading(false);
-      setShowWelcome(!userId);
+      setShowWelcome(!welcomeSeen);
       return;
     }
 
@@ -155,14 +156,19 @@ export default function CVGenPageClient({ locale, messages }) {
       console.error('Error fetching CV:', error);
       if (isMounted.current) {
         hasFetched.current = false;
-        setShowWelcome(true);
+        setShowWelcome(!welcomeSeen);
       }
     } finally {
       if (isMounted.current) {
         setIsLoading(false);
       }
     }
-  }, [store, transformData, setShowWelcome, setIsLoading]);
+  }, [store, transformData]);
+
+  const handleWelcomeClose = useCallback(() => {
+    localStorage.setItem('welcomeSeen', 'true');
+    setShowWelcome(false);
+  }, []);
 
   useEffect(() => {
     isMounted.current = true;
@@ -215,7 +221,7 @@ export default function CVGenPageClient({ locale, messages }) {
             component="main"
             maxWidth="md"
             sx={{
-              mt: 12,
+              mt: { xs: 7, sm: 12 },
               mb: 2,
               backgroundColor: 'background.default',
               padding: { xs: 2, sm: 3 },
@@ -251,7 +257,7 @@ export default function CVGenPageClient({ locale, messages }) {
                     animate="animate"
                     exit="exit"
                   >
-                    <DynamicWelcomeDialog onClose={() => setShowWelcome(false)} />
+                    <DynamicWelcomeDialog onClose={handleWelcomeClose} />
                   </motion.div>
                 ) : (
                   <motion.div

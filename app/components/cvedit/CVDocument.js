@@ -342,7 +342,7 @@ const CVDocument = memo(({ data, locale }) => {
               <View style={styles.linksContainer}>
                 {data?.personalInfo?.linkedIn && (
                   <Text style={styles.link}>
-                    {data.personalInfo.linkedIn.startsWith('http') ? data.personalInfo.linkedIn : `linkedin.com/in/${data.personalInfo.linkedIn}`}
+                    {data.personalInfo.linkedIn}
                   </Text>
                 )}
                 {data?.personalInfo?.personalWebsite && (

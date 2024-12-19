@@ -139,7 +139,7 @@
       "description": "Share your online presence",
       "linkedin": {
         "label": "LinkedIn Profile (Optional)",
-        "placeholder": "e.g. https://linkedin.com/in/johndoe",
+        "placeholder": "only your profile url from https://linkedin.com/in/your-profile",
         "maxLength": "Maximum 100 characters",
         "minLength": "Minimum 2 characters"
       },
@@ -257,7 +257,7 @@
     },
     "position": {
       "label": "Position",
-      "placeholder": "Ex: Full Stack Developer, Project Manager...",
+      "placeholder": "Ex: Volunteer, Intern, Project Manager...",
       "minLength": "Position must be at least 2 characters",
       "maxLength": "Position cannot exceed 100 characters"
     },
@@ -305,7 +305,7 @@
     },
     "name": {
       "label": "Skill",
-      "placeholder": "Ex: JavaScript, React, Node.js..."
+      "placeholder": "Ex: Microsoft Office, Communication, Teamwork..."
     },
     "level": {
       "label": "Level",
@@ -453,7 +453,7 @@
     "next": "Next",
     "previous": "Previous",
     "nextStep": "Next Step",
-    "save": "Save",
+    "save": "Save my CV",
     "cancel": "Cancel",
     "reset": "Reset"
   },

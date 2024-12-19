@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCVStore } from '@/app/store/cvStore';
-import FormNavigation from '../FormNavigation';
+import FormNavigationWrapper from '../FormNavigationWrapper';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 import SkillsForm from './SkillsForm';
 import HobbiesForm from './HobbiesForm';
@@ -128,110 +128,85 @@ const CombinedForm = ({ onSubmit }) => {
   };
 
   return (
-    <Box 
-      component={Paper} 
-      elevation={0}
-      sx={{ 
-        width: '100%',
-        p: { xs: 2, sm: 3 },
-        borderRadius: 2,
-        backgroundColor: 'background.paper'
-      }}
+    <FormNavigationWrapper
+      onValidate={validateCurrentStep}
+      onReset={handleReset}
+      onSubmit={onSubmit}
+      showReset={true}
     >
-      <Stepper 
-        activeStep={currentSubStep} 
+      <Box 
+        component={Paper} 
+        elevation={0}
         sx={{ 
-          mb: { xs: 3, sm: 4 },
-          '& .MuiStepLabel-label': {
-            fontSize: { xs: '0.875rem', sm: '1rem' },
-            fontWeight: 500,
-            textAlign: { xs: 'center', sm: 'left' }
-          },
-          '& .MuiStepIcon-root': {
-            fontSize: { xs: '1.5rem', sm: '2rem' }
-          },
-          '& .MuiStep-root': {
-            textAlign: { xs: 'center', sm: 'left' }
-          }
-        }}
-        alternativeLabel={!isMobile}
-        orientation={isMobile ? 'vertical' : 'horizontal'}
-      >
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
-      <Box sx={{ 
-        minHeight: '400px',
-        mt: { xs: 2, sm: 4 }
-      }}>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentSubStep}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {steps[currentSubStep].component}
-          </motion.div>
-        </AnimatePresence>
-      </Box>
-
-      <FormNavigation
-        onValidate={validateCurrentStep}
-        onReset={handleReset}
-        onSubmit={onSubmit}
-        showReset={true}
-      />
-
-      <Dialog
-        open={openResetDialog}
-        onClose={handleCancelReset}
-        PaperProps={{
-          sx: {
-            width: { xs: '90%', sm: 'auto' },
-            minWidth: { sm: 400 },
-            borderRadius: 2
-          }
+          width: '100%',
+          p: { xs: 2, sm: 3 },
+          borderRadius: 2,
+          backgroundColor: 'background.paper'
         }}
       >
-        <DialogTitle sx={{ 
-          pb: 1,
-          typography: 'h6',
-          fontSize: { xs: '1.125rem', sm: '1.25rem' }
+
+        <Box sx={{ 
+          minHeight: '400px',
+          
         }}>
-          {tCommon('buttons.reset')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText sx={{ 
-            color: 'text.secondary',
-            fontSize: { xs: '0.875rem', sm: '1rem' }
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSubStep}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              {steps[currentSubStep].component}
+            </motion.div>
+          </AnimatePresence>
+        </Box>
+
+        <Dialog
+          open={openResetDialog}
+          onClose={handleCancelReset}
+          PaperProps={{
+            sx: {
+              width: { xs: '90%', sm: 'auto' },
+              minWidth: { sm: 400 },
+              borderRadius: 2
+            }
+          }}
+        >
+          <DialogTitle sx={{ 
+            pb: 1,
+            typography: 'h6',
+            fontSize: { xs: '1.125rem', sm: '1.25rem' }
           }}>
-            {tCommon('confirmations.reset')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={handleCancelReset}
-            size={isMobile ? 'small' : 'medium'}
-          >
-            {tCommon('buttons.cancel')}
-          </Button>
-          <Button 
-            onClick={handleConfirmReset} 
-            color="error" 
-            variant="contained"
-            size={isMobile ? 'small' : 'medium'}
-          >
             {tCommon('buttons.reset')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText sx={{ 
+              color: 'text.secondary',
+              fontSize: { xs: '0.875rem', sm: '1rem' }
+            }}>
+              {tCommon('confirmations.reset')}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button 
+              onClick={handleCancelReset}
+              size={isMobile ? 'small' : 'medium'}
+            >
+              {tCommon('buttons.cancel')}
+            </Button>
+            <Button 
+              onClick={handleConfirmReset} 
+              color="error" 
+              variant="contained"
+              size={isMobile ? 'small' : 'medium'}
+            >
+              {tCommon('buttons.reset')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </FormNavigationWrapper>
   );
 };
 

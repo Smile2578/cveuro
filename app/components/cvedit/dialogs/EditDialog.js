@@ -329,9 +329,9 @@ const EditDialog = ({
       case 'personalInfo':
         return renderPersonalInfoForm();
       case 'education':
-        return <EducationForm {...formProps} />;
+        return <EducationForm hideFormNavigation={true} />;
       case 'workExperience':
-        return <WorkExperienceForm {...formProps} />;
+        return <WorkExperienceForm hideFormNavigation={true} />;
       case 'skills':
         return <SkillsForm {...formProps} />;
       case 'languages':

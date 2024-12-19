@@ -3,7 +3,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Box, Button, CircularProgress } from '@mui/material';
+import { Box, Button, CircularProgress, useTheme, useMediaQuery } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { useFormContext } from 'react-hook-form';
 import { Refresh, NavigateBefore, NavigateNext } from '@mui/icons-material';
@@ -53,6 +53,8 @@ const FormNavigation = ({
   onSubmit
 }) => {
   const t = useTranslations('common');
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { formState: { errors } } = useFormContext();
   const {
     isLastStep,
@@ -95,7 +97,10 @@ const FormNavigation = ({
       if (isFinalStep && onSubmit) {
         console.log('[FormNavigation] Soumission du formulaire');
         await onSubmit();
-      } else {
+        return;
+      }
+
+      if (!isFinalStep) {
         console.log('[FormNavigation] Passage à l\'étape suivante');
         goNext();
       }
@@ -127,14 +132,12 @@ const FormNavigation = ({
     <Box
       sx={{
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        gap: { xs: 2, sm: 0 },
-        mt: { xs: 2, sm: 4 },
+        gap: { xs: 1, sm: 2 },
         pt: 2,
         borderTop: '1px solid',
-        borderRadius: 4,
         borderColor: 'divider',
         width: '100%'
       }}
@@ -146,53 +149,49 @@ const FormNavigation = ({
         startIcon={<NavigateBefore />}
         isLoading={isLoading && !canGoNext}
         sx={{
-          width: { xs: '100%', sm: 'auto' },
-          order: { xs: 2, sm: 1 },
+          minWidth: { xs: '40px', sm: '120px' },
           borderRadius: 4
         }}
       >
-        {t('buttons.previous')}
+        {!isMobile && t('buttons.previous')}
       </LoadingButton>
 
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          gap: 2,
-          justifyContent: 'center',
-          width: { xs: '100%', sm: 'auto' },
-          order: { xs: 1, sm: 2 }
-        }}
-      >
-        {showReset && (
-          <LoadingButton
-            startIcon={<Refresh />}
-            color="error"
-            onClick={handleReset}
-            disabled={isLoading}
-            isLoading={isLoading && !canGoNext && !canGoPrevious}
-            sx={{
-              width: { xs: '100%', sm: 'auto' },
-              borderRadius: 6
-            }}
-          >
-            {t('buttons.reset')}
-          </LoadingButton>
-        )}
-      </Box>
+      {showReset && (
+        <LoadingButton
+          startIcon={<Refresh />}
+          color="error"
+          onClick={handleReset}
+          disabled={isLoading}
+          isLoading={isLoading && !canGoNext && !canGoPrevious}
+          sx={{
+            minWidth: { xs: '40px', sm: '120px' },
+            borderRadius: 6
+          }}
+        >
+          {!isMobile && t('buttons.reset')}
+        </LoadingButton>
+      )}
 
       <LoadingButton
         variant="contained"
         onClick={handleNext}
         disabled={(isFinalStep ? false : !canGoNext) || isLoading}
-        endIcon={<NavigateNext />}
+        endIcon={isFinalStep ? (!isMobile && <NavigateNext />) : <NavigateNext />}
         isLoading={isLoading && (isFinalStep || canGoNext)}
+        color={isFinalStep ? "success" : "primary"}
         sx={{
-          width: { xs: '100%', sm: 'auto' },
-          order: { xs: 3, sm: 3 },
-          borderRadius: 6
+          minWidth: { xs: isFinalStep ? '80px' : '40px', sm: '120px' },
+          borderRadius: 6,
+          ...(isFinalStep && {
+            background: theme => `linear-gradient(45deg, ${theme.palette.success.main}, ${theme.palette.success.dark})`,
+            boxShadow: theme => `0 4px 10px ${theme.palette.success.main}40`,
+            '&:hover': {
+              background: theme => `linear-gradient(45deg, ${theme.palette.success.dark}, ${theme.palette.success.main})`,
+            }
+          })
         }}
       >
-        {isFinalStep ? t('buttons.save') : t('buttons.next')}
+        {isMobile ? (isFinalStep ? t('buttons.save') : '') : (isFinalStep ? t('buttons.save') : t('buttons.next'))}
       </LoadingButton>
     </Box>
   );

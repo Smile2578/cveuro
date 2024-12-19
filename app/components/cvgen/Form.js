@@ -42,22 +42,19 @@ const Form = () => {
 
   const { cvSchema } = createValidators(tValidation);
 
-  // Configuration optimisée de React Hook Form
   const methods = useForm({
     resolver: zodResolver(cvSchema),
     defaultValues: store.formData,
     mode: 'onTouched',
     reValidateMode: 'onBlur',
-    shouldUnregister: false // Empêche la perte des données lors du changement d'étape
+    shouldUnregister: false
   });
 
-  // Synchronisation optimisée avec le store
   useEffect(() => {
     if (isResetting.current) return;
 
     const subscription = methods.watch((value, { name, type }) => {
       if (!isResetting.current && value) {
-        // Éviter les mises à jour inutiles en comparant avec l'état précédent
         const hasChanged = JSON.stringify(formStateRef.current[name]) !== JSON.stringify(value[name]);
         
         if ((type === 'change' || type === 'blur') && hasChanged) {
@@ -70,36 +67,124 @@ const Form = () => {
     return () => subscription.unsubscribe();
   }, [methods.watch, store]);
 
-  // Soumission optimisée du formulaire
   const handleSubmit = useCallback(async () => {
     try {
       store.setIsSubmitting(true);
       store.setFormErrors(null);
       
-      const isValid = await methods.trigger();
+      const localData = JSON.parse(localStorage.getItem('cvFormData') || '{}');
+      const storeData = store.formData;
+      const formData = methods.getValues();
+
+      console.log('Local data:', localData);
+      console.log('Store data:', storeData);
+      console.log('Form data:', formData);
+
+      const mergedData = {
+        personalInfo: {
+          ...localData.personalInfo,
+          ...storeData.personalInfo,
+          ...formData.personalInfo,
+        },
+        educations: formData.educations?.length > 0 
+          ? formData.educations 
+          : storeData.educations?.length > 0
+            ? storeData.educations
+            : localData.educations || [],
+        workExperience: {
+          hasWorkExperience: formData.workExperience?.hasWorkExperience ?? 
+                            storeData.workExperience?.hasWorkExperience ?? 
+                            localData.workExperience?.hasWorkExperience ?? false,
+          experiences: formData.workExperience?.experiences?.length > 0 
+            ? formData.workExperience.experiences
+            : storeData.workExperience?.experiences?.length > 0
+              ? storeData.workExperience.experiences
+              : localData.workExperience?.experiences || []
+        },
+        skills: formData.skills?.length > 0 
+          ? formData.skills 
+          : storeData.skills?.length > 0
+            ? storeData.skills
+            : localData.skills || [],
+        languages: formData.languages?.length > 0 
+          ? formData.languages 
+          : storeData.languages?.length > 0
+            ? storeData.languages
+            : localData.languages || [],
+        hobbies: formData.hobbies?.length > 0 
+          ? formData.hobbies 
+          : storeData.hobbies?.length > 0
+            ? storeData.hobbies
+            : localData.hobbies || []
+      };
+
+      console.log('Merged data:', mergedData);
+
+      const transformedData = {
+        ...mergedData,
+        personalInfo: {
+          ...mergedData.personalInfo,
+          nationality: Array.isArray(mergedData.personalInfo.nationality) 
+            ? mergedData.personalInfo.nationality.map(nat => 
+                typeof nat === 'string' 
+                  ? { code: nat, label: nat }
+                  : nat
+              )
+            : []
+        }
+      };
+
+      console.log('Transformed data for validation:', transformedData);
+      
+      if (!transformedData.personalInfo.firstname || 
+          !transformedData.personalInfo.lastname || 
+          !transformedData.personalInfo.email) {
+        console.error('Missing required personal info');
+        store.setFormErrors({ 
+          personalInfo: { 
+            message: 'Personal information is incomplete' 
+          } 
+        });
+        return;
+      }
+
+      if (!transformedData.educations.length) {
+        console.error('No education entries');
+        store.setFormErrors({ 
+          educations: { 
+            message: 'Please add at least one education entry' 
+          } 
+        });
+        return;
+      }
+
+      const isValid = await methods.trigger(undefined, { values: transformedData });
+      
       if (!isValid) {
+        console.error('Form validation failed:', methods.formState.errors);
         store.setFormErrors(methods.formState.errors);
         return;
       }
 
-      const formData = methods.getValues();
       const userId = store.userId;
       
       let response;
       let result;
 
       if (userId) {
+        console.log('Updating existing CV...');
         try {
           response = await fetch(`/api/cvgen/updateCV?userId=${userId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+            body: JSON.stringify(transformedData)
           });
 
           if (response.status === 404) {
             throw new Error('CV_NOT_FOUND');
           }
         } catch (error) {
+          console.error('Error updating CV:', error);
           if (error.message === 'CV_NOT_FOUND') {
             localStorage.removeItem('userId');
             store.setUserId(null);
@@ -110,18 +195,20 @@ const Form = () => {
       }
 
       if (!userId || response?.status === 404) {
+        console.log('Creating new CV...');
         response = await fetch('/api/cvgen/submitCV', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify(transformedData)
         });
       }
 
       if (!response.ok) {
-        throw new Error(`Erreur HTTP: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       result = await response.json();
+      console.log('Submit response:', result);
       
       if (result.data?.userId) {
         localStorage.setItem('userId', result.data.userId);
@@ -131,21 +218,25 @@ const Form = () => {
       router.push(`/cvedit?userId=${result.data.userId || userId}`);
       
     } catch (error) {
-      console.error('Erreur lors de la soumission:', error);
+      console.error('Submit error:', error);
       store.setFormErrors({ submit: error.message });
     } finally {
       store.setIsSubmitting(false);
     }
   }, [methods, store, router]);
 
-  // Composant StepContent mémorisé
   const MemoizedStepContent = useMemo(() => (
     <StepContent step={currentStep} onSubmit={handleSubmit} />
   ), [currentStep, handleSubmit]);
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        if (currentStep === 3) {
+          handleSubmit();
+        }
+      }}>
         <Container 
           maxWidth="md" 
           sx={{ 
@@ -153,8 +244,9 @@ const Form = () => {
             px: { xs: 2, sm: 3 },
             display: 'flex',
             flexDirection: 'column',
-            minHeight: '100vh',
-            width: '100%'
+            minHeight: 'auto',
+            width: '100%',
+            mt: { xs: 1, sm: 3 }
           }}
         >
           <ProgressBar />
@@ -166,7 +258,7 @@ const Form = () => {
               alignItems: 'center',
               justifyContent: 'flex-start',
               width: '100%',
-              py: { xs: 2, sm: 4 }
+              py: { xs: 1, sm: 4 }
             }}
           >
             <AnimatePresence mode="wait">

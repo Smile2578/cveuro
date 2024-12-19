@@ -37,7 +37,7 @@ import {
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
 import { useCVStore } from '../../../store/cvStore';
-import FormNavigation from '../FormNavigation';
+import FormNavigationWrapper from '../FormNavigationWrapper';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 
 // Composant StyledTextField inchangé
@@ -558,117 +558,110 @@ const EducationForm = ({ hideFormNavigation }) => {
   }, [educationsErrors, t, getValues]);
 
   return (
-    <Box 
-      sx={{ 
+    <FormNavigationWrapper
+      onValidate={validateForm}
+      onReset={handleReset}
+      showReset={true}
+      hideFormNavigation={hideFormNavigation}
+    >
+      <Box sx={{ 
         width: '100%',
         display: 'flex',
         flexDirection: 'column',
+        alignItems: 'center',
         gap: { xs: 2, sm: 3 }
-      }}
-    >
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: { xs: 'column', sm: 'row' },
-        alignItems: { xs: 'flex-start', sm: 'center' },
-        gap: { xs: 1, sm: 2 },
-        mb: { xs: 2, sm: 3 }
       }}>
-        <SchoolIcon 
-          sx={{ 
-            fontSize: { xs: '2rem', sm: '2.125rem' },
-            color: 'primary.main'
-          }}
-        />
-        <Box>
-          <Typography 
-            variant="h5" 
+        
+          <SchoolIcon 
             sx={{ 
-              fontSize: { xs: '1.25rem', sm: '1.5rem' },
-              fontWeight: 600,
+              fontSize: { xs: '2rem', sm: '2.125rem' },
               color: 'primary.main'
             }}
-          >
-            {t('education.main.title')}
-          </Typography>
-          <Typography 
-            variant="body2" 
-            color="text.secondary"
-            sx={{ 
-              mt: 0.5,
-              fontSize: { xs: '0.875rem', sm: '1rem' }
-            }}
-          >
-            {t('education.main.description')}
-          </Typography>
+          />
+          <Box>
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                fontWeight: 600,
+                color: 'primary.main',
+                textAlign: 'center'
+              }}
+            >
+              {t('education.main.title')}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              color="text.secondary"
+              sx={{ 
+                mt: 0.5,
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }}
+            >
+              {t('education.main.description')}
+            </Typography>
+          
         </Box>
-      </Box>
 
-      <Stack spacing={{ xs: 2, sm: 3 }}>
-        {fields.map((field, index) => (
-          <Box key={field.id}>
-            {hasErrors(index) && !expandedItems.includes(index) && (
-              <Alert 
-                severity="error" 
-                sx={{ 
-                  mb: { xs: 1, sm: 1.5 },
-                  '& .MuiAlert-message': {
-                    width: '100%'
+        <Stack spacing={{ xs: 2, sm: 3 }}>
+          {fields.map((field, index) => (
+            <Box key={field.id}>
+              {hasErrors(index) && !expandedItems.includes(index) && (
+                <Alert 
+                  severity="error" 
+                  sx={{ 
+                    mb: { xs: 1, sm: 1.5 },
+                    '& .MuiAlert-message': {
+                      width: '100%'
+                    }
+                  }}
+                  action={
+                    <Button 
+                      color="error" 
+                      size={isMobile ? "medium" : "small"}
+                      onClick={() => handleToggle(index)}
+                      sx={{
+                        minWidth: { xs: '100%', sm: 'auto' },
+                        mt: { xs: 1, sm: 0 },
+                        borderRadius: 6
+                      }}
+                    >
+                      {t('common.showDetails')}
+                    </Button>
                   }
-                }}
-                action={
-                  <Button 
-                    color="error" 
-                    size={isMobile ? "medium" : "small"}
-                    onClick={() => handleToggle(index)}
-                    sx={{
-                      minWidth: { xs: '100%', sm: 'auto' },
-                      mt: { xs: 1, sm: 0 },
-                      borderRadius: 6
-                    }}
-                  >
-                    {t('common.showDetails')}
-                  </Button>
-                }
-              >
-                {getErrorMessage(index)}
-              </Alert>
-            )}
-            <EducationCard
-              index={index}
-              remove={handleRemove}
-              errors={errors}
-              isExpanded={expandedItems.includes(index)}
-              onToggle={handleToggle}
-            />
-          </Box>
-        ))}
-      </Stack>
+                >
+                  {getErrorMessage(index)}
+                </Alert>
+              )}
+              <EducationCard
+                index={index}
+                remove={handleRemove}
+                errors={errors}
+                isExpanded={expandedItems.includes(index)}
+                onToggle={handleToggle}
+              />
+            </Box>
+          ))}
+        </Stack>
 
-      <Button
-        startIcon={<AddIcon />}
-        onClick={handleAddEducation}
-        variant="contained"
-        color="primary"
-        size={isMobile ? "large" : "medium"}
-        sx={{ 
-          mt: { xs: 1, sm: 2 },
-          mb: { xs: 2, sm: 3 },
-          height: { xs: '48px', sm: '42px' },
-          borderRadius: 6
-        }}
-        disabled={fields.length >= 4}
-      >
-        {t('education.actions.add')}
-      </Button>
-
-      {!hideFormNavigation && (
-        <FormNavigation
-          onValidate={validateForm}
-          onReset={handleReset}
-          showReset={true}
-        />
-      )}
-    </Box>
+        <Button
+          startIcon={<AddIcon />}
+          onClick={handleAddEducation}
+          variant="contained"
+          color="primary"
+          size={isMobile ? "large" : "medium"}
+          sx={{ 
+            mt: { xs: 1, sm: 2 },
+            mb: { xs: 2, sm: 3 },
+            height: { xs: '48px', sm: '42px' },
+            borderRadius: 6
+          }}
+          disabled={fields.length >= 4}
+        >
+          {t('education.actions.add')}
+        </Button>
+      </Box>
+    </FormNavigationWrapper>
   );
 };
 

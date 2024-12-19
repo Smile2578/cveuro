@@ -24,7 +24,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useFormContext } from 'react-hook-form';
 import { Warning } from '@mui/icons-material';
 import { useCVStore } from '@/app/store/cvStore';
-import FormNavigation from '../FormNavigation';
+import FormNavigationWrapper from '../FormNavigationWrapper';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 
 // Définition des champs par étape
@@ -125,22 +125,6 @@ const PersonalInfoStepper = ({ children }) => {
           backgroundColor: 'background.default'
         }}
       >
-        <Box sx={{ mb: { xs: 2, sm: 3 } }}>
-          <Typography 
-            variant={isMobile ? "subtitle1" : "h6"} 
-            color="primary"
-            gutterBottom
-          >
-            {tCvform(`personalInfo.subSteps.${currentSubStep}.title`)}
-          </Typography>
-          <Typography 
-            variant="body2" 
-            color="text.secondary"
-            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-          >
-            {tCvform(`personalInfo.subSteps.${currentSubStep}.description`)}
-          </Typography>
-        </Box>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -158,112 +142,112 @@ const PersonalInfoStepper = ({ children }) => {
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
-      {isMobile ? (
-        <>
-          <MobileStepper
-            variant="dots"
-            steps={steps.length}
-            position="static"
-            activeStep={currentSubStep}
-            sx={{
-              backgroundColor: 'transparent',
-              padding: 0,
-              marginBottom: 2
-            }}
-            backButton={<div />}
-            nextButton={<div />}
-          />
-          {renderStepContent(steps[currentSubStep])}
-        </>
-      ) : (
-        <>
-          <Stepper 
-            activeStep={currentSubStep} 
-            alternativeLabel
-            sx={{
-              '& .MuiStepLabel-root': {
-                '& .MuiStepLabel-labelContainer': {
-                  marginTop: 1
+    <FormNavigationWrapper
+      onValidate={validateCurrentStep}
+      onReset={handleReset}
+      showReset={true}
+    >
+      <Box sx={{ width: '100%' }}>
+        {isMobile ? (
+          <>
+            <MobileStepper
+              variant="dots"
+              steps={steps.length}
+              position="static"
+              activeStep={currentSubStep}
+              sx={{
+                backgroundColor: 'transparent',
+                padding: 0,
+                marginBottom: 2
+              }}
+              backButton={<div />}
+              nextButton={<div />}
+            />
+            {renderStepContent(steps[currentSubStep])}
+          </>
+        ) : (
+          <>
+            <Stepper 
+              activeStep={currentSubStep} 
+              alternativeLabel
+              sx={{
+                '& .MuiStepLabel-root': {
+                  '& .MuiStepLabel-labelContainer': {
+                    marginTop: 1
+                  }
                 }
-              }
-            }}
-          >
-            {steps.map((_, index) => (
-              <Step key={index}>
-                <StepLabel>
-                  <Typography 
-                    variant="body2"
-                    sx={{ 
-                      fontWeight: index === currentSubStep ? 600 : 400,
-                      color: theme => index === currentSubStep ? theme.palette.primary.main : 'inherit'
-                    }}
-                  >
-                    {tCvform(`personalInfo.subSteps.${index}.label`)}
-                  </Typography>
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          {renderStepContent(steps[currentSubStep])}
-        </>
-      )}
+              }}
+            >
+              {steps.map((_, index) => (
+                <Step key={index}>
+                  <StepLabel>
+                    <Typography 
+                      variant="body2"
+                      sx={{ 
+                        fontWeight: index === currentSubStep ? 600 : 400,
+                        color: theme => index === currentSubStep ? theme.palette.primary.main : 'inherit'
+                      }}
+                    >
+                      {tCvform(`personalInfo.subSteps.${index}.label`)}
+                    </Typography>
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            {renderStepContent(steps[currentSubStep])}
+          </>
+        )}
 
-      <FormNavigation
-        onValidate={validateCurrentStep}
-        onReset={handleReset}
-        showReset={true}
-      />
-
-      <Dialog
-        open={openResetDialog}
-        onClose={handleCancelReset}
-        aria-labelledby="reset-dialog-title"
-        sx={{
-          '& .MuiDialog-paper': {
-            width: { xs: '90%', sm: 'auto' },
-            m: { xs: 2, sm: 3 }
-          }
-        }}
-      >
-        <DialogTitle 
-          id="reset-dialog-title" 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 1,
-            color: 'error.main',
-            py: { xs: 1.5, sm: 2 }
+        <Dialog
+          open={openResetDialog}
+          onClose={handleCancelReset}
+          aria-labelledby="reset-dialog-title"
+          sx={{
+            '& .MuiDialog-paper': {
+              width: { xs: '90%', sm: 'auto' },
+              m: { xs: 2, sm: 3 }
+            }
           }}
         >
-          <Warning color="error" />
-          <Typography variant={isMobile ? "subtitle1" : "h6"}>
-            {tCommon('buttons.reset')}
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Typography variant={isMobile ? "body2" : "body1"}>
-            {tCommon('confirmations.reset')}
-          </Typography>
-        </DialogContent>
-        <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: { xs: 2, sm: 3 } }}>
-          <Button 
-            onClick={handleCancelReset}
-            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+          <DialogTitle 
+            id="reset-dialog-title" 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: 1,
+              color: 'error.main',
+              py: { xs: 1.5, sm: 2 }
+            }}
           >
-            {tCommon('buttons.cancel')}
-          </Button>
-          <Button 
-            onClick={handleConfirmReset} 
-            color="error" 
-            variant="contained"
-            sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
-          >
-            {tCommon('buttons.reset')}
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            <Warning color="error" />
+            <Typography variant={isMobile ? "subtitle1" : "h6"}>
+              {tCommon('buttons.reset')}
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant={isMobile ? "body2" : "body1"}>
+              {tCommon('confirmations.reset')}
+            </Typography>
+          </DialogContent>
+          <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: { xs: 2, sm: 3 } }}>
+            <Button 
+              onClick={handleCancelReset}
+              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            >
+              {tCommon('buttons.cancel')}
+            </Button>
+            <Button 
+              onClick={handleConfirmReset} 
+              color="error" 
+              variant="contained"
+              sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
+            >
+              {tCommon('buttons.reset')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </FormNavigationWrapper>
   );
 };
 

@@ -33,12 +33,13 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   Work as WorkIcon,
-  Error as ErrorIcon
+  Error as ErrorIcon,
+  WorkHistory as WorkHistoryIcon
 } from '@mui/icons-material';
 import dayjs from 'dayjs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCVStore } from '@/app/store/cvStore';
-import FormNavigation from '../FormNavigation';
+import FormNavigationWrapper from '../FormNavigationWrapper';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 
 const StyledTextField = React.forwardRef(({ error, helperText, ...props }, ref) => {
@@ -174,7 +175,7 @@ const ExperienceCard = React.memo(({
         display: 'flex', 
         flexDirection: { xs: 'column', sm: 'row' },
         justifyContent: 'space-between', 
-        alignItems: { xs: 'flex-start', sm: 'center' }, 
+        alignItems: 'center',
         gap: 2,
         mb: 2 
       }}>
@@ -420,6 +421,17 @@ const WorkExperienceForm = ({ hideFormNavigation }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  useEffect(() => {
+    const currentExperiences = getValues('workExperience.experiences');
+    if (currentExperiences && currentExperiences.length > 0) {
+      setValue('workExperience.hasWorkExperience', true, { 
+        shouldValidate: false,
+        shouldDirty: false,
+        shouldTouch: false
+      });
+    }
+  }, [setValue, getValues]);
+
   const hasWorkExperience = watch('workExperience.hasWorkExperience', false);
 
   useEffect(() => {
@@ -594,169 +606,191 @@ const WorkExperienceForm = ({ hideFormNavigation }) => {
   }, [setValue]);
 
   return (
-    <Box sx={{ 
-      width: '100%', 
-      mb: 4,
-      px: { xs: 2, sm: 3 },
-      py: { xs: 2, sm: 4 }
-    }}>
-      <Stack spacing={3}>
+    <FormNavigationWrapper
+      onValidate={validateForm}
+      onReset={handleReset}
+      showReset={true}
+      hideFormNavigation={hideFormNavigation}
+    >
+      <Box sx={{ 
+        width: '100%', 
+        mb: 4,
+        px: { xs: 2, sm: 3 },
+        py: { xs: 2, sm: 4 }
+      }}>
+        <Stack spacing={3}>
         <Box sx={{ 
-          display: 'flex', 
-          flexDirection: { xs: 'column', sm: 'row' },
-          justifyContent: 'space-between', 
-          alignItems: { xs: 'flex-start', sm: 'center' },
-          gap: 2
-        }}>
-          <Typography variant="h5" component="h2" sx={{ 
-            fontSize: { xs: '1.25rem', sm: '1.5rem' }
-          }}>
-            {t('experience.main.title')}
-          </Typography>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={hasWorkExperience}
-                onChange={handleExperienceToggle}
-                color="primary"
-                size={isMobile ? 'small' : 'medium'}
-              />
-            }
-            label={t('experience.main.hasExperience')}
-            sx={{ m: 0 }}
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: { xs: 2, sm: 3 }
+      }}>
+        
+          <WorkHistoryIcon 
+            sx={{ 
+              fontSize: { xs: '2rem', sm: '2.125rem' },
+              color: 'primary.main'
+            }}
           />
-        </Box>
-
-        {hasWorkExperience && errors?.workExperience && (
-          <Alert 
-            severity="error"
-            sx={{ 
-              '& .MuiAlert-message': {
-                width: '100%'
-              }
-            }}
-          >
-            {errors.workExperience.message || t('experience.errors.checkFields')}
-          </Alert>
-        )}
-
-        <AnimatePresence mode="wait">
-          {hasWorkExperience && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                fontWeight: 600,
+                color: 'primary.main',
+                textAlign: 'center'
+              }}
             >
-              <Stack spacing={2}>
-                {fields.map((field, index) => (
-                  <Box key={field.id} sx={{ position: 'relative' }}>
-                    <ExperienceCard
-                      index={index}
-                      onRemove={handleRemoveExperience}
-                      errors={errors}
-                      isExpanded={expandedItems.includes(index)}
-                      onToggle={handleToggle}
-                      defaultValues={field}
-                    />
-                  </Box>
-                ))}
-
-                {fields.length < 4 && (
-                  <Button
-                    startIcon={<AddIcon />}
-                    onClick={handleAddExperience}
-                    variant="contained"
-                    fullWidth
-                    size={isMobile ? 'small' : 'medium'}
-                    sx={{ 
-                      mb: 4,
-                      p: 4,
-                      height: { xs: 40, sm: 48 },
-                      borderRadius: 6
-                    }}
-                  >
-                    {fields.length === 0
-                      ? t('experience.actions.addFirst')
-                      : t('experience.actions.add')}
-                  </Button>
-                )}
-
-                {fields.length >= 4 && (
-                  <Alert 
-                    severity="info"
-                    sx={{ 
-                      '& .MuiAlert-message': {
-                        width: '100%'
-                      }
-                    }}
-                  >
-                    {t('experience.actions.maxLength')}
-                  </Alert>
-                )}
-              </Stack>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {!hasWorkExperience && (
-          <Alert 
-            severity="info"
-            sx={{ 
-              '& .MuiAlert-message': {
-                width: '100%'
+              {t('experience.main.title')}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              color="text.secondary"
+              sx={{ 
+                mt: 0.5,
+                fontSize: { xs: '0.875rem', sm: '1rem' }
+              }}
+            >
+              {t('experience.main.description')}
+            </Typography>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={hasWorkExperience}
+                  onChange={handleExperienceToggle}
+                  color="primary"
+                  size={isMobile ? 'small' : 'medium'}
+                />
               }
-            }}
-          >
-            {t('experience.main.noExperienceMessage')}
-          </Alert>
-        )}
-      </Stack>
+              label={t('experience.main.hasExperience')}
+              sx={{ m: 0 }}
+            />
+          </Box>
 
-      <Dialog
-        open={showNoExpDialog}
-        onClose={() => setShowNoExpDialog(false)}
-        PaperProps={{
-          sx: {
-            width: { xs: '90%', sm: 'auto' },
-            minWidth: { sm: 400 }
-          }
-        }}
-      >
-        <DialogTitle>
-          {t('experience.main.confirmNoExperienceTitle')}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('experience.main.confirmNoExperience')}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 2 }}>
-          <Button 
-            onClick={() => setShowNoExpDialog(false)}
-            size={isMobile ? 'small' : 'medium'}
-          >
-            {t('common.cancel')}
-          </Button>
-          <Button 
-            onClick={confirmNoExperience} 
-            color="primary"
-            variant="contained"
-            size={isMobile ? 'small' : 'medium'}
-          >
-            {t('common.confirm')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          {hasWorkExperience && errors?.workExperience && (
+            <Alert 
+              severity="error"
+              sx={{ 
+                '& .MuiAlert-message': {
+                  width: '100%'
+                }
+              }}
+            >
+              {errors.workExperience.message || t('experience.errors.checkFields')}
+            </Alert>
+          )}
 
-      {!hideFormNavigation && (
-        <FormNavigation
-          onValidate={validateForm}
-          onReset={handleReset}
-          showReset={true}
-        />
-      )}
-    </Box>
+          <AnimatePresence mode="wait">
+            {hasWorkExperience && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Stack spacing={2}>
+                  {fields.map((field, index) => (
+                    <Box key={field.id} sx={{ position: 'relative' }}>
+                      <ExperienceCard
+                        index={index}
+                        onRemove={handleRemoveExperience}
+                        errors={errors}
+                        isExpanded={expandedItems.includes(index)}
+                        onToggle={handleToggle}
+                        defaultValues={field}
+                      />
+                    </Box>
+                  ))}
+
+                  {fields.length < 4 && (
+                    <Button
+                      startIcon={<AddIcon />}
+                      onClick={handleAddExperience}
+                      variant="contained"
+                      fullWidth
+                      size={isMobile ? 'small' : 'medium'}
+                      sx={{ 
+                        mb: 4,
+                        p: 4,
+                        height: { xs: 40, sm: 48 },
+                        borderRadius: 6
+                      }}
+                    >
+                      {fields.length === 0
+                        ? t('experience.actions.addFirst')
+                        : t('experience.actions.add')}
+                    </Button>
+                  )}
+
+                  {fields.length >= 4 && (
+                    <Alert 
+                      severity="info"
+                      sx={{ 
+                        '& .MuiAlert-message': {
+                          width: '100%'
+                        }
+                      }}
+                    >
+                      {t('experience.actions.maxLength')}
+                    </Alert>
+                  )}
+                </Stack>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {!hasWorkExperience && (
+            <Alert 
+              severity="info"
+              sx={{ 
+                '& .MuiAlert-message': {
+                  width: '100%'
+                }
+              }}
+            >
+              {t('experience.main.noExperienceMessage')}
+            </Alert>
+          )}
+        </Stack>
+
+        <Dialog
+          open={showNoExpDialog}
+          onClose={() => setShowNoExpDialog(false)}
+          PaperProps={{
+            sx: {
+              width: { xs: '90%', sm: 'auto' },
+              minWidth: { sm: 400 }
+            }
+          }}
+        >
+          <DialogTitle>
+            {t('experience.main.confirmNoExperienceTitle')}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {t('experience.main.confirmNoExperience')}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions sx={{ px: 3, pb: 2 }}>
+            <Button 
+              onClick={() => setShowNoExpDialog(false)}
+              size={isMobile ? 'small' : 'medium'}
+            >
+              {t('common.cancel')}
+            </Button>
+            <Button 
+              onClick={confirmNoExperience} 
+              color="primary"
+              variant="contained"
+              size={isMobile ? 'small' : 'medium'}
+            >
+              {t('common.confirm')}
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </FormNavigationWrapper>
   );
 };
 
