@@ -104,7 +104,7 @@ const PrivacyClient = () => {
         </List>
         <Typography variant="body1" sx={{ mb: 2 }}>
           Pour exercer vos droits, veuillez envoyer un email à 
-          <MuiLink href="mailto:simon@geds.fr" color="primary"> simon@geds.fr</MuiLink>.
+          <MuiLink href="mailto:candidatures@geds.fr" color="primary"> candidatures@geds.fr</MuiLink>.
         </Typography>
 
         <Typography variant="h6" gutterBottom>
@@ -157,7 +157,7 @@ const PrivacyClient = () => {
         </Typography>
         <Typography variant="body1" sx={{ mb: 2 }}>
           Pour toute question relative à la protection de vos données, 
-          vous pouvez écrire à <MuiLink href="mailto:simon@geds.fr" color="primary">simon@geds.fr</MuiLink>.
+          vous pouvez écrire à <MuiLink href="mailto:candidatures@geds.fr" color="primary">simon@geds.fr</MuiLink>.
         </Typography>
 
         <Box mt={4}>
