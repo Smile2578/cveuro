@@ -107,6 +107,13 @@
   },
   "accessibility": {
     "skipToContent": "Skip to main content"
+  },
+  "terms": {
+    "accept": "I accept the",
+    "terms": "Terms of Use",
+    "and": "and the",
+    "privacy": "Privacy Policy",
+    "error": "You must accept the terms to continue !"
   }
 }
   

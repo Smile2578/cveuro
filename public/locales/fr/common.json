@@ -107,6 +107,13 @@
   },
   "accessibility": {
     "skipToContent": "Passer au contenu principal"
+  },
+  "terms": {
+    "accept": "J'accepte les",
+    "terms": "Conditions Générales d'Utilisation",
+    "and": "et la",
+    "privacy": "Politique de Confidentialité",
+    "error": "Vous devez accepter les conditions pour continuer"
   }
 
 }
