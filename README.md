@@ -30,55 +30,54 @@ Ce dépôt contient une application web moderne permettant de créer, d’édite
 ### Avec Docker
 
 1. Cloner le dépôt :
-   ```bash
+   
    git clone https://github.com/Smile2578/cveuro.git
    cd cveuro
-2. Créer un fichier .env dans la racine du projet avec vos variables d’environnement (par exemple, MONGODB_URI).
+   
+3. Créer un fichier .env dans la racine du projet avec vos variables d’environnement (par exemple, MONGODB_URI).
 
-3. Construire et lancer les conteneurs :
+4. Construire et lancer les conteneurs :
 
-bash
-Copier le code
+
 docker-compose up --build
 Le service est disponible sur http://localhost:3000.
 
-Sans Docker
-Installer les dépendances :
+### Sans Docker
 
-bash
-Copier le code
+1. Installer les dépendances :
+
 npm install
-Créer un fichier .env avec vos variables d’environnement (ex. MONGODB_URI).
 
-Lancer l’environnement de développement :
+2. Créer un fichier .env avec vos variables d’environnement (ex. MONGODB_URI).
 
-bash
-Copier le code
+3. Lancer l’environnement de développement :
+
 npm run dev
 Le service est disponible sur http://localhost:3000.
 
-Tests
+## Tests
+
 Mettre en place vos tests (unitaires, e2e) dans le répertoire dédié (ex. __tests__) et exécuter :
 
-bash
-Copier le code
 npm run test
 Intégration continue : Cette configuration peut être automatisée via GitHub Actions ou un autre service CI.
 
-Architecture du Code
+## Architecture du Code
+
 /app : Pages Next.js (ex. page.js, layout.js)
 /components : Composants UI (NavBar, Footer, etc.)
 /models : Schémas Mongoose/MongoDB (ex. CV.js)
 /theme.js : Thème et styles globaux
 /common : Composants et fonctions réutilisables
 
-Variables d’Environnement
+## Variables d’Environnement
+
 MONGODB_URI : URL de connexion à la base de données MongoDB
 
 Autres variables selon besoins (pas d’authentification par défaut)
 
 ## RGPD & Données Personnelles
-Les CGU et la PPD sont disponibles sur l’application (pages TermsClient et PrivacyClient).
+Les CGU et la PPD sont disponibles sur l’application (pages terms et privacy).
 Les utilisateurs peuvent demander l’effacement de leurs données personnelles en envoyant un email.
 
 ## Contribution
