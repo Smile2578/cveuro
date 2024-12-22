@@ -266,7 +266,8 @@ const WelcomeGuide = ({ onClose }) => {
         sx={{ 
           flex: 1,
           overflowY: 'auto',
-          px: { xs: 0.5, sm: 0 }
+          px: { xs: 0.5, sm: 0 },
+          pb: { xs: 7, sm: 2 }
         }}
       >
         <Stack spacing={{ xs: 1.5, sm: 3 }}>
@@ -280,30 +281,27 @@ const WelcomeGuide = ({ onClose }) => {
         </Stack>
       </Box>
 
-      <Box 
-        component="footer"
-        sx={{ 
-          display: 'flex', 
-          justifyContent: 'center',
-          position: 'sticky',
-          bottom: 0,
-          pt: 2,
-          pb: 1,
+      <Box
+        sx={{
           mt: 2,
+          position: { xs: 'fixed', sm: 'static' },
+          bottom: 0,
+          left: 0,
+          right: 0,
+          p: { xs: 2, sm: 0 },
           bgcolor: 'background.paper',
-          borderTop: '1px solid',
-          borderColor: 'divider'
+          borderTop: { xs: 1, sm: 0 },
+          borderColor: 'divider',
+          zIndex: 1
         }}
       >
-        <Button 
-          variant="contained" 
-          color="primary"
+        <Button
+          variant="contained"
+          fullWidth
           onClick={onClose}
-          aria-label={t('startButton')}
-          sx={{ 
-            minWidth: { xs: 160, sm: 200 },
-            py: { xs: 1, sm: 1.5 },
-            fontSize: { xs: '1rem', sm: '1.1rem' }
+          sx={{
+            py: { xs: 1.5, sm: 1 },
+            borderRadius: { xs: 2, sm: 1 }
           }}
         >
           {t('startButton')}

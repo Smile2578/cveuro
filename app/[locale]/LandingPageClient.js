@@ -13,7 +13,11 @@ import {
   Card, 
   CardContent, 
   useMediaQuery,
-  CircularProgress
+  CircularProgress,
+  FormControlLabel,
+  Checkbox,
+  Link as MuiLink,
+  Alert
 } from '@mui/material';
 import {
   Person,
@@ -145,16 +149,23 @@ export default function LandingPageClient() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { resetForm } = useCVStore();
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showError, setShowError] = useState(false);
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   const handleCreateCV = useCallback(async () => {
+    if (!termsAccepted) {
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
     setIsLoading(true);
     resetForm();
     router.push('/cvgen');
-  }, [resetForm, router]);
+  }, [resetForm, router, termsAccepted]);
 
   const features = [
     { icon: 'Person', key: "personalInfo" },
@@ -219,7 +230,53 @@ export default function LandingPageClient() {
             {t('landing.subtitle')}
           </Typography>
 
-          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 2,
+            mb: 4
+          }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  color="primary"
+                  sx={{
+                    '&.Mui-checked': {
+                      color: theme.palette.primary.main,
+                    },
+                  }}
+                />
+              }
+              label={
+                <Typography variant="body2" sx={{ textAlign: 'center' }}>
+                  {t('terms.accept')}{' '}
+                  <MuiLink href="/terms" target="_blank" rel="noopener noreferrer">
+                    {t('terms.terms')}
+                  </MuiLink>
+                  {' '}{t('terms.and')}{' '}
+                  <MuiLink href="/privacy" target="_blank" rel="noopener noreferrer">
+                    {t('terms.privacy')}
+                  </MuiLink>
+                </Typography>
+              }
+            />
+
+            {showError && (
+              <Alert 
+                severity="error" 
+                sx={{ 
+                  width: 'fit-content',
+                  transition: 'all 0.3s ease',
+                  animation: 'fadeIn 0.3s ease'
+                }}
+              >
+                {t('terms.error')}
+              </Alert>
+            )}
+
             <Button 
               variant="contained" 
               size="large" 
