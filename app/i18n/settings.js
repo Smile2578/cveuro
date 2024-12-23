@@ -1,7 +1,7 @@
 // app/i18n/settings.js
 
 export const locales = ['fr', 'en'];
-export const defaultLocale = 'fr';
+export const defaultLocale = 'en';
 export const timeZone = 'Europe/Paris';
 
 export const getSettings = () => ({

@@ -9,9 +9,23 @@ import { getSettings } from '../i18n/settings';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'CV Builder - Créateur de CV Professionnel',
+  title: {
+    default: 'CV Builder - Créateur de CV Professionnel',
+    template: '%s | CV Builder'
+  },
   description: 'Créez votre CV professionnel facilement et rapidement',
-  manifest: '/manifest.json',
+  keywords: 'cv, builder, création cv, curriculum vitae',
+  openGraph: {
+    title: 'CV Builder - Créateur de CV Professionnel',
+    description: 'Créez votre CV professionnel facilement et rapidement',
+    images: ['/og-image.jpg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'CV Builder - Créateur de CV Professionnel',
+    description: 'Créez votre CV professionnel facilement et rapidement',
+    images: ['/og-image.jpg'],
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -20,20 +34,6 @@ export const metadata = {
   formatDetection: {
     telephone: false
   }
-};
-
-/** @type {import('next').Viewport} */
-export const viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#1976d2' },
-    { media: '(prefers-color-scheme: dark)', color: '#1976d2' }
-  ],
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 5,
-  minimumScale: 1,
-  userScalable: true,
-  colorScheme: 'light'
 };
 
 export function generateStaticParams() {
@@ -61,14 +61,8 @@ export default async function LocaleLayout({ children, params: { locale } }) {
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="CV Builder" />
-        <meta name="format-detection" content="telephone=no" />
+        <meta name="application-name" content="CV Builder" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-TileColor" content="#1976d2" />
         <meta name="msapplication-tap-highlight" content="no" />
       </head>
       <body className={inter.className} suppressHydrationWarning>

@@ -263,6 +263,15 @@ export default function LandingPageClient() {
                 </Typography>
               }
             />
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: 'red',
+                textAlign: 'center'
+              }}
+            >
+              {t('terms.english')}
+            </Typography>
 
             {showError && (
               <Alert 
