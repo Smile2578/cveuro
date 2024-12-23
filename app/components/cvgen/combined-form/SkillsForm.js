@@ -363,7 +363,7 @@ const SkillsForm = () => {
           </Alert>
         )}
 
-        {fields.length < 15 && (
+        {fields.length < 5 && (
           <Box sx={{ mt: 3 }}>
             <Typography 
               variant="subtitle2" 
