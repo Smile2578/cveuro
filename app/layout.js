@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  metadataBase: new URL('https://cvbuilder.com'),
+  metadataBase: new URL('https://cveuro.com'),
   robots: {
     index: true,
     follow: true,
