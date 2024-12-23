@@ -200,7 +200,7 @@ export default function LandingPageClient() {
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'center',
-          pt: { xs: '80px', sm: '120px' },
+          pt: { xs: '100px', sm: '120px' },
           pb: { xs: 4, sm: 6 },
         }}
       >
