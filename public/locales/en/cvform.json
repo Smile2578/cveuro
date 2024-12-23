@@ -342,7 +342,7 @@
       "add": "Add skill",
       "addFirst": "Add your first skill",
       "remove": "Remove this skill",
-      "maxLength": "You have reached the maximum number of skills (15)"
+      "maxLength": "You have reached the maximum number of skills (5)"
     },
     "errors": {
       "hasErrors": "This skill contains errors",

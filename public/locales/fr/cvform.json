@@ -343,7 +343,7 @@
       "add": "Ajouter une compétence",
       "addFirst": "Ajouter ma première compétence",
       "remove": "Supprimer cette compétence",
-      "maxLength": "Vous avez atteint le nombre maximum de compétences (15)"
+      "maxLength": "Vous avez atteint le nombre maximum de compétences (5)"
     },
     "errors": {
       "hasErrors": "Cette compétence contient des erreurs",
