@@ -13,7 +13,7 @@ import { useCVStore } from '@/app/store/cvStore';
 import PersonalInfoForm from './personal-info/PersonalInfoForm';
 import EducationForm from './education/EducationForm';
 import WorkExperienceForm from './work-experience/WorkExperienceForm';
-import CombinedForm from '../cvedit/combined-form/CombinedForm';
+import CombinedForm from './combined-form/CombinedForm';
 import ProgressBar from './ProgressBar';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 

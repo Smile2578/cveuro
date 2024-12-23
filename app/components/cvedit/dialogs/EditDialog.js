@@ -26,9 +26,9 @@ import InfoForm from '../../cvgen/personal-info/InfoForm';
 import SocialForm from '../../cvgen/personal-info/SocialForm';
 import EducationForm from '../../cvgen/education/EducationForm';
 import WorkExperienceForm from '../../cvgen/work-experience/WorkExperienceForm';
-import LanguagesForm from '../combined-form/LanguagesForm';
-import HobbiesForm from '../combined-form/HobbiesForm';
-import SkillsForm from '../combined-form/SkillsForm';
+import LanguagesForm from '../../cvgen/combined-form/LanguagesForm';
+import HobbiesForm from '../../cvgen/combined-form/HobbiesForm';
+import SkillsForm from '../../cvgen/combined-form/SkillsForm';
 
 const EditDialog = ({ 
   open, 
