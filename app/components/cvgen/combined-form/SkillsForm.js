@@ -332,7 +332,7 @@ const SkillsForm = () => {
           </Stack>
         </AnimatePresence>
 
-        {fields.length < 15 ? (
+        {fields.length < 5 ? (
           <Button
             startIcon={<AddIcon />}
             onClick={handleAddSkill}

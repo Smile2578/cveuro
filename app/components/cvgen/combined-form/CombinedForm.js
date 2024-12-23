@@ -23,7 +23,7 @@ import {
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCVStore } from '@/app/store/cvStore';
-import FormNavigationWrapper from '../FormNavigationWrapper';
+import FormNavigationWrapper from '../../cvgen/FormNavigationWrapper';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 import SkillsForm from './SkillsForm';
 import HobbiesForm from './HobbiesForm';
