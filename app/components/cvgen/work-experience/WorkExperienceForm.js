@@ -435,11 +435,11 @@ const WorkExperienceForm = ({ hideFormNavigation }) => {
   const hasWorkExperience = watch('workExperience.hasWorkExperience', false);
 
   useEffect(() => {
-    const formData = store.formData;
-    const hasExistingExperiences = formData?.workExperience?.experiences?.length > 0;
+    const formData = store.formData?.workExperience;
+    const hasExistingExperiences = formData?.experiences?.length > 0;
     const shouldInitialize = hasExistingExperiences && 
-                           (!hasWorkExperience || fields.length === 0) && 
-                           !fields.some(field => field.companyName);
+                           fields.length === 0 && 
+                           formData.hasWorkExperience;
 
     if (shouldInitialize) {
       setValue('workExperience.hasWorkExperience', true, { 
@@ -448,13 +448,11 @@ const WorkExperienceForm = ({ hideFormNavigation }) => {
         shouldTouch: false
       });
 
-      remove();
-
-      formData.workExperience.experiences.forEach(exp => {
+      formData.experiences.forEach(exp => {
         append(exp, { shouldFocus: false });
       });
     }
-  }, [store.formData, fields.length, setValue, append, hasWorkExperience, remove]);
+  }, [store.formData?.workExperience, fields.length, setValue, append]);
 
   useEffect(() => {
     const hasErrors = !!errors?.workExperience;
@@ -517,48 +515,57 @@ const WorkExperienceForm = ({ hideFormNavigation }) => {
     }
   }, [fields.length, append, setValue, getValues, store, remove]);
 
-  const handleExperienceToggle = useCallback(async (event) => {
-    const newValue = event.target.checked;
-    if (!newValue && fields.length > 0) {
-      setShowNoExpDialog(true);
-    } else {
-      setValue('workExperience.hasWorkExperience', newValue, { 
-        shouldValidate: false,
-        shouldDirty: false,
-        shouldTouch: false
-      });
-    }
-  }, [fields.length, setValue]);
-
-  const handleRemoveExperience = useCallback(async (index) => {
-    remove(index);
-    setExpandedItems(prev => prev.filter(i => i !== index).map(i => i > index ? i - 1 : i));
+  const confirmExperienceChange = useCallback((newValue) => {
+    setValue('workExperience.hasWorkExperience', newValue, { 
+      shouldValidate: false,
+      shouldDirty: false,
+      shouldTouch: false
+    });
     
-    if (fields.length === 1) {
-      const currentFormData = getValues();
-      const newFormData = {
-        ...currentFormData,
+    if (!newValue) {
+      store.setFormData({
+        ...getValues(),
         workExperience: {
           hasWorkExperience: false,
           experiences: []
         }
-      };
-      
-      store.setFormData(newFormData);
-      store.clearFormErrors();
-      
-      setValue('workExperience', {
-        hasWorkExperience: false,
-        experiences: []
-      }, { 
-        shouldValidate: false,
-        shouldDirty: false,
-        shouldTouch: false
       });
-
-      remove();
+      remove(undefined, { shouldDirty: false });
     }
-  }, [remove, fields.length, setValue, store, getValues]);
+  }, [setValue, store, getValues, remove]);
+
+  const handleExperienceToggle = useCallback((event) => {
+    const newValue = event.target.checked;
+    if (!newValue && fields.length > 0) {
+      setShowNoExpDialog(true);
+    } else {
+      confirmExperienceChange(newValue);
+    }
+  }, [fields.length, confirmExperienceChange]);
+
+  const handleRemoveExperience = useCallback((index) => {
+    const isLastExperience = fields.length === 1;
+    
+    if (isLastExperience) {
+      confirmExperienceChange(false);
+    } else {
+      remove(index);
+      setExpandedItems(prev => 
+        prev.filter(i => i !== index)
+           .map(i => i > index ? i - 1 : i)
+      );
+      
+      // Update store with current state after removal
+      const currentExperiences = getValues('workExperience.experiences');
+      store.setFormData({
+        ...getValues(),
+        workExperience: {
+          hasWorkExperience: true,
+          experiences: currentExperiences.filter((_, i) => i !== index)
+        }
+      });
+    }
+  }, [remove, fields.length, confirmExperienceChange, getValues, store]);
 
   const handleReset = useCallback(async () => {
     try {

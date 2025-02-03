@@ -1,8 +1,8 @@
 // app/components/cvgen/Form.js
 "use client";
 
-import React, { useEffect, useRef, useCallback, useMemo } from 'react';
-import { Box, Container } from '@mui/material';
+import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
+import { Box, Container, Typography } from '@mui/material';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FormProvider, useForm } from 'react-hook-form';
@@ -39,8 +39,21 @@ const Form = () => {
   const isResetting = useRef(false);
   const { currentStep } = useFormProgress();
   const formStateRef = useRef({});
+  const [validationErrors, setValidationErrors] = useState(null);
 
   const { cvSchema } = createValidators(tValidation);
+
+  // Fonction utilitaire pour vérifier si un objet est vide
+  const isEmptyObject = (obj) => {
+    if (!obj) return true;
+    return Object.keys(obj).length === 0;
+  };
+
+  // Fonction pour vérifier l'intégrité des données personnelles
+  const validatePersonalInfo = (data) => {
+    const { firstname, lastname, email } = data?.personalInfo || {};
+    return Boolean(firstname?.trim() && lastname?.trim() && email?.trim());
+  };
 
   const methods = useForm({
     resolver: zodResolver(cvSchema),
@@ -50,6 +63,7 @@ const Form = () => {
     shouldUnregister: false
   });
 
+  // Effet pour synchroniser les données
   useEffect(() => {
     if (isResetting.current) return;
 
@@ -65,21 +79,52 @@ const Form = () => {
     });
 
     return () => subscription.unsubscribe();
-  }, [methods.watch, store]);
+  }, [methods.watch, store, methods]);
 
   const handleSubmit = useCallback(async () => {
     try {
+      setValidationErrors(null);
       store.setIsSubmitting(true);
       store.setFormErrors(null);
       
-      const localData = JSON.parse(localStorage.getItem('cvFormData') || '{}');
-      const storeData = store.formData;
-      const formData = methods.getValues();
+      // Fonction déplacée à l'intérieur du useCallback
+      const getAllSourcesData = () => {
+        let localData = {};
+        try {
+          const customStorage = window.__customStorage;
+          if (customStorage) {
+            const storedData = customStorage.getItem('cvFormData');
+            if (storedData) {
+              localData = JSON.parse(storedData);
+            }
+          }
+        } catch (e) {
+          console.warn('Error reading from CustomStorage:', e);
+          try {
+            const storedData = localStorage.getItem('cvFormData');
+            if (storedData) {
+              localData = JSON.parse(storedData);
+            }
+          } catch (e) {
+            console.warn('Error reading from localStorage:', e);
+          }
+        }
 
-      console.log('Local data:', localData);
-      console.log('Store data:', storeData);
-      console.log('Form data:', formData);
+        const storeData = store.formData;
+        const formData = methods.getValues();
 
+        console.log('Data sources:', {
+          localData,
+          storeData,
+          formData
+        });
+
+        return { localData, storeData, formData };
+      };
+
+      const { localData, storeData, formData } = getAllSourcesData();
+
+      // Fusion des données avec validation
       const mergedData = {
         personalInfo: {
           ...localData.personalInfo,
@@ -120,6 +165,32 @@ const Form = () => {
 
       console.log('Merged data:', mergedData);
 
+      // Validation des données personnelles
+      if (!validatePersonalInfo(mergedData)) {
+        console.error('Missing or invalid personal info');
+        const error = {
+          personalInfo: {
+            message: 'Les informations personnelles sont incomplètes ou invalides'
+          }
+        };
+        setValidationErrors(error);
+        store.setFormErrors(error);
+        return;
+      }
+
+      // Validation des données d'éducation
+      if (!mergedData.educations?.length) {
+        console.error('No education entries');
+        const error = {
+          educations: {
+            message: 'Veuillez ajouter au moins une formation'
+          }
+        };
+        setValidationErrors(error);
+        store.setFormErrors(error);
+        return;
+      }
+
       const transformedData = {
         ...mergedData,
         personalInfo: {
@@ -135,39 +206,19 @@ const Form = () => {
       };
 
       console.log('Transformed data for validation:', transformedData);
-      
-      if (!transformedData.personalInfo.firstname || 
-          !transformedData.personalInfo.lastname || 
-          !transformedData.personalInfo.email) {
-        console.error('Missing required personal info');
-        store.setFormErrors({ 
-          personalInfo: { 
-            message: 'Personal information is incomplete' 
-          } 
-        });
-        return;
-      }
 
-      if (!transformedData.educations.length) {
-        console.error('No education entries');
-        store.setFormErrors({ 
-          educations: { 
-            message: 'Please add at least one education entry' 
-          } 
-        });
-        return;
-      }
-
+      // Validation complète avec Zod
       const isValid = await methods.trigger(undefined, { values: transformedData });
       
       if (!isValid) {
         console.error('Form validation failed:', methods.formState.errors);
+        setValidationErrors(methods.formState.errors);
         store.setFormErrors(methods.formState.errors);
         return;
       }
 
+      // Soumission des données
       const userId = store.userId;
-      
       let response;
       let result;
 
@@ -211,7 +262,12 @@ const Form = () => {
       console.log('Submit response:', result);
       
       if (result.data?.userId) {
-        localStorage.setItem('userId', result.data.userId);
+        // Sauvegarder l'userId dans le CustomStorage si disponible
+        if (window.__customStorage) {
+          window.__customStorage.setItem('userId', result.data.userId);
+        } else {
+          localStorage.setItem('userId', result.data.userId);
+        }
         store.setUserId(result.data.userId);
       }
 
@@ -219,7 +275,11 @@ const Form = () => {
       
     } catch (error) {
       console.error('Submit error:', error);
-      store.setFormErrors({ submit: error.message });
+      const errorMessage = {
+        submit: error.message || 'Une erreur est survenue lors de la soumission'
+      };
+      setValidationErrors(errorMessage);
+      store.setFormErrors(errorMessage);
     } finally {
       store.setIsSubmitting(false);
     }
@@ -237,6 +297,13 @@ const Form = () => {
           handleSubmit();
         }
       }}>
+        {validationErrors && (
+          <Box sx={{ mb: 2, p: 2, bgcolor: 'error.light', borderRadius: 1 }}>
+            <Typography color="error" variant="body2">
+              {Object.values(validationErrors).map(error => error.message).join(', ')}
+            </Typography>
+          </Box>
+        )}
         <Container 
           maxWidth="md" 
           sx={{ 

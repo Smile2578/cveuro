@@ -5,6 +5,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { shallow } from 'zustand/shallow';
+import { getStorage, initStorage } from '../utils/storage';
 
 console.log('cvStore - Initialisation du store');
 
@@ -46,6 +47,13 @@ const selectors = {
   formErrors: (state) => state.formErrors,
 };
 
+// Initialiser le storage si on est côté client
+if (typeof window !== 'undefined') {
+  initStorage();
+}
+
+const customStorage = typeof window !== 'undefined' ? getStorage() : null;
+
 const useCVStore = create(
   persist(
     (set, get) => ({
@@ -64,43 +72,66 @@ const useCVStore = create(
       // Actions optimisées
       setFormData: (data) => {
         const currentData = get().formData;
-        // Fusion profonde des données
-        const newData = {
-          personalInfo: {
-            ...currentData.personalInfo,
-            ...data.personalInfo
-          },
-          educations: data.educations?.length > 0 
-            ? data.educations 
-            : currentData.educations,
-          workExperience: {
-            hasWorkExperience: data.workExperience?.hasWorkExperience ?? currentData.workExperience?.hasWorkExperience,
-            experiences: data.workExperience?.experiences?.length > 0 
-              ? data.workExperience.experiences 
-              : currentData.workExperience?.experiences || []
-          },
-          skills: data.skills?.length > 0 
-            ? data.skills 
-            : currentData.skills,
-          languages: data.languages?.length > 0 
-            ? data.languages 
-            : currentData.languages,
-          hobbies: data.hobbies?.length > 0 
-            ? data.hobbies 
-            : currentData.hobbies
-        };
+        console.log('Setting form data:', { current: currentData, new: data });
+        
+        try {
+          // Fusion profonde des données avec validation
+          const newData = {
+            personalInfo: {
+              ...currentData.personalInfo,
+              ...data.personalInfo,
+              // Validation des champs requis
+              firstname: data.personalInfo?.firstname || currentData.personalInfo?.firstname || '',
+              lastname: data.personalInfo?.lastname || currentData.personalInfo?.lastname || '',
+              email: data.personalInfo?.email || currentData.personalInfo?.email || ''
+            },
+            educations: data.educations?.length > 0 
+              ? data.educations 
+              : currentData.educations,
+            workExperience: {
+              hasWorkExperience: data.workExperience?.hasWorkExperience ?? currentData.workExperience?.hasWorkExperience,
+              experiences: data.workExperience?.experiences?.length > 0 
+                ? data.workExperience.experiences 
+                : currentData.workExperience?.experiences || []
+            },
+            skills: data.skills?.length > 0 
+              ? data.skills 
+              : currentData.skills,
+            languages: data.languages?.length > 0 
+              ? data.languages 
+              : currentData.languages,
+            hobbies: data.hobbies?.length > 0 
+              ? data.hobbies 
+              : currentData.hobbies
+          };
 
-        // Ne mettre à jour que si les données ont changé
-        if (JSON.stringify(currentData) !== JSON.stringify(newData)) {
+          // Vérification de l'intégrité des données
+          if (JSON.stringify(currentData) !== JSON.stringify(newData)) {
+            console.log('Data changed, updating store...');
+            set({ 
+              formData: newData,
+              isFormDirty: true,
+              lastSaved: new Date().toISOString()
+            });
+
+            // Sauvegarder dans le CustomStorage
+            if (customStorage) {
+              const dataToSave = JSON.stringify(newData);
+              customStorage.setItem('cvFormData', dataToSave);
+              console.log('Data saved to storage');
+            }
+          }
+        } catch (error) {
+          console.error('Error in setFormData:', error);
+          // En cas d'erreur, on sauvegarde au moins en mémoire
           set({ 
-            formData: newData,
+            formData: {
+              ...currentData,
+              ...data
+            },
             isFormDirty: true,
             lastSaved: new Date().toISOString()
           });
-          // Sauvegarder dans le localStorage
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('cvFormData', JSON.stringify(newData));
-          }
         }
       },
 
@@ -108,14 +139,21 @@ const useCVStore = create(
         const currentValue = get().formData[field];
         // Vérifier si la valeur a réellement changé
         if (JSON.stringify(currentValue) !== JSON.stringify(value)) {
-          set((state) => ({
-            formData: {
-              ...state.formData,
-              [field]: value
-            },
+          const newFormData = {
+            ...get().formData,
+            [field]: value
+          };
+          
+          set({
+            formData: newFormData,
             isFormDirty: true,
             lastSaved: new Date().toISOString()
-          }));
+          });
+
+          // Sauvegarder dans le CustomStorage
+          if (customStorage) {
+            customStorage.setItem('cvFormData', JSON.stringify(newFormData));
+          }
         }
       },
 
@@ -188,7 +226,12 @@ const useCVStore = create(
 
       // Autres méthodes optimisées
       setIsEditing: (isEditing) => set({ isEditing }),
-      setUserId: (userId) => set({ userId }),
+      setUserId: (userId) => {
+        set({ userId });
+        if (customStorage && userId) {
+          customStorage.setItem('userId', userId);
+        }
+      },
       setIsSubmitting: (isSubmitting) => set({ isSubmitting }),
       setFormErrors: (errors) => set({ formErrors: errors }),
       clearFormErrors: () => set({ formErrors: {} }),
@@ -206,9 +249,10 @@ const useCVStore = create(
           userId: null,
           formErrors: {}
         });
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem('cvFormData');
-          localStorage.removeItem('cv-store');
+        if (customStorage) {
+          customStorage.removeItem('cvFormData');
+          customStorage.removeItem('cv-store');
+          customStorage.removeItem('userId');
         }
       },
 
@@ -249,7 +293,7 @@ const useCVStore = create(
     }),
     {
       name: 'cv-store',
-      storage: createJSONStorage(() => (typeof window !== 'undefined' ? localStorage : null)),
+      storage: createJSONStorage(() => customStorage),
       partialize: (state) => ({
         formData: state.formData,
         activeStep: state.activeStep,

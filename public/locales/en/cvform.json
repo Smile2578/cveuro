@@ -173,7 +173,7 @@
       "error": "Degree is required",
       "options": {
         "baccalaureat": "High School Diploma",
-        "licence": "Bachelor's Degree",
+        "licence": "Licence's Degree",
         "bachelor": "Bachelor's Degree",
         "master": "Master's Degree",
         "doctorat": "Doctorate",

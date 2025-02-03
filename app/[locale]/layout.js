@@ -59,18 +59,9 @@ export default async function LocaleLayout({ children, params: { locale } }) {
   const settings = getSettings();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
-      <head>
-        <meta name="application-name" content="CV Builder" />
-        <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="msapplication-tap-highlight" content="no" />
-      </head>
-      <body className={inter.className} suppressHydrationWarning>
-        <ClientLayout messages={messages} locale={locale} settings={settings}>
-          {children}
-          <Analytics />
-        </ClientLayout>
-      </body>
-    </html>
+    <ClientLayout messages={messages} locale={locale} settings={settings}>
+      {children}
+      <Analytics />
+    </ClientLayout>
   );
 } 
