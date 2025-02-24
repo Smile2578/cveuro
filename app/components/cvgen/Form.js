@@ -1,4 +1,3 @@
-// app/components/cvgen/Form.js
 "use client";
 
 import React, { useEffect, useRef, useCallback, useMemo, useState } from 'react';
@@ -137,9 +136,10 @@ const Form = () => {
             ? storeData.educations
             : localData.educations || [],
         workExperience: {
-          hasWorkExperience: formData.workExperience?.hasWorkExperience ?? 
-                            storeData.workExperience?.hasWorkExperience ?? 
-                            localData.workExperience?.hasWorkExperience ?? false,
+          hasWorkExperience: formData.workExperience?.hasWorkExperience 
+            ?? storeData.workExperience?.hasWorkExperience 
+            ?? localData.workExperience?.hasWorkExperience 
+            ?? false,
           experiences: formData.workExperience?.experiences?.length > 0 
             ? formData.workExperience.experiences
             : storeData.workExperience?.experiences?.length > 0
@@ -236,6 +236,13 @@ const Form = () => {
           }
         } catch (error) {
           console.error('Error updating CV:', error);
+          console.error('Stack:', error.stack);
+          if (error.response) {
+            console.error('Status:', error.response.status);
+            console.error('Headers:', error.response.headers);
+            console.error('Data:', error.response.data);
+          }
+
           if (error.message === 'CV_NOT_FOUND') {
             localStorage.removeItem('userId');
             store.setUserId(null);
@@ -275,6 +282,13 @@ const Form = () => {
       
     } catch (error) {
       console.error('Submit error:', error);
+      console.error('Stack:', error.stack);
+      if (error.response) {
+        console.error('Status:', error.response.status);
+        console.error('Headers:', error.response.headers);
+        console.error('Data:', error.response.data);
+      }
+
       const errorMessage = {
         submit: error.message || 'Une erreur est survenue lors de la soumission'
       };

@@ -6,6 +6,10 @@ Allow: /fr
 Allow: /en
 Allow: /fr/cvgen
 Allow: /en/cvgen
+Allow: /fr/privacy
+Allow: /en/privacy
+Allow: /fr/legal
+Allow: /en/legal
 
 # Sitemap
 Sitemap: https://www.cveuro.com/sitemap.xml

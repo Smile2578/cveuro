@@ -1,5 +1,3 @@
-// pages/api/cvgen/submitCV.js
-
 import dbConnect from '../../../lib/dbConnect';
 import CV from '../../../models/CV';
 import { randomBytes } from 'crypto';
@@ -8,6 +6,11 @@ import { parse, format } from 'date-fns';
 export default async function handler(req, res) {
   console.log('=== Début de submitCV ===');
   console.log('Méthode:', req.method);
+
+  // Ajout de logs supplémentaires pour diagnostiquer les 403
+  console.log('req.headers:', req.headers);
+  console.log('req.query:', req.query);
+  console.log('req.cookies:', req.cookies);
   
   if (req.method !== 'POST') {
     console.log('Méthode non autorisée:', req.method);
@@ -53,8 +56,14 @@ export default async function handler(req, res) {
       console.log('Éducations avant formatage:', cvData.educations);
       cvData.educations = cvData.educations.map(education => ({
         ...education,
-        startDate: education.startDate ? format(parse(education.startDate, 'MM/yyyy', new Date()), 'MM/yyyy') : undefined,
-        endDate: education.ongoing ? "En cours" : education.endDate ? format(parse(education.endDate, 'MM/yyyy', new Date()), 'MM/yyyy') : undefined
+        startDate: education.startDate
+          ? format(parse(education.startDate, 'MM/yyyy', new Date()), 'MM/yyyy')
+          : undefined,
+        endDate: education.ongoing
+          ? "En cours"
+          : education.endDate
+            ? format(parse(education.endDate, 'MM/yyyy', new Date()), 'MM/yyyy')
+            : undefined
       }));
       console.log('Éducations après formatage:', cvData.educations);
     }
@@ -65,8 +74,14 @@ export default async function handler(req, res) {
       console.log('Expériences avant formatage:', cvData.workExperience.experiences);
       cvData.workExperience.experiences = cvData.workExperience.experiences.map(exp => ({
         ...exp,
-        startDate: exp.startDate ? format(parse(exp.startDate, 'MM/yyyy', new Date()), 'MM/yyyy') : undefined,
-        endDate: exp.ongoing ? "En cours" : exp.endDate ? format(parse(exp.endDate, 'MM/yyyy', new Date()), 'MM/yyyy') : undefined
+        startDate: exp.startDate
+          ? format(parse(exp.startDate, 'MM/yyyy', new Date()), 'MM/yyyy')
+          : undefined,
+        endDate: exp.ongoing
+          ? "En cours"
+          : exp.endDate
+            ? format(parse(exp.endDate, 'MM/yyyy', new Date()), 'MM/yyyy')
+            : undefined
       }));
       console.log('Expériences après formatage:', cvData.workExperience.experiences);
     }
@@ -108,6 +123,14 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error('Erreur lors de la création du CV:', error);
+    console.error('Stack:', error.stack);
+    // Log supplémentaire si error.response existe
+    if (error.response) {
+      console.error('Status:', error.response.status);
+      console.error('Headers:', error.response.headers);
+      console.error('Data:', error.response.data);
+    }
+
     return res.status(500).json({
       success: false,
       error: error.message || 'Erreur lors de la création du CV'
