@@ -11,7 +11,17 @@
     "title": "Create your professional CV in a few clicks",
     "subtitle": "A simple and intuitive tool to create a CV that represents you. Follow our guided steps and get a professional CV in minutes.",
     "mainContent": "Main content",
+    "stats": {
+      "title": "Numbers that speak for themselves",
+      "visitors": "Visitors",
+      "cvsCreated": "CVs created since January 2025",
+      "minutes": "Minutes on average",
+      "satisfaction": "Satisfaction rate",
+      "universities": "Appreciated by European universities"
+    },
     "features": {
+      "title": "Create your CV in a few simple steps",
+      "subtitle": "Our platform offers everything you need to create a professional CV tailored to European standards.",
       "personalInfo": {
         "title": "Personal Information",
         "description": "Start with the basics: your contact details and essential information"
@@ -36,6 +46,10 @@
         "title": "Projects",
         "description": "Present your personal and professional projects"
       }
+    },
+    "cta": {
+      "title": "Ready to create your European CV?",
+      "subtitle": "Join over 1,500 students who have already created their professional CV with our platform."
     }
   },
   "progress": {

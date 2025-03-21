@@ -11,7 +11,17 @@
     "title": "Créez votre CV professionnel en quelques clics",
     "subtitle": "Un outil simple et intuitif pour créer un CV qui vous ressemble. Suivez nos étapes guidées et obtenez un CV professionnel en quelques minutes.",
     "mainContent": "Contenu principal",
+    "stats": {
+      "title": "Des chiffres qui parlent d'eux-mêmes",
+      "visitors": "Visiteurs",
+      "cvsCreated": "CV créés depuis Janvier 2025",
+      "minutes": "Minutes en moyenne",
+      "satisfaction": "Taux de satisfaction",
+      "universities": "Apprécié par les universités européennes"
+    },
     "features": {
+      "title": "Créez votre CV en quelques étapes simples",
+      "subtitle": "Notre plateforme offre tout ce dont vous avez besoin pour créer un CV professionnel adapté aux standards européens.",
       "personalInfo": {
         "title": "Informations Personnelles",
         "description": "Commencez par les bases : vos coordonnées et informations essentielles"
@@ -36,6 +46,10 @@
         "title": "Projets",
         "description": "Présentez vos projets personnels et professionnels"
       }
+    },
+    "cta": {
+      "title": "Prêt à créer votre CV européen ?",
+      "subtitle": "Rejoignez plus de 1500 étudiants qui ont déjà créé leur CV professionnel avec notre plateforme."
     }
   },
   "progress": {
@@ -116,6 +130,5 @@
     "error": "Vous devez accepter les conditions pour continuer",
     "english": "Attention: Les universités demandent un CV en anglais ! Veuillez changer la langue du site si vous voyez ce message."
   }
-
 }
   

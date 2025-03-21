@@ -7,17 +7,39 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
+  --primary-color: #1976d2;
+  --primary-dark: #0d47a1;
+  --primary-light: #42a5f5;
+  --secondary-color: #f5f9fc;
+  --success-color: #2e7d32;
+  --warning-color: #ed6c02;
+  --error-color: #d32f2f;
+  --text-primary: #1a1a1a;
+  --text-secondary: #424242;
+  --border-radius-sm: 8px;
+  --border-radius-md: 16px;
+  --border-radius-lg: 30px;
+  --transition-speed: 0.3s;
+  --box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html {
   overflow-y: scroll;
   scrollbar-gutter: stable;
   padding-right: 0 !important;
+  font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
   font-family: "Work Sans", sans-serif;
-  color: rgb(var(--foreground-rgb));
+  color: var(--text-primary);
   background: linear-gradient(
     to bottom,
     transparent,
@@ -26,6 +48,62 @@ body {
   margin-right: 0 !important;
   overflow-x: hidden;
   padding-right: 0 !important;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  color: var(--primary-dark);
+}
+
+button {
+  cursor: pointer;
+  font-family: "Work Sans", sans-serif;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Animation d'apparition */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+/* Amélioration des scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
 }
 
 /* Empêcher le décalage lors de l'ouverture des Select */
@@ -51,12 +129,45 @@ body {
   text-wrap: balance;
 }
 
+/* Styles pour les cartes */
+.card-hover {
+  transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--box-shadow);
+}
+
+/* Style des boutons améliorés */
+.button-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.button-glow::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease;
+}
+
+.button-glow:hover::after {
+  opacity: 1;
+}
+
+/* Styles pour les chips */
 .chip-blue, .chip-green {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid;
-  border-radius: 16px;
+  border-radius: var(--border-radius-sm);
   padding: 4px 8px;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -65,16 +176,26 @@ body {
   height: 24px;
   box-sizing: border-box;
   line-height: 1;
+  transition: all var(--transition-speed) ease;
 }
 
 .chip-blue {
-  border-color: #1976d2;
+  border-color: var(--primary-color);
+}
+
+.chip-blue:hover {
+  background-color: rgba(25, 118, 210, 0.08);
 }
 
 .chip-green {
-  border-color: #4caf50;
+  border-color: var(--success-color);
 }
 
+.chip-green:hover {
+  background-color: rgba(46, 125, 50, 0.08);
+}
+
+/* Styles pour l'impression */
 .logo-print {
   width: 80px;
   height: auto;
@@ -87,6 +208,32 @@ body {
   margin: 0 auto;
 }
 
+/* Styles pour le responsive */
+@media (max-width: 600px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container-sm {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+  .container-md {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+/* Affichage haute résolution */
+@media (min-width: 1920px) {
+  html {
+    font-size: 18px;
+  }
+}
+
 /* Print-specific styles ensuring desktop-like layout on print */
 @media print {
   body, html {
@@ -94,6 +241,7 @@ body {
     min-height: 297mm;
     background: white;
     color: black; /* Ensures readable print output */
+    font-size: 12pt;
   }
 
   .section-item {
