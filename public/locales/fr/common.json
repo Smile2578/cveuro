@@ -8,6 +8,7 @@
     "about": "À propos"
   },
   "landing": {
+    "tag": "Créateur de CV Européen",
     "title": "Créez votre CV professionnel en quelques clics",
     "subtitle": "Un outil simple et intuitif pour créer un CV qui vous ressemble. Suivez nos étapes guidées et obtenez un CV professionnel en quelques minutes.",
     "mainContent": "Contenu principal",
@@ -15,7 +16,7 @@
       "title": "Des chiffres qui parlent d'eux-mêmes",
       "visitors": "Visiteurs",
       "cvsCreated": "CV créés depuis Janvier 2025",
-      "minutes": "Minutes en moyenne",
+      "minutes": "en moyenne",
       "satisfaction": "Taux de satisfaction",
       "universities": "Apprécié par les universités européennes"
     },

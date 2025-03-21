@@ -36,7 +36,7 @@ export default function LanguageSelector() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Image src="/flags/france.png" alt="French flag" width={20} height={20} />
-          Fr
+          Français
         </Box>
       </Button>
       <Button
@@ -53,7 +53,7 @@ export default function LanguageSelector() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <Image src="/flags/uk.png" alt="British flag" width={20} height={20} />
-          En
+          English
         </Box>
       </Button>
     </ButtonGroup>

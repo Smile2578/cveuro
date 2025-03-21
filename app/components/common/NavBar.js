@@ -42,12 +42,12 @@ export default function NavBar({ show = true }) {
           alignItems: 'center' 
         }}>
           <Link href="/" passHref style={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ position: 'relative', width: 130, height: 110 }}>
+            <Box sx={{ position: 'relative', width: 110, height: 100 }}>
               <Image
                 src="/logo.png"
                 alt="GEDS Logo"
                 fill
-                sizes="130px"
+                sizes="110px"
                 style={{ objectFit: 'contain' }}
                 priority
               />

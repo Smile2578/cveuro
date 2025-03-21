@@ -8,6 +8,7 @@
     "about": "About"
   },
   "landing": {
+    "tag": "European CV Builder",
     "title": "Create your professional CV in a few clicks",
     "subtitle": "A simple and intuitive tool to create a CV that represents you. Follow our guided steps and get a professional CV in minutes.",
     "mainContent": "Main content",
@@ -15,7 +16,7 @@
       "title": "Numbers that speak for themselves",
       "visitors": "Visitors",
       "cvsCreated": "CVs created since January 2025",
-      "minutes": "Minutes on average",
+      "minutes": "on average",
       "satisfaction": "Satisfaction rate",
       "universities": "Appreciated by European universities"
     },

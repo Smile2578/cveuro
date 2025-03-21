@@ -81,7 +81,11 @@ function StatCard({ icon: IconComponent, value, label, color = theme.palette.pri
         align="center" 
         gutterBottom
         sx={{
-          fontSize: { xs: '1.5rem', sm: '1.75rem' }
+          fontSize: { xs: '1.5rem', sm: '1.75rem' },
+          fontFamily: "'Urbanist', sans-serif",
+          fontWeight: 800,
+          color: color,
+          textShadow: '0 1px 2px rgba(0,0,0,0.05)'
         }}
       >
         {value}
@@ -91,7 +95,10 @@ function StatCard({ icon: IconComponent, value, label, color = theme.palette.pri
         align="center" 
         color="text.secondary"
         sx={{
-          fontSize: { xs: '0.85rem', sm: '1rem' }
+          fontSize: { xs: '0.85rem', sm: '1rem' },
+          fontFamily: "'Urbanist', sans-serif",
+          fontWeight: 500,
+          letterSpacing: '0.01em'
         }}
       >
         {label}
@@ -102,6 +109,22 @@ function StatCard({ icon: IconComponent, value, label, color = theme.palette.pri
 
 // Nouveau composant pour les fonctionnalités avec un design amélioré
 function FeatureCard({ icon: IconComponent, title, description, index }) {
+  // Tableau de couleurs pour les icônes
+  const colors = [
+    '#1976d2', // blue
+    '#9c27b0', // purple
+    '#2e7d32', // green
+    '#ed6c02', // orange
+    '#d32f2f', // red
+    '#0288d1'  // light blue
+  ];
+  
+  // Récupérer la couleur pour cette carte
+  const color = colors[index % colors.length];
+  
+  // Créer des backgrounds avec opacités différentes
+  const bgColorLight = `${color}15`; // 15% opacité
+  
   return (
     <Box sx={{ width: '100%', mb: 3 }}>
       <Paper
@@ -118,7 +141,7 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
           '&:hover': {
             transform: 'translateY(-5px)',
             boxShadow: '0 15px 30px rgba(0,0,0,0.1)',
-            borderColor: 'rgba(25, 118, 210, 0.2)',
+            borderColor: `${color}40`, // 40% opacité pour le hover
           }
         }}
       >
@@ -127,7 +150,7 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
           position: 'absolute',
           inset: 0,
           opacity: 0.05,
-          backgroundImage: 'radial-gradient(#1976d2 1px, transparent 1px)',
+          backgroundImage: `radial-gradient(${color} 1px, transparent 1px)`,
           backgroundSize: '20px 20px'
         }} />
         
@@ -155,8 +178,8 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
               mr: 2,
               p: 1.5,
               borderRadius: '12px',
-              bgcolor: `${theme.palette.primary.main}15`,
-              color: theme.palette.primary.main,
+              bgcolor: bgColorLight,
+              color: color,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
@@ -169,12 +192,12 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
               left: 0,
               height: '100%',
               width: '4px',
-              bgcolor: 'rgba(25, 118, 210, 0.2)',
+              bgcolor: `${color}30`, // 30% opacité
               borderTopRightRadius: '4px',
               borderBottomRightRadius: '4px',
               transition: 'all 0.2s ease-out',
               '&:hover': {
-                bgcolor: theme.palette.primary.main,
+                bgcolor: color,
                 height: '60%',
               }
             }} />
@@ -184,6 +207,9 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
               fontWeight="bold" 
               sx={{ 
                 fontSize: '1.25rem',
+                fontFamily: "'Urbanist', sans-serif",
+                fontWeight: 700,
+                color: color,
                 transition: 'transform 0.2s ease-out',
                 '&:hover': {
                   transform: 'translateX(4px)'
@@ -199,10 +225,17 @@ function FeatureCard({ icon: IconComponent, title, description, index }) {
             color="text.secondary"
             sx={{
               fontSize: '0.95rem',
-              lineHeight: 1.5
+              lineHeight: 1.5,
+              fontFamily: "'Urbanist', sans-serif",
+              fontWeight: 400,
+              pl: 6
             }}
           >
-            {description}
+            <Box component="span" sx={{ fontWeight: 600, color }}>
+              {description.split(' ').slice(0, 2).join(' ')}
+            </Box>
+            {' '}
+            {description.split(' ').slice(2).join(' ')}
           </Typography>
         </Box>
       </Paper>
@@ -295,10 +328,12 @@ export default function LandingPage() {
                 borderRadius: '20px',
                 backgroundColor: 'rgba(25, 118, 210, 0.08)',
                 color: theme.palette.primary.main,
-                fontWeight: 500,
-                fontSize: '0.875rem'
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                fontFamily: "'Urbanist', sans-serif",
+                letterSpacing: '0.05em'
               }}>
-                {t('landing.title')}
+                {t('landing.tag')}
               </Box>
               
               <Typography 
@@ -309,11 +344,14 @@ export default function LandingPage() {
                   fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem', lg: '3.5rem' },
                   fontWeight: 800,
                   mb: 2,
+                  fontFamily: "'Playfair Display', serif",
                   background: 'linear-gradient(90deg, #0d47a1 0%, #1976d2 100%)',
                   backgroundClip: 'text',
                   WebkitBackgroundClip: 'text',
                   color: 'transparent',
-                  WebkitTextFillColor: 'transparent'
+                  WebkitTextFillColor: 'transparent',
+                  letterSpacing: '0.02em',
+                  lineHeight: 1.2
                 }}
               >
                 {t('landing.title')}
@@ -328,10 +366,26 @@ export default function LandingPage() {
                   color: theme.palette.text.secondary,
                   fontSize: { xs: '1rem', sm: '1.15rem', md: '1.25rem' },
                   fontWeight: 400,
-                  maxWidth: { md: '600px' }
+                  maxWidth: { md: '600px' },
+                  fontFamily: "'Urbanist', sans-serif",
+                  letterSpacing: '0.01em'
                 }}
               >
-                {t('landing.subtitle')}
+                <Box component="span" sx={{ fontWeight: 700, color: theme.palette.primary.dark }}>
+                  {t('landing.subtitle').split(' ').slice(0, 2).join(' ')}
+                </Box>
+                {' '}
+                <Box component="span" sx={{ fontWeight: 500, color: theme.palette.text.secondary }}>
+                  {t('landing.subtitle').split(' ').slice(2, 7).join(' ')}
+                </Box>
+                {' '}
+                <Box component="span" sx={{ fontWeight: 700, color: theme.palette.primary.main }}>
+                  {t('landing.subtitle').split(' ').slice(7, 9).join(' ')}
+                </Box>
+                {' '}
+                <Box component="span" sx={{ fontWeight: 500, color: theme.palette.text.secondary }}>
+                  {t('landing.subtitle').split(' ').slice(9).join(' ')}
+                </Box>
               </Typography>
               
               <Box sx={{ mb: 3 }} className="fade-in">
@@ -349,7 +403,19 @@ export default function LandingPage() {
                     />
                   }
                   label={
-                    <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    <Typography variant="body2" sx={{ 
+                      fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                      fontFamily: "'Urbanist', sans-serif",
+                      fontWeight: 500,
+                      '& a': {
+                        fontWeight: 600,
+                        color: theme.palette.primary.main,
+                        transition: 'color 0.2s',
+                        '&:hover': {
+                          color: theme.palette.primary.dark
+                        }
+                      }
+                    }}>
                       {t('terms.accept')}{' '}
                       <MuiLink href="/terms" target="_blank" rel="noopener noreferrer">
                         {t('terms.terms')}
@@ -368,7 +434,9 @@ export default function LandingPage() {
                     color: 'red',
                     fontWeight: 'bold',
                     fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                    ml: 4
+                    ml: 4,
+                    fontFamily: "'Urbanist', sans-serif",
+                    letterSpacing: '0.01em'
                   }}
                 >
                   {t('terms.english')}
@@ -402,6 +470,8 @@ export default function LandingPage() {
                   py: { xs: 1.5, sm: 2 },
                   fontSize: { xs: '1rem', sm: '1.1rem' },
                   fontWeight: 'bold',
+                  fontFamily: "'Urbanist', sans-serif",
+                  letterSpacing: '0.05em',
                   borderRadius: '40px',
                   boxShadow: '0 6px 20px rgba(25, 118, 210, 0.4)',
                   background: 'linear-gradient(90deg, #1976d2 0%, #2196f3 100%)',
@@ -445,7 +515,7 @@ export default function LandingPage() {
                   overflow: 'hidden',
                 }}>
                   <Image 
-                    src="/template/cv-preview.png" 
+                    src="/template/cv-preview.webp" 
                     alt="CV preview" 
                     width={600} 
                     height={800}
@@ -475,10 +545,42 @@ export default function LandingPage() {
               fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
               fontWeight: 'bold',
               mb: { xs: 4, sm: 6 },
-              color: theme.palette.primary.dark
+              color: theme.palette.primary.dark,
+              position: 'relative',
+              paddingBottom: '15px',
+              fontFamily: "'Urbanist', sans-serif",
+              fontWeight: 800,
+              letterSpacing: '0.01em',
+              '& .highlight': {
+                color: theme.palette.primary.main,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: 0,
+                  width: '100%',
+                  height: '4px',
+                  background: theme.palette.primary.light,
+                  opacity: 0.3,
+                  borderRadius: '2px',
+                }
+              },
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                left: '50%',
+                width: '80px',
+                height: '3px',
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                transform: 'translateX(-50%)'
+              }
             }}
           >
-            {t('landing.stats.title')}
+            <span className="highlight">{t('landing.stats.title').split(' ').slice(0, 3).join(' ')}</span>
+            {' '}
+            {t('landing.stats.title').split(' ').slice(3).join(' ')}
           </Typography>
           
           <Box sx={{ 
@@ -524,10 +626,42 @@ export default function LandingPage() {
               fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' },
               fontWeight: 'bold',
               mb: 2,
-              color: theme.palette.primary.dark
+              color: theme.palette.primary.dark,
+              position: 'relative',
+              paddingBottom: '15px',
+              fontFamily: "'Urbanist', sans-serif",
+              fontWeight: 800,
+              letterSpacing: '0.01em',
+              '& .highlight': {
+                color: theme.palette.primary.main,
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  left: 0,
+                  bottom: 0,
+                  width: '100%',
+                  height: '4px',
+                  background: theme.palette.primary.light,
+                  opacity: 0.3,
+                  borderRadius: '2px',
+                }
+              },
+              '&::after': {
+                content: '""',
+                position: 'absolute',
+                bottom: 0,
+                left: '50%',
+                width: '80px',
+                height: '3px',
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
+                transform: 'translateX(-50%)'
+              }
             }}
           >
-            {t('landing.features.title')}
+            <span className="highlight">{t('landing.features.title').split(' ').slice(0, 3).join(' ')}</span>
+            {' '}
+            {t('landing.features.title').split(' ').slice(3).join(' ')}
           </Typography>
           
           <Typography 
@@ -537,7 +671,10 @@ export default function LandingPage() {
               mb: { xs: 4, sm: 6 },
               maxWidth: '750px',
               mx: 'auto',
-              color: theme.palette.text.secondary
+              color: theme.palette.text.secondary,
+              fontFamily: "'Urbanist', sans-serif",
+              fontSize: '1.1rem',
+              fontWeight: 500
             }}
           >
             {t('landing.features.subtitle')}
@@ -585,10 +722,42 @@ export default function LandingPage() {
               fontSize: { xs: '1.5rem', sm: '2rem' }, 
               fontWeight: 'bold', 
               mb: { xs: 2, sm: 3 },
-              color: 'white'
+              color: 'white',
+              fontFamily: "'Urbanist', sans-serif",
+              textShadow: '0 2px 4px rgba(0,0,0,0.15)',
+              position: 'relative',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                width: '40px',
+                height: '3px',
+                background: 'white',
+                bottom: '-10px',
+                left: '50%',
+                transform: 'translateX(-50%)'
+              }
             }}
           >
-            {t('landing.cta.title')}
+            <Box component="span" sx={{ 
+              fontWeight: 800, 
+              background: 'linear-gradient(135deg, #ffffff 0%, #e3f2fd 100%)',
+              color: theme.palette.primary.dark,
+              px: 1.5,
+              py: 0.5,
+              borderRadius: '4px',
+              display: 'inline-block',
+              mb: 1
+            }}>
+              {t('landing.cta.title').split(' ').slice(0, 3).join(' ')}
+            </Box>
+            <Box component="span" sx={{ 
+              fontWeight: 600, 
+              color: 'white',
+              display: 'inline-block'
+            }}>
+              {' '}
+              {t('landing.cta.title').split(' ').slice(3).join(' ')}
+            </Box>
           </Typography>
           
           <Typography 
@@ -598,10 +767,27 @@ export default function LandingPage() {
               fontSize: { xs: '1rem', sm: '1.1rem' },
               color: 'rgba(255,255,255,0.9)',
               maxWidth: '600px',
-              mx: 'auto'
+              mx: 'auto',
+              fontFamily: "'Urbanist', sans-serif",
+              fontWeight: 400,
+              letterSpacing: '0.01em',
+              textShadow: '0 1px 2px rgba(0,0,0,0.1)'
             }}
           >
-            {t('landing.cta.subtitle')}
+            <Box component="span" sx={{ 
+              fontWeight: 700, 
+              color: '#bbdefb', // Couleur bleu clair
+              textDecoration: 'underline',
+              textDecorationColor: 'rgba(255,255,255,0.3)',
+              textDecorationThickness: '2px',
+              textUnderlineOffset: '4px'
+            }}>
+              {t('landing.cta.subtitle').split(' ').slice(0, 4).join(' ')}
+            </Box>
+            {' '}
+            <Box component="span" sx={{ fontWeight: 500, color: 'white' }}>
+              {t('landing.cta.subtitle').split(' ').slice(4).join(' ')}
+            </Box>
           </Typography>
           
           <Button 
@@ -615,9 +801,11 @@ export default function LandingPage() {
               color: theme.palette.primary.dark,
               padding: { xs: '10px 20px', sm: '12px 30px' },
               fontSize: { xs: '1rem', sm: '1.1rem' },
-              fontWeight: 'bold',
+              fontWeight: 700,
+              fontFamily: "'Urbanist', sans-serif",
               borderRadius: '40px',
               boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
+              letterSpacing: '0.02em',
               '&:hover': {
                 bgcolor: 'rgba(255,255,255,0.9)',
                 transform: 'translateY(-3px)',
