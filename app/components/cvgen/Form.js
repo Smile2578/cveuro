@@ -42,13 +42,11 @@ const Form = () => {
 
   const { cvSchema } = createValidators(tValidation);
 
-  // Fonction utilitaire pour vérifier si un objet est vide
   const isEmptyObject = (obj) => {
     if (!obj) return true;
     return Object.keys(obj).length === 0;
   };
 
-  // Fonction pour vérifier l'intégrité des données personnelles
   const validatePersonalInfo = (data) => {
     const { firstname, lastname, email } = data?.personalInfo || {};
     return Boolean(firstname?.trim() && lastname?.trim() && email?.trim());
@@ -62,7 +60,6 @@ const Form = () => {
     shouldUnregister: false
   });
 
-  // Effet pour synchroniser les données
   useEffect(() => {
     if (isResetting.current) return;
 
@@ -86,7 +83,6 @@ const Form = () => {
       store.setIsSubmitting(true);
       store.setFormErrors(null);
       
-      // Fonction déplacée à l'intérieur du useCallback
       const getAllSourcesData = () => {
         let localData = {};
         try {
@@ -98,32 +94,24 @@ const Form = () => {
             }
           }
         } catch (e) {
-          console.warn('Error reading from CustomStorage:', e);
           try {
             const storedData = localStorage.getItem('cvFormData');
             if (storedData) {
               localData = JSON.parse(storedData);
             }
           } catch (e) {
-            console.warn('Error reading from localStorage:', e);
+            // Erreur de lecture localStorage
           }
         }
 
         const storeData = store.formData;
         const formData = methods.getValues();
 
-        console.log('Data sources:', {
-          localData,
-          storeData,
-          formData
-        });
-
         return { localData, storeData, formData };
       };
 
       const { localData, storeData, formData } = getAllSourcesData();
 
-      // Fusion des données avec validation
       const mergedData = {
         personalInfo: {
           ...localData.personalInfo,
@@ -163,11 +151,7 @@ const Form = () => {
             : localData.hobbies || []
       };
 
-      console.log('Merged data:', mergedData);
-
-      // Validation des données personnelles
       if (!validatePersonalInfo(mergedData)) {
-        console.error('Missing or invalid personal info');
         const error = {
           personalInfo: {
             message: 'Les informations personnelles sont incomplètes ou invalides'
@@ -178,9 +162,7 @@ const Form = () => {
         return;
       }
 
-      // Validation des données d'éducation
       if (!mergedData.educations?.length) {
-        console.error('No education entries');
         const error = {
           educations: {
             message: 'Veuillez ajouter au moins une formation'
@@ -205,25 +187,19 @@ const Form = () => {
         }
       };
 
-      console.log('Transformed data for validation:', transformedData);
-
-      // Validation complète avec Zod
       const isValid = await methods.trigger(undefined, { values: transformedData });
       
       if (!isValid) {
-        console.error('Form validation failed:', methods.formState.errors);
         setValidationErrors(methods.formState.errors);
         store.setFormErrors(methods.formState.errors);
         return;
       }
 
-      // Soumission des données
       const userId = store.userId;
       let response;
       let result;
 
       if (userId) {
-        console.log('Updating existing CV...');
         try {
           response = await fetch(`/api/cvgen/updateCV?userId=${userId}`, {
             method: 'PUT',
@@ -235,14 +211,6 @@ const Form = () => {
             throw new Error('CV_NOT_FOUND');
           }
         } catch (error) {
-          console.error('Error updating CV:', error);
-          console.error('Stack:', error.stack);
-          if (error.response) {
-            console.error('Status:', error.response.status);
-            console.error('Headers:', error.response.headers);
-            console.error('Data:', error.response.data);
-          }
-
           if (error.message === 'CV_NOT_FOUND') {
             localStorage.removeItem('userId');
             store.setUserId(null);
@@ -253,7 +221,6 @@ const Form = () => {
       }
 
       if (!userId || response?.status === 404) {
-        console.log('Creating new CV...');
         response = await fetch('/api/cvgen/submitCV', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -266,10 +233,8 @@ const Form = () => {
       }
 
       result = await response.json();
-      console.log('Submit response:', result);
       
       if (result.data?.userId) {
-        // Sauvegarder l'userId dans le CustomStorage si disponible
         if (window.__customStorage) {
           window.__customStorage.setItem('userId', result.data.userId);
         } else {
@@ -281,14 +246,6 @@ const Form = () => {
       router.push(`/cvedit?userId=${result.data.userId || userId}`);
       
     } catch (error) {
-      console.error('Submit error:', error);
-      console.error('Stack:', error.stack);
-      if (error.response) {
-        console.error('Status:', error.response.status);
-        console.error('Headers:', error.response.headers);
-        console.error('Data:', error.response.data);
-      }
-
       const errorMessage = {
         submit: error.message || 'Une erreur est survenue lors de la soumission'
       };

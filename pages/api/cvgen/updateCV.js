@@ -12,7 +12,6 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
     const { userId } = req.query;
-    console.log('Données reçues pour mise à jour:', JSON.stringify(req.body, null, 2));
 
     if (!userId) {
       return res.status(400).json({ 
@@ -38,8 +37,6 @@ export default async function handler(req, res) {
     // Supprimer uniquement la clé educations car elle a été transformée
     delete transformedData.educations;
 
-    console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
-
     const cvUpdate = await CV.findOneAndUpdate(
       { userId }, 
       transformedData,
@@ -59,7 +56,6 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Erreur lors de la mise à jour:', error);
     return res.status(500).json({ 
       success: false, 
       error: error.message 

@@ -60,6 +60,10 @@ const CVSchema = new Schema({
   template: {
     type: String,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 

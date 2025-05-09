@@ -7,8 +7,6 @@ export default async function handler(req, res) {
     await dbConnect();
 
     if (method === 'PUT') {
-        console.log('Données reçues pour mise à jour:', JSON.stringify(req.body, null, 2));
-
         try {
             const { userId } = req.query;
 
@@ -29,8 +27,6 @@ export default async function handler(req, res) {
             // Supprimer uniquement la clé educations car elle a été transformée
             delete transformedData.educations;
 
-            console.log('Données transformées pour MongoDB:', JSON.stringify(transformedData, null, 2));
-
             const cvUpdate = await CV.findOneAndUpdate(
                 { userId },
                 { $set: transformedData },
@@ -41,11 +37,8 @@ export default async function handler(req, res) {
                 return res.status(404).json({ success: false, message: 'CV not found' });
             }
 
-            console.log('CV mis à jour avec succès:', cvUpdate);
-
             return res.status(200).json({ success: true, data: cvUpdate });
         } catch (error) {
-            console.error('Erreur lors de la mise à jour du CV:', error);
             res.status(400).json({ success: false, message: 'Failed to update CV', error: error.message });
         }
     } else {
