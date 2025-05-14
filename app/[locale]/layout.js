@@ -54,7 +54,9 @@ async function getMessages(locale) {
   }
 }
 
-export default async function LocaleLayout({ children, params: { locale } }) {
+export default async function LocaleLayout({ children, params }) {
+  // Attendre les params de manière asynchrone
+  const { locale } = await params;
   const messages = await getMessages(locale);
   const settings = getSettings();
 

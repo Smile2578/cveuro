@@ -1,8 +1,12 @@
 "use client";
 import React, { memo } from 'react';
-import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Image } from '@alexandernanberg/react-pdf-renderer';
 import { useTranslations } from 'next-intl';
 import './fonts';
+import { registerFonts } from './fonts';
+
+// S'assurer que les polices sont bien enregistrées
+registerFonts();
 
 // Créer des styles qui imitent Material UI
 const styles = StyleSheet.create({

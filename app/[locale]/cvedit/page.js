@@ -19,9 +19,13 @@ const LoadingFallback = () => (
   </Box>
 );
 
-export default async function CVEditPage({ params: { locale }, searchParams }) {
-  setRequestLocale(locale);
+export default async function CVEditPage({ params, searchParams: rawSearchParams }) {
+  // Attendre les params et searchParams de manière asynchrone
+  const { locale } = await params;
+  const searchParams = await rawSearchParams;
   const { userId } = searchParams;
+  
+  setRequestLocale(locale);
   
   if (!userId) {
     redirect('/');

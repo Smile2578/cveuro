@@ -123,6 +123,12 @@ const IdentityForm = () => {
                     placeholder={t('personalInfo.identity.firstName.placeholder')}
                     error={shouldShowFieldError('personalInfo.firstname')}
                     helperText={shouldShowFieldError('personalInfo.firstname') && errors?.personalInfo?.firstname?.message}
+                    inputProps={{
+                      autoComplete: "given-name",
+                      form: {
+                        autoComplete: "off"
+                      }
+                    }}
                     sx={{
                       width: '100%',
                       '& .MuiOutlinedInput-root': {
@@ -192,6 +198,12 @@ const IdentityForm = () => {
                     placeholder={t('personalInfo.identity.lastName.placeholder')}
                     error={shouldShowFieldError('personalInfo.lastname')}
                     helperText={shouldShowFieldError('personalInfo.lastname') && errors?.personalInfo?.lastname?.message}
+                    inputProps={{
+                      autoComplete: "family-name",
+                      form: {
+                        autoComplete: "off"
+                      }
+                    }}
                     sx={{
                       width: '100%',
                       '& .MuiOutlinedInput-root': {

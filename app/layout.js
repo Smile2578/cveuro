@@ -5,7 +5,7 @@ import StorageProvider from './components/providers/StorageProvider';
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  metadataBase: new URL('https://cveuro.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://cveuro.com'),
   title: {
     default: 'CV Builder - Créateur de CV Professionnel',
     template: '%s | CV Builder'
@@ -61,6 +61,7 @@ export default function RootLayout({ children }) {
         <meta name="application-name" content="CV Builder" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-tap-highlight" content="no" />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={inter.className} suppressHydrationWarning>
         <StorageProvider>
