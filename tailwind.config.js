@@ -9,8 +9,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        serif: ['Instrument Serif', 'Georgia', 'serif'],
-        sans: ['Geist', 'system-ui', 'sans-serif'],
+        serif: ['DM Serif Display', 'Georgia', 'serif'],
+        sans: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -57,17 +57,12 @@ module.exports = {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
-        // Custom theme colors - Midnight Sage
-        sage: {
-          DEFAULT: 'hsl(var(--sage))',
-          light: 'hsl(var(--sage-light))',
-          dark: 'hsl(var(--sage-dark))',
+        // GEDS Brand Colors
+        geds: {
+          cyan: 'hsl(var(--geds-cyan))',    // #00D7DD
+          blue: 'hsl(var(--geds-blue))',    // #1F84D3
+          green: 'hsl(var(--geds-green))',  // #02B58A
         },
-        gold: {
-          DEFAULT: 'hsl(var(--gold))',
-          light: 'hsl(var(--gold-light))',
-        },
-        cream: 'hsl(var(--cream))',
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',

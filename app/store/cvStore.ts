@@ -96,7 +96,16 @@ const defaultPersonalInfo: PersonalInfo = {
 
 const defaultFormData: CVFormData = {
   personalInfo: defaultPersonalInfo,
-  educations: [],
+  educations: [{
+    schoolName: '',
+    degree: '',
+    startDate: '',
+    endDate: '',
+    fieldOfStudy: '',
+    ongoing: false,
+    achievements: [],
+    customDegree: ''
+  }],
   workExperience: {
     hasWorkExperience: false,
     experiences: []

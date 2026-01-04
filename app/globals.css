@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+/* Polices modernes - Plus Jakarta Sans (corps) et DM Serif Display (titres) */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=DM+Serif+Display:ital@0;1&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -7,93 +7,87 @@
 
 @layer base {
   :root {
-    /* Midnight Sage Theme - Light Mode */
-    --background: 150 10% 98%;
-    --foreground: 160 20% 10%;
+    /* GEDS Theme - Cyan #00D7DD, Blue #1F84D3, Green #02B58A */
+    --background: 0 0% 100%;
+    --foreground: 210 25% 12%;
     
     --card: 0 0% 100%;
-    --card-foreground: 160 20% 10%;
+    --card-foreground: 210 25% 12%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 160 20% 10%;
+    --popover-foreground: 210 25% 12%;
     
-    --primary: 140 25% 35%;
+    --primary: 208 74% 47%; /* #1F84D3 Blue */
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 150 15% 95%;
-    --secondary-foreground: 160 20% 15%;
+    --secondary: 200 20% 96%;
+    --secondary-foreground: 210 25% 15%;
     
-    --muted: 150 10% 94%;
-    --muted-foreground: 160 10% 45%;
+    --muted: 200 15% 94%;
+    --muted-foreground: 210 15% 40%;
     
-    --accent: 35 60% 55%;
-    --accent-foreground: 35 80% 15%;
+    --accent: 161 98% 36%; /* #02B58A Green */
+    --accent-foreground: 0 0% 100%;
     
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 150 10% 88%;
-    --input: 150 10% 88%;
-    --ring: 140 25% 35%;
+    --border: 200 15% 88%;
+    --input: 200 15% 88%;
+    --ring: 208 74% 47%;
     
-    /* Custom Sage Theme Colors */
-    --sage: 140 25% 35%;
-    --sage-light: 140 30% 65%;
-    --sage-dark: 140 30% 25%;
-    --gold: 35 60% 55%;
-    --gold-light: 35 70% 70%;
-    --cream: 40 30% 96%;
+    /* GEDS Brand Colors */
+    --geds-cyan: 181 100% 43%; /* #00D7DD */
+    --geds-blue: 208 74% 47%;  /* #1F84D3 */
+    --geds-green: 161 98% 36%; /* #02B58A */
     
-    --chart-1: 140 60% 45%;
-    --chart-2: 35 70% 55%;
-    --chart-3: 200 65% 50%;
-    --chart-4: 280 55% 55%;
-    --chart-5: 15 75% 55%;
+    --chart-1: 208 74% 47%;
+    --chart-2: 161 98% 36%;
+    --chart-3: 181 100% 43%;
+    --chart-4: 280 55% 50%;
+    --chart-5: 15 75% 50%;
     
     --radius: 0.75rem;
   }
 
   .dark {
-    /* Midnight Sage Theme - Dark Mode */
-    --background: 160 20% 4%;
-    --foreground: 150 10% 95%;
+    /* GEDS Theme - Dark Mode */
+    --background: 210 30% 6%;
+    --foreground: 200 15% 95%;
     
-    --card: 160 18% 7%;
-    --card-foreground: 150 10% 95%;
+    --card: 210 25% 9%;
+    --card-foreground: 200 15% 95%;
     
-    --popover: 160 18% 7%;
-    --popover-foreground: 150 10% 95%;
+    --popover: 210 25% 9%;
+    --popover-foreground: 200 15% 95%;
     
-    --primary: 140 35% 55%;
-    --primary-foreground: 160 20% 4%;
+    --primary: 208 80% 55%;
+    --primary-foreground: 210 30% 5%;
     
-    --secondary: 160 15% 12%;
-    --secondary-foreground: 150 10% 90%;
+    --secondary: 210 20% 14%;
+    --secondary-foreground: 200 15% 92%;
     
-    --muted: 160 15% 15%;
-    --muted-foreground: 150 10% 60%;
+    --muted: 210 20% 16%;
+    --muted-foreground: 200 12% 60%;
     
-    --accent: 35 70% 55%;
-    --accent-foreground: 35 90% 10%;
+    --accent: 161 85% 45%;
+    --accent-foreground: 161 98% 8%;
     
-    --destructive: 0 70% 45%;
+    --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 160 15% 18%;
-    --input: 160 15% 18%;
-    --ring: 140 35% 55%;
+    --border: 210 20% 18%;
+    --input: 210 20% 18%;
+    --ring: 208 80% 55%;
     
-    /* Custom Sage Theme Colors - Dark */
-    --sage: 140 35% 55%;
-    --sage-light: 140 40% 70%;
-    --sage-dark: 140 30% 40%;
-    --gold: 35 70% 55%;
-    --gold-light: 35 80% 70%;
-    --cream: 40 15% 15%;
+    /* GEDS Brand Colors - Dark */
+    --geds-cyan: 181 90% 50%;
+    --geds-blue: 208 80% 55%;
+    --geds-green: 161 85% 45%;
     
-    --chart-1: 140 65% 50%;
-    --chart-2: 35 75% 60%;
-    --chart-3: 200 70% 55%;
+    --chart-1: 208 80% 55%;
+    --chart-2: 161 85% 50%;
+    --chart-3: 181 90% 50%;
     --chart-4: 280 60% 60%;
     --chart-5: 15 80% 60%;
   }
@@ -116,6 +110,7 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
     line-height: 1.6;
+    overflow-y: scroll !important;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -128,29 +123,137 @@
 }
 
 @layer components {
-  /* Glass effect for cards */
+  /* ===== GEDS BRAND UTILITIES ===== */
+  
+  /* GEDS Colors as classes */
+  .text-geds-cyan { color: hsl(var(--geds-cyan)); }
+  .text-geds-blue { color: hsl(var(--geds-blue)); }
+  .text-geds-green { color: hsl(var(--geds-green)); }
+  
+  .bg-geds-cyan { background-color: hsl(var(--geds-cyan)); }
+  .bg-geds-blue { background-color: hsl(var(--geds-blue)); }
+  .bg-geds-green { background-color: hsl(var(--geds-green)); }
+  
+  .border-geds-cyan { border-color: hsl(var(--geds-cyan)); }
+  .border-geds-blue { border-color: hsl(var(--geds-blue)); }
+  .border-geds-green { border-color: hsl(var(--geds-green)); }
+  
+  /* GEDS Background with opacity variants */
+  .bg-geds-cyan\/5 { background-color: hsl(var(--geds-cyan) / 0.05); }
+  .bg-geds-cyan\/10 { background-color: hsl(var(--geds-cyan) / 0.1); }
+  .bg-geds-cyan\/20 { background-color: hsl(var(--geds-cyan) / 0.2); }
+  .bg-geds-blue\/5 { background-color: hsl(var(--geds-blue) / 0.05); }
+  .bg-geds-blue\/10 { background-color: hsl(var(--geds-blue) / 0.1); }
+  .bg-geds-blue\/20 { background-color: hsl(var(--geds-blue) / 0.2); }
+  .bg-geds-green\/5 { background-color: hsl(var(--geds-green) / 0.05); }
+  .bg-geds-green\/10 { background-color: hsl(var(--geds-green) / 0.1); }
+  .bg-geds-green\/20 { background-color: hsl(var(--geds-green) / 0.2); }
+  
+  /* Border with opacity */
+  .border-geds-cyan\/20 { border-color: hsl(var(--geds-cyan) / 0.2); }
+  .border-geds-cyan\/50 { border-color: hsl(var(--geds-cyan) / 0.5); }
+  .border-geds-blue\/20 { border-color: hsl(var(--geds-blue) / 0.2); }
+  .border-geds-blue\/50 { border-color: hsl(var(--geds-blue) / 0.5); }
+  .border-geds-green\/20 { border-color: hsl(var(--geds-green) / 0.2); }
+  .border-geds-green\/50 { border-color: hsl(var(--geds-green) / 0.5); }
+  
+  /* GEDS Gradients */
+  .bg-gradient-geds {
+    background: linear-gradient(135deg, hsl(var(--geds-blue)), hsl(var(--geds-green)));
+  }
+  
+  .bg-gradient-geds-full {
+    background: linear-gradient(135deg, hsl(var(--geds-blue)), hsl(var(--geds-cyan)), hsl(var(--geds-green)));
+  }
+  
+  .bg-gradient-geds-dark {
+    background: linear-gradient(135deg, hsl(var(--geds-blue)), hsl(208 74% 35%));
+  }
+  
+  /* Text gradients */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, hsl(var(--geds-blue)), hsl(var(--geds-cyan)), hsl(var(--geds-green)));
+  }
+  
+  .text-gradient-blue-green {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, hsl(var(--geds-blue)), hsl(var(--geds-green)));
+  }
+  
+  .text-gradient-cyan-green {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, hsl(var(--geds-cyan)), hsl(var(--geds-green)));
+  }
+  
+  /* GEDS Divider line */
+  .divider-geds {
+    @apply w-20 h-1 rounded-full mx-auto;
+    background: linear-gradient(to right, hsl(var(--geds-blue)), hsl(var(--geds-cyan)), hsl(var(--geds-green)));
+  }
+  
+  /* GEDS Button styles */
+  .btn-geds-primary {
+    @apply bg-gradient-geds text-white font-semibold shadow-lg transition-all duration-300;
+    box-shadow: 0 4px 14px hsl(var(--geds-blue) / 0.25);
+  }
+  
+  .btn-geds-primary:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 6px 20px hsl(var(--geds-blue) / 0.3);
+  }
+  
+  .btn-geds-white {
+    @apply bg-white font-semibold shadow-xl transition-all duration-300;
+    color: hsl(var(--geds-blue));
+  }
+  
+  .btn-geds-white:hover {
+    @apply -translate-y-1;
+    background-color: hsl(var(--geds-cyan) / 0.1);
+  }
+  
+  /* ===== CARD STYLES ===== */
+  
+  /* Glass effect */
   .glass {
     @apply bg-card/80 backdrop-blur-md border border-border/50;
   }
-
-  /* Gradient text */
-  .text-gradient {
-    @apply bg-gradient-to-r from-sage to-gold bg-clip-text text-transparent;
+  
+  /* Feature card variants */
+  .feature-card-blue {
+    @apply border-2 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    border-color: hsl(var(--geds-blue) / 0.2);
   }
-
-  .text-gradient-gold {
-    @apply bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent;
+  .feature-card-blue:hover { border-color: hsl(var(--geds-blue) / 0.5); }
+  
+  .feature-card-green {
+    @apply border-2 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    border-color: hsl(var(--geds-green) / 0.2);
   }
-
+  .feature-card-green:hover { border-color: hsl(var(--geds-green) / 0.5); }
+  
+  .feature-card-cyan {
+    @apply border-2 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    border-color: hsl(var(--geds-cyan) / 0.2);
+  }
+  .feature-card-cyan:hover { border-color: hsl(var(--geds-cyan) / 0.5); }
+  
+  /* Stat card */
+  .stat-card {
+    @apply bg-white border border-gray-100 shadow-sm transition-all duration-300;
+  }
+  .stat-card:hover {
+    @apply scale-105 shadow-lg;
+    border-color: hsl(var(--geds-blue) / 0.3);
+  }
+  
+  /* ===== EFFECTS ===== */
+  
   /* Shimmer button effect */
   .shimmer {
     @apply relative overflow-hidden;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      hsl(var(--gold) / 0.15),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, hsl(var(--geds-cyan) / 0.15), transparent);
     background-size: 200% 100%;
     animation: shimmer 2s linear infinite;
   }
@@ -159,17 +262,11 @@
   .glow {
     @apply relative;
   }
-
   .glow::before {
     content: '';
     @apply absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300;
-    background: radial-gradient(
-      circle at center,
-      hsl(var(--primary) / 0.3) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(circle at center, hsl(var(--primary) / 0.3) 0%, transparent 70%);
   }
-
   .glow:hover::before {
     @apply opacity-100;
   }
@@ -178,7 +275,6 @@
   .noise {
     @apply relative;
   }
-
   .noise::after {
     content: '';
     @apply absolute inset-0 pointer-events-none opacity-[0.03];

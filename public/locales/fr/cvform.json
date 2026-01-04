@@ -6,6 +6,10 @@
     "confirm": "Confirmer",
     "delete": "Supprimer"
   },
+  "validation": {
+    "errorsFound": "Veuillez corriger les erreurs suivantes :",
+    "moreErrors": "autres erreurs"
+  },
   "steps": {
     "personalInfo": "Informations personnelles",
     "education": "Formation",

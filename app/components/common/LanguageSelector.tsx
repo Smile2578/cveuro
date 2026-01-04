@@ -30,8 +30,8 @@ export default function LanguageSelector() {
         className={cn(
           "gap-2 px-3",
           currentLocale === 'fr' 
-            ? "bg-sage hover:bg-sage-dark text-white" 
-            : "border-sage/30 text-sage hover:bg-sage/10 hover:text-sage-dark"
+            ? "bg-geds-blue hover:bg-geds-blue/90 text-white" 
+            : "border-geds-blue/30 text-geds-blue hover:bg-geds-blue/10"
         )}
       >
         <Image src="/flags/france.png" alt="French flag" width={16} height={16} className="rounded-sm" />
@@ -44,8 +44,8 @@ export default function LanguageSelector() {
         className={cn(
           "gap-2 px-3",
           currentLocale === 'en' 
-            ? "bg-sage hover:bg-sage-dark text-white" 
-            : "border-sage/30 text-sage hover:bg-sage/10 hover:text-sage-dark"
+            ? "bg-geds-blue hover:bg-geds-blue/90 text-white" 
+            : "border-geds-blue/30 text-geds-blue hover:bg-geds-blue/10"
         )}
       >
         <Image src="/flags/uk.png" alt="British flag" width={16} height={16} className="rounded-sm" />
@@ -54,4 +54,3 @@ export default function LanguageSelector() {
     </div>
   );
 }
-

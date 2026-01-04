@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 import createNextIntlPlugin from 'next-intl/plugin';
 
-const withNextIntl = createNextIntlPlugin('./app/i18n.js');
+const withNextIntl = createNextIntlPlugin('./app/i18n.ts');
 
 const config = {
   // Réduire les logs en production

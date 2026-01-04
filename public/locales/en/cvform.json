@@ -1,4 +1,8 @@
 {
+  "validation": {
+    "errorsFound": "Please fix the following errors:",
+    "moreErrors": "more errors"
+  },
   "steps": {
     "personalInfo": "Personal Information",
     "education": "Education",
