@@ -28,6 +28,8 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useCVStore } from '@/app/store/cvStore';
 import { cn } from '@/lib/utils';
+import NavBar from './common/NavBar';
+import Footer from './common/Footer';
 
 // Animation variants
 const fadeInUp = {
@@ -153,6 +155,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background noise">
+      <NavBar />
+      
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Background gradient */}
@@ -441,6 +445,8 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 }
