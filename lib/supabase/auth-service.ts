@@ -137,7 +137,7 @@ async function migrateCVsToUser(guestId: string, userId: string): Promise<void> 
   
   const { error } = await supabase
     .from('cvs')
-    .update({ user_id: userId })
+    .update({ user_id: userId } as Record<string, unknown>)
     .eq('user_id', guestId);
   
   if (error) {

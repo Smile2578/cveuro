@@ -10,7 +10,51 @@ import type {
 } from '@/types/cv.types';
 
 // ============================================================================
-// TYPES
+// DATABASE ROW TYPES (matching Supabase schema)
+// ============================================================================
+
+interface CVRow {
+  id: string;
+  user_id: string;
+  personal_info: PersonalInfo;
+  has_work_exp: boolean;
+  skills: Skill[];
+  languages: Language[];
+  hobbies: string[];
+  template: string;
+  created_at: string;
+  updated_at: string;
+}
+
+interface EducationRow {
+  id: string;
+  cv_id: string;
+  school_name: string;
+  degree: string;
+  custom_degree: string | null;
+  field_of_study: string;
+  start_date: string;
+  end_date: string | null;
+  ongoing: boolean;
+  achievements: string[];
+  order_index: number;
+}
+
+interface WorkExperienceRow {
+  id: string;
+  cv_id: string;
+  company_name: string;
+  position: string;
+  location: string | null;
+  start_date: string;
+  end_date: string | null;
+  ongoing: boolean;
+  responsibilities: string[];
+  order_index: number;
+}
+
+// ============================================================================
+// INPUT TYPES
 // ============================================================================
 
 export interface CreateCVData {
@@ -52,17 +96,19 @@ export async function createCV(data: CreateCVData): Promise<CV> {
     .single();
 
   if (cvError) throw new Error(`Failed to create CV: ${cvError.message}`);
+  
+  const cvRow = cv as CVRow;
 
   // 2. Create education entries
   if (data.education.length > 0) {
     const educationInserts = data.education.map((edu, index) => ({
-      cv_id: cv.id,
+      cv_id: cvRow.id,
       school_name: edu.schoolName,
       degree: edu.degree,
-      custom_degree: edu.customDegree,
+      custom_degree: edu.customDegree ?? null,
       field_of_study: edu.fieldOfStudy,
       start_date: edu.startDate,
-      end_date: edu.endDate,
+      end_date: edu.endDate ?? null,
       ongoing: edu.ongoing,
       achievements: edu.achievements || [],
       order_index: index,
@@ -78,13 +124,13 @@ export async function createCV(data: CreateCVData): Promise<CV> {
   // 3. Create work experience entries
   if (data.workExperience.length > 0) {
     const workInserts = data.workExperience.map((work, index) => ({
-      cv_id: cv.id,
+      cv_id: cvRow.id,
       company_name: work.companyName,
       position: work.position,
-      location: work.location,
+      location: work.location ?? null,
       start_date: work.startDate,
-      end_date: work.endDate,
-      ongoing: work.ongoing,
+      end_date: work.endDate ?? null,
+      ongoing: work.ongoing ?? false,
       responsibilities: work.responsibilities || [],
       order_index: index,
     }));
@@ -97,7 +143,7 @@ export async function createCV(data: CreateCVData): Promise<CV> {
   }
 
   // 4. Fetch complete CV with relations
-  return fetchCV(cv.id);
+  return fetchCV(cvRow.id);
 }
 
 export async function fetchCV(cvId: string): Promise<CV> {
@@ -111,6 +157,8 @@ export async function fetchCV(cvId: string): Promise<CV> {
     .single();
 
   if (cvError) throw new Error(`Failed to fetch CV: ${cvError.message}`);
+  
+  const cvRow = cv as CVRow;
 
   const { data: educations } = await supabase
     .from('educations')
@@ -126,18 +174,18 @@ export async function fetchCV(cvId: string): Promise<CV> {
 
   // Transform database format to app format
   return {
-    id: cv.id,
-    userId: cv.user_id,
-    personalInfo: cv.personal_info as PersonalInfo,
-    education: (educations || []).map(transformEducation),
-    hasWorkExp: cv.has_work_exp,
-    workExperience: (workExperiences || []).map(transformWorkExperience),
-    skills: cv.skills as Skill[],
-    languages: cv.languages as Language[],
-    hobbies: cv.hobbies as string[],
-    template: cv.template as CVTemplate,
-    createdAt: cv.created_at,
-    updatedAt: cv.updated_at,
+    id: cvRow.id,
+    userId: cvRow.user_id,
+    personalInfo: cvRow.personal_info,
+    education: ((educations || []) as EducationRow[]).map(transformEducation),
+    hasWorkExp: cvRow.has_work_exp,
+    workExperience: ((workExperiences || []) as WorkExperienceRow[]).map(transformWorkExperience),
+    skills: cvRow.skills,
+    languages: cvRow.languages,
+    hobbies: cvRow.hobbies,
+    template: cvRow.template as CVTemplate,
+    createdAt: cvRow.created_at,
+    updatedAt: cvRow.updated_at,
   };
 }
 
@@ -156,8 +204,10 @@ export async function fetchCVByUserId(userId: string): Promise<CV | null> {
     if (error.code === 'PGRST116') return null; // No rows returned
     throw new Error(`Failed to fetch CV: ${error.message}`);
   }
+  
+  const cvRow = cv as CVRow;
 
-  return fetchCV(cv.id);
+  return fetchCV(cvRow.id);
 }
 
 export async function updateCV(data: UpdateCVData): Promise<CV> {
@@ -165,7 +215,16 @@ export async function updateCV(data: UpdateCVData): Promise<CV> {
   const { id, ...updates } = data;
 
   // 1. Update main CV record
-  const cvUpdate: Record<string, unknown> = {};
+  type CVUpdate = {
+    personal_info?: PersonalInfo;
+    has_work_exp?: boolean;
+    skills?: Skill[];
+    languages?: Language[];
+    hobbies?: string[];
+    template?: CVTemplate;
+  };
+  
+  const cvUpdate: CVUpdate = {};
   if (updates.personalInfo) cvUpdate.personal_info = updates.personalInfo;
   if (updates.hasWorkExp !== undefined) cvUpdate.has_work_exp = updates.hasWorkExp;
   if (updates.skills) cvUpdate.skills = updates.skills;
@@ -193,10 +252,10 @@ export async function updateCV(data: UpdateCVData): Promise<CV> {
         cv_id: id,
         school_name: edu.schoolName,
         degree: edu.degree,
-        custom_degree: edu.customDegree,
+        custom_degree: edu.customDegree ?? null,
         field_of_study: edu.fieldOfStudy,
         start_date: edu.startDate,
-        end_date: edu.endDate,
+        end_date: edu.endDate ?? null,
         ongoing: edu.ongoing,
         achievements: edu.achievements || [],
         order_index: index,
@@ -218,10 +277,10 @@ export async function updateCV(data: UpdateCVData): Promise<CV> {
         cv_id: id,
         company_name: work.companyName,
         position: work.position,
-        location: work.location,
+        location: work.location ?? null,
         start_date: work.startDate,
-        end_date: work.endDate,
-        ongoing: work.ongoing,
+        end_date: work.endDate ?? null,
+        ongoing: work.ongoing ?? false,
         responsibilities: work.responsibilities || [],
         order_index: index,
       }));
@@ -249,29 +308,6 @@ export async function deleteCV(cvId: string): Promise<void> {
 // HELPERS
 // ============================================================================
 
-interface EducationRow {
-  id: string;
-  school_name: string;
-  degree: string;
-  custom_degree: string | null;
-  field_of_study: string;
-  start_date: string;
-  end_date: string | null;
-  ongoing: boolean;
-  achievements: string[];
-}
-
-interface WorkExperienceRow {
-  id: string;
-  company_name: string;
-  position: string;
-  location: string | null;
-  start_date: string;
-  end_date: string | null;
-  ongoing: boolean;
-  responsibilities: string[];
-}
-
 function transformEducation(row: EducationRow): Education {
   return {
     id: row.id,
@@ -298,4 +334,3 @@ function transformWorkExperience(row: WorkExperienceRow): WorkExperience {
     responsibilities: row.responsibilities,
   };
 }
-
