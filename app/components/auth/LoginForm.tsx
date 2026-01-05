@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
@@ -20,6 +20,15 @@ export default function LoginForm({ locale }: LoginFormProps) {
   const t = useTranslations('auth');
   const searchParams = useSearchParams();
   const errorFromUrl = searchParams.get('error');
+  const [guestId, setGuestId] = useState<string>('');
+  
+  // Get guest ID from localStorage to migrate CVs after login
+  useEffect(() => {
+    const storedGuestId = localStorage.getItem('guestId');
+    if (storedGuestId) {
+      setGuestId(storedGuestId);
+    }
+  }, []);
   
   const [state, formAction, isPending] = useActionState<AuthFormState, FormData>(
     login,
@@ -72,6 +81,7 @@ export default function LoginForm({ locale }: LoginFormProps) {
             {/* Login Form */}
             <form action={formAction} className="space-y-5">
               <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="guestId" value={guestId} />
 
               {/* Email */}
               <div className="space-y-2">

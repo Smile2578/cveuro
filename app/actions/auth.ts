@@ -68,7 +68,7 @@ export async function login(
   const supabase = await createClient();
   const { email, password } = validatedFields.data;
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -79,11 +79,40 @@ export async function login(
     };
   }
 
+  // Migrate guest CVs to authenticated user
+  const guestId = formData.get('guestId') as string;
+  if (guestId && data.user) {
+    await migrateCVsToUser(supabase, guestId, data.user.id);
+  }
+
   revalidatePath('/', 'layout');
   
   // Get locale from form data
   const locale = formData.get('locale') as string || 'en';
-  redirect(`/${locale}/cvgen`);
+  redirect(`/${locale}/dashboard`);
+}
+
+/**
+ * Migrate CVs from guest to authenticated user
+ */
+async function migrateCVsToUser(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  guestId: string,
+  userId: string
+) {
+  try {
+    // Update all CVs with the guest ID to use the authenticated user ID
+    const { error } = await supabase
+      .from('cvs')
+      .update({ user_id: userId })
+      .eq('user_id', guestId);
+    
+    if (error) {
+      console.error('Error migrating CVs:', error);
+    }
+  } catch (err) {
+    console.error('Failed to migrate CVs:', err);
+  }
 }
 
 /**

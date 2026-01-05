@@ -82,6 +82,19 @@ export default function DashboardPage() {
       setUser(user);
       
       if (user) {
+        // Check if there's a guest ID to migrate
+        const guestId = localStorage.getItem('guestId');
+        if (guestId) {
+          // Migrate guest CVs to authenticated user
+          await supabase
+            .from('cvs')
+            .update({ user_id: user.id })
+            .eq('user_id', guestId);
+          
+          // Clear the guest ID after migration
+          localStorage.removeItem('guestId');
+        }
+        
         // Fetch CVs for this user
         const { data: cvsData, error } = await supabase
           .from('cvs')
