@@ -17,6 +17,8 @@ import ProgressBar from './ProgressBar';
 import { useFormProgress } from '@/app/hooks/useFormProgress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertCircle } from 'lucide-react';
+import AccountBenefitsBanner from '../auth/AccountBenefitsBanner';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface StepContentProps {
   step: number;
@@ -71,6 +73,11 @@ export default function Form() {
   const formStateRef = useRef<Record<string, unknown>>({});
   const [validationErrors, setValidationErrors] = useState<Record<string, ValidationError> | null>(null);
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
+  const [showAccountModal, setShowAccountModal] = useState(false);
+  const [pendingRedirect, setPendingRedirect] = useState<string | null>(null);
+  
+  // Get authentication state
+  const { isGuest, isAuthenticated } = useAuth();
 
   const { cvSchema, personalInfoSchema } = createValidators(tValidation);
 
@@ -340,7 +347,17 @@ export default function Form() {
         store.setUserId(result.data.userId);
       }
 
-      router.push(`/cvedit?userId=${result.data?.userId || userId}`);
+      const redirectUrl = `/cvedit?userId=${result.data?.userId || userId}`;
+      
+      // Use auth state to check if guest (isGuest from useAuth hook)
+      if (isGuest) {
+        // Show account benefits modal for guest users
+        setPendingRedirect(redirectUrl);
+        setShowAccountModal(true);
+      } else {
+        // Authenticated users go directly to edit
+        router.push(redirectUrl);
+      }
       
     } catch (error) {
       // Log submission errors for admin tracking
@@ -363,14 +380,30 @@ export default function Form() {
     } finally {
       store.setIsSubmitting(false);
     }
-  }, [methods, store, router, cvSchema, currentStep]);
+  }, [methods, store, router, cvSchema, currentStep, isGuest]);
 
   const MemoizedStepContent = useMemo(() => (
     <StepContent step={currentStep} onSubmit={handleSubmit} />
   ), [currentStep, handleSubmit]);
 
+  // Handler for when account modal is dismissed
+  const handleAccountModalDismiss = useCallback(() => {
+    setShowAccountModal(false);
+    if (pendingRedirect) {
+      router.push(pendingRedirect);
+    }
+  }, [pendingRedirect, router]);
+
   return (
     <FormProvider {...methods}>
+      {/* Account benefits modal for guest users */}
+      {showAccountModal && (
+        <AccountBenefitsBanner 
+          variant="modal" 
+          onDismiss={handleAccountModalDismiss}
+        />
+      )}
+
       <form onSubmit={(e) => {
         e.preventDefault();
         if (currentStep === 3) {

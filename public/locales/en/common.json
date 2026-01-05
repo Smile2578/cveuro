@@ -5,7 +5,12 @@
     "home": "Home",
     "cvgen": "Create CV",
     "cvedit": "Edit CV",
-    "about": "About"
+    "about": "About",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "settings": "Settings",
+    "profile": "My Profile"
   },
   "landing": {
     "tag": "European CV Builder",

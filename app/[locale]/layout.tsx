@@ -53,10 +53,12 @@ export function generateStaticParams() {
 }
 
 type Messages = {
-  common: Record<string, string>;
-  cvform: Record<string, string>;
-  validation: Record<string, string>;
-  cvedit: Record<string, string>;
+  common: Record<string, unknown>;
+  cvform: Record<string, unknown>;
+  validation: Record<string, unknown>;
+  welcome: Record<string, unknown>;
+  cvedit: Record<string, unknown>;
+  auth: Record<string, unknown>;
 };
 
 async function getMessages(locale: string): Promise<Messages | null> {
@@ -65,7 +67,9 @@ async function getMessages(locale: string): Promise<Messages | null> {
       common: (await import(`../../public/locales/${locale}/common.json`)).default,
       cvform: (await import(`../../public/locales/${locale}/cvform.json`)).default,
       validation: (await import(`../../public/locales/${locale}/validation.json`)).default,
-      cvedit: (await import(`../../public/locales/${locale}/cvedit.json`)).default
+      welcome: (await import(`../../public/locales/${locale}/welcome.json`)).default,
+      cvedit: (await import(`../../public/locales/${locale}/cvedit.json`)).default,
+      auth: (await import(`../../public/locales/${locale}/auth.json`)).default
     };
     return messages;
   } catch (error) {
@@ -85,7 +89,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const settings = getSettings();
 
   return (
-    <html lang={locale} className={`${urbanist.variable} ${playfair.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${urbanist.variable} ${playfair.variable}`}>
       <body className="font-sans antialiased">
         <ClientLayout messages={messages!} locale={locale} settings={settings}>
           {children}

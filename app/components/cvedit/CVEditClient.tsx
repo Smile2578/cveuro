@@ -6,6 +6,8 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import AccountBenefitsBanner from '../auth/AccountBenefitsBanner';
+import { useAuth } from '@/app/hooks/useAuth';
 
 // Import dynamique des composants
 const NavBar = dynamic(() => import('../common/NavBar'), {
@@ -80,9 +82,23 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
   const router = useRouter();
   const t = useTranslations('cvedit');
   const fetchAttemptedRef = useRef(false);
+  
+  // Get authentication state from the auth hook
+  const { isGuest } = useAuth();
+
+  // Show account benefits banner for guest users after 3 seconds
+  useEffect(() => {
+    if (isGuest && !isLoading && cvData) {
+      const timer = setTimeout(() => {
+        setShowBanner(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isGuest, isLoading, cvData]);
 
   useEffect(() => {
     // Prevent double fetch in React 18 Strict Mode
@@ -198,6 +214,16 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
       <NavBar />
       <main className="flex-1 container mx-auto px-4 py-6 mt-16">
+        {/* Account benefits banner for guest users */}
+        {isGuest && showBanner && (
+          <div className="mb-6">
+            <AccountBenefitsBanner 
+              variant="inline" 
+              onDismiss={() => setShowBanner(false)}
+            />
+          </div>
+        )}
+        
         <AnimatePresence mode="wait">
           <motion.div
             key="cv-editor"

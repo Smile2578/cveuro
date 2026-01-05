@@ -102,7 +102,6 @@
   }
 
   html {
-    scroll-behavior: smooth;
     overflow-x: hidden;
     /* Prevent double scrollbar */
     height: 100%;
@@ -113,7 +112,37 @@
     line-height: 1.6;
     min-height: 100%;
     /* Force scrollbar to always be visible to prevent layout shift */
-    overflow-y: scroll;
+    overflow-y: scroll !important;
+    /* Prevent Radix/react-remove-scroll from adding padding */
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Prevent Radix UI from hiding scrollbar or adding padding */
+  html[data-scroll-locked], 
+  body[data-scroll-locked],
+  html[style*="overflow"],
+  body[style*="overflow"],
+  body[style*="padding-right"] {
+    overflow-y: scroll !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Override any inline styles added by react-remove-scroll */
+  body[style] {
+    padding-right: 0 !important;
+    overflow: visible !important;
+  }
+  
+  /* Prevent fixed elements from shifting - used by react-remove-scroll gap mode */
+  [data-radix-scroll-area-viewport],
+  .fixed,
+  header,
+  nav,
+  [class*="fixed"] {
+    padding-right: 0 !important;
+    margin-right: 0 !important;
   }
 
   h1, h2, h3, h4, h5, h6 {

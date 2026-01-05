@@ -17,7 +17,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
     cvform: (await import(`../../public/locales/${locale}/cvform.json`)).default,
     validation: (await import(`../../public/locales/${locale}/validation.json`)).default,
     welcome: (await import(`../../public/locales/${locale}/welcome.json`)).default,
-    cvedit: (await import(`../../public/locales/${locale}/cvedit.json`)).default
+    cvedit: (await import(`../../public/locales/${locale}/cvedit.json`)).default,
+    auth: (await import(`../../public/locales/${locale}/auth.json`)).default
   };
 
   const settings = getSettings();

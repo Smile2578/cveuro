@@ -14,7 +14,7 @@ interface Settings {
 
 interface ClientLayoutProps {
   children: ReactNode;
-  messages: Record<string, Record<string, string>>;
+  messages: Record<string, unknown>;
   locale: string;
   settings: Settings;
 }
@@ -54,7 +54,7 @@ export default function ClientLayout({
   return (
     <NextIntlClientProvider 
       locale={locale} 
-      messages={messages}
+      messages={messages as Record<string, unknown>}
       {...memoizedSettings}
     >
       <QueryProvider>

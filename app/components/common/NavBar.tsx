@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useCallback, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
 import LanguageSelector from './LanguageSelector';
+import UserMenu from '../auth/UserMenu';
 
 // External store for scroll state (no useEffect!)
 function subscribeToScroll(callback: () => void) {
@@ -22,9 +24,12 @@ function getServerSnapshot() {
 
 interface NavBarProps {
   show?: boolean;
+  showAuth?: boolean;
 }
 
-export default function NavBar({ show = true }: NavBarProps) {
+export default function NavBar({ show = true, showAuth = true }: NavBarProps) {
+  const locale = useLocale();
+  
   // Use useSyncExternalStore instead of useEffect for scroll
   const scrollY = useSyncExternalStore(
     subscribeToScroll,
@@ -51,7 +56,7 @@ export default function NavBar({ show = true }: NavBarProps) {
         <nav className="flex items-center justify-between h-20">
           {/* Logo */}
           <Link 
-            href="/" 
+            href={`/${locale}`} 
             className="relative flex items-center hover:opacity-80 transition-opacity"
           >
             <div className="relative w-24 h-16">
@@ -66,8 +71,9 @@ export default function NavBar({ show = true }: NavBarProps) {
             </div>
           </Link>
 
-          {/* Right side - Language Selector */}
-          <div className="flex items-center gap-4">
+          {/* Right side - User Menu & Language Selector */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            {showAuth && <UserMenu locale={locale} />}
             <LanguageSelector />
           </div>
         </nav>

@@ -5,7 +5,12 @@
     "home": "Accueil",
     "cvgen": "Créer un CV",
     "cvedit": "Éditer un CV",
-    "about": "À propos"
+    "about": "À propos",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "settings": "Paramètres",
+    "profile": "Mon profil"
   },
   "landing": {
     "tag": "Créateur de CV Européen",
