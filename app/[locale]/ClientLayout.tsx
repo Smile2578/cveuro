@@ -5,12 +5,7 @@
 import { memo, useMemo, ReactNode } from 'react';
 import { NextIntlClientProvider } from 'next-intl';
 import { QueryProvider } from '../providers/QueryProvider';
-
-interface Settings {
-  timeZone: string;
-  now: Date;
-  formats: Record<string, unknown>;
-}
+import type { Settings } from '../i18n/settings';
 
 interface ClientLayoutProps {
   children: ReactNode;
