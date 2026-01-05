@@ -42,6 +42,7 @@ export default function PersonalInfoStepper({ children }: PersonalInfoStepperPro
   const [, setValidationAttempted] = useState(false);
 
   const validateCurrentStep = async () => {
+    if (currentSubStep === null) return false;
     const currentStepFields = STEP_FIELDS[currentSubStep] || [];
     
     if (!Array.isArray(currentStepFields)) {
@@ -53,10 +54,14 @@ export default function PersonalInfoStepper({ children }: PersonalInfoStepperPro
     const fieldsToValidate = currentStepFields.map(field => `personalInfo.${field}`);
     const result = await trigger(fieldsToValidate, { shouldFocus: true });
     
-    if (!result) {
+    if (!result && errors?.personalInfo) {
+      // Convert FieldError to string message
+      const errorMessage = typeof errors.personalInfo === 'object' && 'message' in errors.personalInfo
+        ? String(errors.personalInfo.message)
+        : 'Erreur de validation';
       store.setFormErrors({
         ...store.formErrors,
-        personalInfo: errors?.personalInfo
+        personalInfo: errorMessage
       });
     }
     

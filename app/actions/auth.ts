@@ -131,7 +131,7 @@ export async function register(
 
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors as AuthFormState['errors'],
+      errors: validatedFields.error.flatten().fieldErrors as NonNullable<AuthFormState>['errors'],
     };
   }
 

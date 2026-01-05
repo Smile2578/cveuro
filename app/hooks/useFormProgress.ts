@@ -7,7 +7,7 @@ import { useCVStore } from '@/app/store/cvStore';
 export interface FormProgressInfo {
   // Step information
   currentStep: number;
-  currentSubStep: number;
+  currentSubStep: number | null;
   totalSteps: number;
   totalSubSteps: number;
   isLastStep: boolean;

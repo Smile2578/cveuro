@@ -99,7 +99,7 @@ export default function CombinedForm({ onSubmit }: CombinedFormProps) {
       if (languages.length === 0) {
         const errorMessage = t('languages.errors.required');
         store.setFormErrors({
-          languages: { message: errorMessage }
+          languages: errorMessage
         });
         trigger('languages');
         return false;

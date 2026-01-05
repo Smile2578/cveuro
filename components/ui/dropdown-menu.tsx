@@ -7,13 +7,9 @@ import { Check, ChevronRight, Circle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Wrapper to prevent layout shift (modal={false} prevents scroll lock)
-const DropdownMenu = React.forwardRef<
-  React.ElementRef<typeof DropdownMenuPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>
->(({ modal = false, ...props }, ref) => (
+const DropdownMenu = ({ modal = false, ...props }: React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Root>) => (
   <DropdownMenuPrimitive.Root modal={modal} {...props} />
-))
-DropdownMenu.displayName = "DropdownMenu"
+)
 
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 

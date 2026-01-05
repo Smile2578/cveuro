@@ -28,9 +28,10 @@ interface CVData {
     sex?: string;
     dateofBirth?: string;
     placeofBirth?: string;
-    nationality?: { code: string; label: string }[] | string;
+    nationality?: { code: string; label: string }[];
     linkedIn?: string;
     personalWebsite?: string;
+    [key: string]: unknown;
   };
   education?: Array<{
     schoolName: string;
@@ -62,6 +63,7 @@ interface CVData {
     testScore?: string;
   }>;
   hobbies?: string[];
+  [key: string]: unknown;
 }
 
 interface CVInfosProps {

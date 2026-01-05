@@ -38,6 +38,7 @@ interface CVData {
     nationality?: { code: string; label: string }[];
     linkedIn?: string;
     personalWebsite?: string;
+    [key: string]: unknown;
   };
   education?: Array<{
     schoolName: string;
@@ -69,6 +70,7 @@ interface CVData {
     testScore?: string;
   }>;
   hobbies?: string[];
+  [key: string]: unknown;
 }
 
 interface CVEditClientProps {

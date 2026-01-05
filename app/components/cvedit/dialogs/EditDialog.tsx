@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { createEditValidators } from '@/app/utils/editValidators';
+import { createEditValidators, type SectionType } from '@/app/utils/editValidators';
 
 // Import des formulaires de CVGen
 import IdentityForm from '../../cvgen/personal-info/IdentityForm';
@@ -128,8 +128,8 @@ export default function EditDialog({
   };
 
   const methods = useForm({
-    resolver: section ? zodResolver(createPartialSchema(section)) : undefined,
-    defaultValues: restructureData(data),
+    resolver: section ? zodResolver(createPartialSchema(section as SectionType)) : undefined,
+    defaultValues: restructureData(data) as Record<string, unknown>,
     mode: 'onBlur',
     criteriaMode: 'all'
   });
@@ -192,7 +192,7 @@ export default function EditDialog({
       }
       
       // Valider le formulaire complet
-      const validationSchema = createPartialSchema(section);
+      const validationSchema = createPartialSchema(section as SectionType);
       const validationResult = await validationSchema.safeParseAsync(dataToValidate);
 
       if (!validationResult.success) {

@@ -110,12 +110,10 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 15,
-    // @ts-expect-error - react-pdf supports these properties
     breakInside: 'avoid',
     pageBreakInside: 'avoid',
   },
   sectionContent: {
-    // @ts-expect-error - react-pdf supports these properties
     breakInside: 'avoid',
     pageBreakInside: 'avoid',
   },
@@ -187,7 +185,6 @@ const styles = StyleSheet.create({
   },
   experienceItem: {
     marginBottom: 12,
-    // @ts-expect-error - react-pdf supports these properties
     breakInside: 'avoid',
     pageBreakInside: 'avoid',
   },

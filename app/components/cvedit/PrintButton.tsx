@@ -62,9 +62,7 @@ export default function PrintButton({ data, locale, onError }: PrintButtonProps)
         );
   
         // Générer le PDF
-        const blob = await pdf(doc, {
-          fontLoader: () => new Promise(resolve => setTimeout(resolve, 1000))
-        }).toBlob();
+        const blob = await pdf(doc).toBlob();
         
         const url = URL.createObjectURL(blob);
         

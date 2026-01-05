@@ -6,13 +6,9 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 import { cn } from "@/lib/utils"
 
 // Wrapper to prevent layout shift (modal={false} prevents scroll lock)
-const Popover = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root>
->(({ modal = false, ...props }, ref) => (
+const Popover = ({ modal = false, ...props }: React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Root>) => (
   <PopoverPrimitive.Root modal={modal} {...props} />
-))
-Popover.displayName = "Popover"
+)
 
 const PopoverTrigger = PopoverPrimitive.Trigger
 

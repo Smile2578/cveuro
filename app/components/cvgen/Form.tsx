@@ -161,7 +161,7 @@ export default function Form() {
     try {
       setValidationErrors(null);
       store.setIsSubmitting(true);
-      store.setFormErrors(null);
+      store.clearFormErrors();
       
       const getAllSourcesData = () => {
         let localData: Record<string, unknown> = {};
@@ -198,11 +198,11 @@ export default function Form() {
             ?? (storeData.workExperience as { hasWorkExperience?: boolean })?.hasWorkExperience 
             ?? (localData.workExperience as { hasWorkExperience?: boolean })?.hasWorkExperience 
             ?? false,
-          experiences: (formData.workExperience as { experiences?: unknown[] })?.experiences?.length > 0 
+          experiences: ((formData.workExperience as { experiences?: unknown[] } | undefined)?.experiences?.length ?? 0) > 0 
             ? (formData.workExperience as { experiences: unknown[] }).experiences
-            : (storeData.workExperience as { experiences?: unknown[] })?.experiences?.length > 0
+            : ((storeData.workExperience as { experiences?: unknown[] } | undefined)?.experiences?.length ?? 0) > 0
               ? (storeData.workExperience as { experiences: unknown[] }).experiences
-              : (localData.workExperience as { experiences?: unknown[] })?.experiences || []
+              : (localData.workExperience as { experiences?: unknown[] } | undefined)?.experiences ?? []
         },
         skills: (formData.skills as unknown[])?.length > 0 
           ? formData.skills 
@@ -296,7 +296,14 @@ export default function Form() {
 
         setValidationErrors(fieldErrors);
         setErrorMessages(messages);
-        store.setFormErrors(fieldErrors);
+        // Convert ValidationError objects to strings for the store
+        const stringErrors: Record<string, string> = {};
+        for (const [key, value] of Object.entries(fieldErrors)) {
+          if (typeof value === 'object' && value !== null && 'message' in value) {
+            stringErrors[key] = (value as { message: string }).message;
+          }
+        }
+        store.setFormErrors(stringErrors);
         return;
       }
 
@@ -371,12 +378,13 @@ export default function Form() {
         }
       );
 
+      const errorText = error instanceof Error ? error.message : 'Une erreur est survenue lors de la soumission';
       const errorMessage = {
-        submit: { message: error instanceof Error ? error.message : 'Une erreur est survenue lors de la soumission' }
+        submit: { message: errorText }
       };
       setValidationErrors(errorMessage);
-      setErrorMessages([errorMessage.submit.message]);
-      store.setFormErrors(errorMessage);
+      setErrorMessages([errorText]);
+      store.setFormErrors({ submit: errorText });
     } finally {
       store.setIsSubmitting(false);
     }
