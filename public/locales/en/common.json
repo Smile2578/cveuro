@@ -64,6 +64,7 @@
     "completion": "Progress: {percentage}%",
     "previous": "Previous",
     "next": "Next",
+    "clickToEdit": "Click to edit",
     "steps": {
       "personalInfo": "Profile",
       "education": "Education",

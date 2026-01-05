@@ -1,7 +1,7 @@
 // app/hooks/useFormProgress.ts
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useCVStore } from '@/app/store/cvStore';
 
 export interface FormProgressInfo {
@@ -24,6 +24,7 @@ export interface FormProgressInfo {
   // Navigation actions
   goNext: () => void;
   goPrevious: () => void;
+  goToStep: (step: number) => void;
   
   // Helpers
   isMainStep: boolean;
@@ -50,6 +51,19 @@ export const useFormProgress = (): FormProgressInfo => {
   const canGoNext = store.canNavigateNext();
   const canGoPrevious = store.canNavigatePrevious();
 
+  // Direct navigation to a specific step
+  const goToStep = useCallback((step: number) => {
+    if (step >= 0 && step < totalSteps) {
+      store.setActiveStep(step);
+      // Reset sub-steps when jumping to a new main step
+      if (step === 0) {
+        store.setPersonalInfoStep(0);
+      } else if (step === 3) {
+        store.setCombinedFormStep(0);
+      }
+    }
+  }, [store, totalSteps]);
+
   const stepInfo = useMemo<FormProgressInfo>(() => ({
     // Step information
     currentStep,
@@ -70,6 +84,7 @@ export const useFormProgress = (): FormProgressInfo => {
     // Navigation actions
     goNext: store.navigateNext,
     goPrevious: store.navigatePrevious,
+    goToStep,
     
     // Helpers
     isMainStep: currentSubStep === null || currentSubStep === 0,
@@ -91,7 +106,8 @@ export const useFormProgress = (): FormProgressInfo => {
     store.isSubmitting,
     store.formErrors,
     store.navigateNext,
-    store.navigatePrevious
+    store.navigatePrevious,
+    goToStep
   ]);
 
   return stepInfo;

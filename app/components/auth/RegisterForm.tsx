@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import OAuthButtons from './OAuthButtons';
 
 interface RegisterFormProps {
   locale: string;
@@ -105,19 +104,6 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
                 <p className="text-sm text-red-700">{state.message}</p>
               </div>
             )}
-
-            {/* OAuth Buttons */}
-            <OAuthButtons locale={locale} />
-
-            {/* Divider */}
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">{t('login.or')}</span>
-              </div>
-            </div>
 
             {/* Register Form */}
             <form action={formAction} className="space-y-5">
