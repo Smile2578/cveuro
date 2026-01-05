@@ -124,9 +124,9 @@ export default function CombinedForm({ onSubmit }: CombinedFormProps) {
       onSubmit={onSubmit}
       showReset={true}
     >
-      <div className="w-full p-4 sm:p-6 rounded-xl bg-white">
+      <div className="w-full px-2 sm:px-4 rounded-xl bg-white">
         {/* Step indicator */}
-        <div className="flex justify-center gap-2 mb-6">
+        <div className="flex justify-center gap-2 mb-4">
           {steps.map((step, index) => (
             <div
               key={index}

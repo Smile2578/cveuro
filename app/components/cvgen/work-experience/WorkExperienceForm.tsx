@@ -9,7 +9,8 @@ import {
   Plus, 
   Trash2, 
   ChevronDown, 
-  ChevronUp
+  ChevronUp,
+  AlertCircle
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -183,6 +184,7 @@ const ExperienceCard = memo(function ExperienceCard({
                     render={({ field }) => (
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         type="text"
                         inputMode="numeric"
                         placeholder="MM/YYYY"
@@ -209,6 +211,7 @@ const ExperienceCard = memo(function ExperienceCard({
                     render={({ field }) => (
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         type="text"
                         inputMode="numeric"
                         placeholder="MM/YYYY"
@@ -242,24 +245,39 @@ const ExperienceCard = memo(function ExperienceCard({
               <div className="space-y-3">
                 <Label className="text-geds-blue">{tForm('experience.responsibilities.label')}</Label>
                 <div className="space-y-2">
-                  {responsibilities.map((_: string, respIndex: number) => (
-                    <div key={respIndex} className="flex gap-2">
-                      <Input
-                        {...register(`workExperience.experiences.${index}.responsibilities.${respIndex}`)}
-                        placeholder={tForm('experience.responsibilities.placeholder')}
-                        className="bg-gray-50 flex-1"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleResponsibilityChange(respIndex, 'remove')}
-                        className="hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
+                  {responsibilities.map((_: string, respIndex: number) => {
+                    const respError = (fieldErrors?.responsibilities as Record<string, { message?: string }>)?.[respIndex];
+                    const isEmpty = !responsibilities[respIndex] || responsibilities[respIndex].trim() === '';
+                    return (
+                      <div key={respIndex} className="space-y-1">
+                        <div className="flex gap-2">
+                          <Input
+                            {...register(`workExperience.experiences.${index}.responsibilities.${respIndex}`)}
+                            placeholder={tForm('experience.responsibilities.placeholder')}
+                            className={cn(
+                              "bg-gray-50 flex-1",
+                              (respError || isEmpty) && "border-destructive"
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleResponsibilityChange(respIndex, 'remove')}
+                            className="hover:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        {respError && (
+                          <p className="text-sm text-destructive flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" />
+                            {respError.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                   {responsibilities.length < 5 && (
                     <Button
                       type="button"
@@ -406,17 +424,16 @@ export default function WorkExperienceForm({ hideFormNavigation }: WorkExperienc
       showReset={true}
       hideFormNavigation={hideFormNavigation}
     >
-      <div className="w-full px-4 sm:px-6 py-4 sm:py-8">
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="text-center space-y-3">
-            <Briefcase className="w-10 h-10 text-geds-blue mx-auto" />
-            <h2 className="text-xl sm:text-2xl font-semibold text-geds-blue">
-              {t('experience.main.title')}
-            </h2>
-            <p className="text-sm text-gray-600">
-              {t('experience.main.description')}
-            </p>
+      <div className="w-full px-2 sm:px-4">
+        <div className="space-y-4">
+          {/* Header compact */}
+          <div className="text-center space-y-2 sm:space-y-4">
+            <div className="flex items-center gap-2 justify-center">
+              <Briefcase className="w-5 h-5 text-geds-blue" />
+              <span className="text-sm text-geds-blue hidden sm:inline">
+                {t('experience.main.description')}
+              </span>
+            </div>
             
             {/* Toggle switch */}
             <div className="flex items-center justify-center gap-3">

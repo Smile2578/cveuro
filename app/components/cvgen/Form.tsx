@@ -407,7 +407,7 @@ export default function Form() {
         <div className="w-full px-2 sm:px-4 flex flex-col min-h-auto mt-2 sm:mt-4">
           <ProgressBar />
           
-          <div className="flex-1 flex flex-col items-center justify-start w-full py-2 sm:py-6">
+          <div className="flex-1 flex flex-col items-center justify-start w-full py-2 sm:py-3">
             <AnimatePresence mode="wait">
               <motion.div
                 key={currentStep}

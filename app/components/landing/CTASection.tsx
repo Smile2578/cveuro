@@ -49,7 +49,7 @@ export default function CTASection() {
         />
       </div>
 
-      <div className="container mx-auto relative z-10 px-4 text-center max-w-4xl">
+      <div className="w-full relative z-10 px-4 sm:px-6 text-center max-w-4xl mx-auto">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -58,25 +58,25 @@ export default function CTASection() {
         >
           <motion.h2 
             variants={fadeInUp}
-            className="text-3xl md:text-4xl font-serif font-bold text-white mb-6"
+            className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-white mb-4 sm:mb-6"
           >
             {t('landing.cta.title')}
           </motion.h2>
           
           <motion.p 
             variants={fadeInUp}
-            className="text-white/80 max-w-xl mx-auto mb-8 text-lg"
+            className="text-white/80 max-w-full sm:max-w-xl mx-auto mb-6 sm:mb-8 text-base sm:text-lg px-2"
           >
             {t('landing.cta.subtitle')}
           </motion.p>
 
-          <motion.div variants={fadeInUp}>
+          <motion.div variants={fadeInUp} className="w-full sm:w-auto">
             <Button
               size="lg"
               onClick={handleCreateCV}
               disabled={isLoading}
               className={cn(
-                "group px-8 py-6 text-lg font-semibold",
+                "group px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto",
                 "btn-geds-white"
               )}
             >
@@ -93,7 +93,7 @@ export default function CTASection() {
 
           <motion.p 
             variants={fadeInUp}
-            className="text-white/60 text-sm mt-6"
+            className="text-white/60 text-sm mt-4 sm:mt-6"
           >
             Gratuit • 5 minutes • Format Europass
           </motion.p>

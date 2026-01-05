@@ -17,7 +17,6 @@ import {
   DialogTitle 
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 
 // Step fields definition
 const STEP_FIELDS: Record<number, string[]> = {
@@ -101,60 +100,19 @@ export default function PersonalInfoStepper({ children }: PersonalInfoStepperPro
       showReset={true}
     >
       <div className="w-full">
-        {/* Stepper dots - mobile style */}
-        <div className="flex justify-center gap-2 mb-4 sm:hidden">
-          {steps.map((_, index) => (
-            <div
-              key={index}
-              className={cn(
-                "w-2 h-2 rounded-full transition-colors",
-                index === currentSubStep ? "bg-geds-blue" : "bg-gray-200"
-              )}
-            />
-          ))}
-        </div>
-
-        {/* Stepper labels - desktop */}
-        <div className="hidden sm:flex justify-between mb-6">
-          {steps.map((_, index) => (
-            <div key={index} className="flex-1 text-center">
-              <div className="flex items-center justify-center mb-2">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
-                  index === currentSubStep 
-                    ? "bg-geds-blue text-white" 
-                    : index < currentSubStep 
-                      ? "bg-geds-green text-white"
-                      : "bg-gray-100 text-gray-400"
-                )}>
-                  {index + 1}
-                </div>
-              </div>
-              <span className={cn(
-                "text-xs font-medium",
-                index === currentSubStep ? "text-geds-blue" : "text-gray-500"
-              )}>
-                {tCvform(`personalInfo.subSteps.${index}.label`)}
-              </span>
-            </div>
-          ))}
-        </div>
-
         {/* Step content */}
-        <div className="mt-4 sm:mt-6">
-          <div className="p-4 sm:p-6 rounded-xl bg-gray-50">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentSubStep}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-              >
-                {steps[currentSubStep]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
+        <div className="p-2 sm:p-6 rounded-lg sm:rounded-xl bg-gray-50">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentSubStep ?? 0}
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              transition={{ duration: 0.15 }}
+            >
+              {steps[currentSubStep ?? 0]}
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Reset confirmation dialog */}

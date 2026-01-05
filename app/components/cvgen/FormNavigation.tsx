@@ -15,6 +15,7 @@ interface FormNavigationProps {
   customNext?: () => Promise<void>;
   customPrevious?: () => Promise<void>;
   onSubmit?: () => Promise<void>;
+  isMobile?: boolean;
 }
 
 export default function FormNavigation({
@@ -23,7 +24,8 @@ export default function FormNavigation({
   showReset = true,
   customNext,
   customPrevious,
-  onSubmit
+  onSubmit,
+  isMobile = false
 }: FormNavigationProps) {
   const t = useTranslations('common');
   const { formState: { errors } } = useFormContext();
@@ -82,37 +84,61 @@ export default function FormNavigation({
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 w-full pt-4 border-t border-gray-100 relative">
+    <div className={cn(
+      "flex items-center w-full relative",
+      isMobile 
+        ? "justify-between gap-2" 
+        : "flex-col gap-4 pt-4 border-t border-gray-100"
+    )}>
       {/* Navigation buttons */}
-      <div className="flex justify-between items-center gap-2 w-full">
+      <div className={cn(
+        "flex items-center gap-2",
+        isMobile ? "flex-1 justify-between" : "justify-between w-full"
+      )}>
         {/* Previous button */}
         <Button
           type="button"
           variant="outline"
           onClick={handlePrevious}
           disabled={!canGoPrevious || isLoading}
+          data-nav-prev
           className={cn(
-            "min-w-[48px] sm:min-w-[120px] rounded-full",
-            "border-gray-200 hover:bg-gray-50"
+            "rounded-full border-gray-200 hover:bg-gray-50",
+            isMobile ? "h-12 w-12 p-0" : "min-w-[48px] sm:min-w-[120px]"
           )}
         >
           {isLoading && !canGoNext ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <>
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden sm:inline ml-1">{t('buttons.previous')}</span>
+              <ChevronLeft className="w-5 h-5" />
+              {!isMobile && <span className="hidden sm:inline ml-1">{t('buttons.previous')}</span>}
             </>
           )}
         </Button>
+
+        {/* Reset button - inline for mobile */}
+        {isMobile && showReset && (
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={handleReset}
+            disabled={isLoading}
+            className="text-destructive hover:text-destructive hover:bg-destructive/10 rounded-full h-10 w-10 p-0"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </Button>
+        )}
 
         {/* Next/Submit button */}
         <Button
           type="button"
           onClick={handleNext}
           disabled={(isFinalStep ? false : !canGoNext) || isLoading}
+          data-nav-next
           className={cn(
-            "min-w-[48px] sm:min-w-[120px] rounded-full",
+            "rounded-full",
+            isMobile ? "h-12 px-6" : "min-w-[48px] sm:min-w-[120px]",
             isFinalStep 
               ? "bg-geds-green hover:bg-geds-green/90 text-white shadow-lg shadow-[hsl(var(--geds-green)/0.25)]"
               : "btn-geds-primary"
@@ -122,20 +148,17 @@ export default function FormNavigation({
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <>
-              <span className="hidden sm:inline mr-1">
+              <span className={cn(isMobile ? "mr-1" : "hidden sm:inline mr-1")}>
                 {isFinalStep ? t('buttons.save') : t('buttons.next')}
               </span>
-              <span className="sm:hidden">
-                {isFinalStep ? t('buttons.save') : ''}
-              </span>
-              <ChevronRight className="w-4 h-4" />
+              <ChevronRight className="w-5 h-5" />
             </>
           )}
         </Button>
       </div>
 
-      {/* Reset button */}
-      {showReset && (
+      {/* Reset button - below for desktop */}
+      {!isMobile && showReset && (
         <Button
           type="button"
           variant="ghost"

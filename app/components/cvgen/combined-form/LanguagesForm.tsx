@@ -4,7 +4,7 @@ import { useCallback, memo } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Languages } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -138,14 +138,7 @@ export default function LanguagesForm() {
   }, [t, getValues, append]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <Languages className="w-10 h-10 text-geds-cyan mx-auto mb-2" />
-        <h3 className="text-xl font-semibold text-geds-cyan">{t('languages.main.title')}</h3>
-        <p className="text-sm text-gray-600 mt-1">{t('languages.main.description')}</p>
-      </div>
-
+    <div className="space-y-4">
       {/* Error alert */}
       {languagesError && (
         <Alert variant="destructive">

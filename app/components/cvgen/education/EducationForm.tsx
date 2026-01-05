@@ -209,6 +209,7 @@ const EducationCard = memo(function EducationCard({
                     render={({ field }) => (
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         type="text"
                         inputMode="numeric"
                         placeholder="MM/YYYY"
@@ -238,6 +239,7 @@ const EducationCard = memo(function EducationCard({
                     render={({ field }) => (
                       <Input
                         {...field}
+                        value={field.value ?? ""}
                         type="text"
                         inputMode="numeric"
                         placeholder="MM/YYYY"
@@ -274,28 +276,43 @@ const EducationCard = memo(function EducationCard({
               <div className="space-y-3">
                 <Label className="text-geds-blue">{t('education.achievements.label')}</Label>
                 <div className="space-y-2">
-                  {achievements.map((_: string, achievementIndex: number) => (
-                    <div key={achievementIndex} className="flex gap-2">
-                      <Input
-                        {...register(`educations.${index}.achievements.${achievementIndex}`)}
-                        placeholder={t('education.achievements.placeholder')}
-                        className="bg-gray-50 flex-1"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => {
-                          const newAchievements = [...achievements];
-                          newAchievements.splice(achievementIndex, 1);
-                          setValue(`educations.${index}.achievements`, newAchievements);
-                        }}
-                        className="hover:text-destructive"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
+                  {achievements.map((_: string, achievementIndex: number) => {
+                    const achievementError = (educationErrors?.achievements as Record<string, { message?: string }>)?.[achievementIndex];
+                    const isEmpty = !achievements[achievementIndex] || achievements[achievementIndex].trim() === '';
+                    return (
+                      <div key={achievementIndex} className="space-y-1">
+                        <div className="flex gap-2">
+                          <Input
+                            {...register(`educations.${index}.achievements.${achievementIndex}`)}
+                            placeholder={t('education.achievements.placeholder')}
+                            className={cn(
+                              "bg-gray-50 flex-1",
+                              (achievementError || isEmpty) && "border-destructive"
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => {
+                              const newAchievements = [...achievements];
+                              newAchievements.splice(achievementIndex, 1);
+                              setValue(`educations.${index}.achievements`, newAchievements);
+                            }}
+                            className="hover:text-destructive"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                        {achievementError && (
+                          <p className="text-sm text-destructive flex items-center gap-1">
+                            <AlertCircle className="w-3 h-3" />
+                            {achievementError.message}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
                   {achievements.length < 4 && (
                     <Button
                       type="button"
@@ -408,16 +425,13 @@ export default function EducationForm({ hideFormNavigation }: EducationFormProps
       showReset={true}
       hideFormNavigation={hideFormNavigation}
     >
-      <div className="w-full flex flex-col items-center gap-4 sm:gap-6">
-        {/* Header */}
-        <div className="text-center">
-          <GraduationCap className="w-10 h-10 text-geds-blue mx-auto mb-2" />
-          <h2 className="text-xl sm:text-2xl font-semibold text-geds-blue">
-            {t('education.main.title')}
-          </h2>
-          <p className="text-sm text-gray-600 mt-1">
-            {t('education.main.description')}
-          </p>
+      <div className="w-full flex flex-col items-center gap-3 sm:gap-4">
+        {/* Header compact */}
+        <div className="flex items-center gap-2 text-center justify-center">
+          <GraduationCap className="w-5 h-5 text-geds-blue" />
+          <span className="text-sm text-geds-blue hidden sm:inline">
+             {t('education.main.description')}
+          </span>
         </div>
 
         {/* Education cards */}

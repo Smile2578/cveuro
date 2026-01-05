@@ -4,7 +4,7 @@ import { useCallback, memo } from 'react';
 import { useFormContext, useFieldArray } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Gamepad2 } from 'lucide-react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -86,14 +86,7 @@ export default function HobbiesForm() {
   }, [t, getValues, append]);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center">
-        <Gamepad2 className="w-10 h-10 text-geds-green mx-auto mb-2" />
-        <h3 className="text-xl font-semibold text-geds-green">{t('hobbies.main.title')}</h3>
-        <p className="text-sm text-gray-600 mt-1">{t('hobbies.main.description')}</p>
-      </div>
-
+    <div className="space-y-4">
       {/* Suggestions */}
       <div className="space-y-2">
         <p className="text-sm text-gray-600">{t('hobbies.suggestions.title')}</p>

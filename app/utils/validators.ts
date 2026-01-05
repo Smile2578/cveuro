@@ -129,13 +129,25 @@ export const createValidators = (t: TranslationFunction) => {
       }),
     achievements: z.array(
       z.string()
-        .min(1, { message: t('education.achievements.required') })
         .max(500, { message: t('education.achievements.maxLength') })
     ).optional().default([])
   }))
   .min(1, { message: t('education.required') })
   .superRefine((educations, ctx) => {
     educations.forEach((education, index) => {
+      // Achievements validation - check for empty strings
+      if (education.achievements && education.achievements.length > 0) {
+        education.achievements.forEach((achievement, achievementIdx) => {
+          if (!achievement || achievement.trim() === '') {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('education.achievements.required'),
+              path: [`${index}.achievements.${achievementIdx}`]
+            });
+          }
+        });
+      }
+
       // Custom degree validation
       if (education.degree === 'other') {
         if (!education.customDegree || education.customDegree.trim() === '') {

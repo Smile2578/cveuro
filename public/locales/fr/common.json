@@ -59,6 +59,12 @@
     "completion": "Progression : {percentage}%",
     "previous": "Précédent",
     "next": "Suivant",
+    "steps": {
+      "personalInfo": "Profil",
+      "education": "Formation",
+      "experience": "Expérience",
+      "review": "Finalisation"
+    },
     "quality": {
       "0": "Commençons !",
       "25": "Bon début !",

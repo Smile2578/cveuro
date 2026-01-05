@@ -103,14 +103,17 @@
 
   html {
     scroll-behavior: smooth;
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
+    overflow-x: hidden;
+    /* Prevent double scrollbar */
+    height: 100%;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground;
     line-height: 1.6;
-    overflow-y: scroll !important;
+    min-height: 100%;
+    /* Force scrollbar to always be visible to prevent layout shift */
+    overflow-y: scroll;
   }
 
   h1, h2, h3, h4, h5, h6 {

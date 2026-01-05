@@ -53,19 +53,19 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
-      {/* Subtle decorative elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-geds-blue/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-20 right-10 w-96 h-96 bg-geds-green/5 rounded-full blur-3xl" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-x-hidden bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
+      {/* Subtle decorative elements - hidden on mobile to prevent overflow */}
+      <div className="hidden sm:block absolute top-20 left-10 w-72 h-72 bg-geds-blue/5 rounded-full blur-3xl" />
+      <div className="hidden sm:block absolute bottom-20 right-10 w-96 h-96 bg-geds-green/5 rounded-full blur-3xl" />
       
-      <div className="container relative z-10 px-4 py-20 md:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="w-full relative z-10 px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 pb-8 sm:py-20 md:py-32 max-w-7xl mx-auto overflow-hidden">
+        <div className="grid xl:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left content */}
           <motion.div
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="text-center lg:text-left"
+            className="text-center lg:text-left w-full"
           >
             <motion.div variants={fadeInUp}>
               <Badge 
@@ -79,7 +79,7 @@ export default function HeroSection() {
 
             <motion.h1 
               variants={fadeInUp}
-              className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-6"
+              className="text-2xl xs:text-3xl sm:text-5xl lg:text-6xl font-serif font-bold leading-tight mb-4 sm:mb-6"
             >
               <span className="text-gray-900">{t('landing.title').split(' ').slice(0, 2).join(' ')} </span>
               <span className="text-gradient">
@@ -90,24 +90,24 @@ export default function HeroSection() {
 
             <motion.p 
               variants={fadeInUp}
-              className="text-lg text-gray-600 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed"
+              className="text-sm sm:text-lg text-gray-600 max-w-full sm:max-w-xl mx-auto lg:mx-0 mb-6 sm:mb-8 leading-relaxed"
             >
               {t('landing.subtitle')}
             </motion.p>
 
             {/* Terms checkbox - Clickable entire row */}
-            <motion.div variants={fadeInUp} className="mb-6">
+            <motion.div variants={fadeInUp} className="mb-4 sm:mb-6">
               <div 
                 onClick={handleTermsClick}
-                className="flex items-start gap-3 justify-center lg:justify-start cursor-pointer group"
+                className="flex items-start gap-2 sm:gap-3 justify-center lg:justify-start cursor-pointer group"
               >
                 <Checkbox
                   id="terms"
                   checked={termsAccepted}
                   onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                  className="mt-1 border-geds-blue data-[state=checked]:bg-geds-blue data-[state=checked]:border-geds-blue pointer-events-none"
+                  className="mt-0.5 sm:mt-1 border-geds-blue data-[state=checked]:bg-geds-blue data-[state=checked]:border-geds-blue pointer-events-none flex-shrink-0"
                 />
-                <label className="text-sm text-gray-600 leading-relaxed cursor-pointer group-hover:text-gray-900 transition-colors">
+                <label className="text-xs sm:text-sm text-gray-600 leading-relaxed cursor-pointer group-hover:text-gray-900 transition-colors text-left">
                   {t('terms.accept')}{' '}
                   <Link 
                     href="/terms" 
@@ -132,20 +132,20 @@ export default function HeroSection() {
               </p>
 
               {showError && (
-                <Alert variant="destructive" className="mt-4 max-w-md mx-auto lg:mx-0">
+                <Alert variant="destructive" className="mt-4 max-w-full sm:max-w-md mx-auto lg:mx-0">
                   <AlertDescription>{t('terms.error')}</AlertDescription>
                 </Alert>
               )}
             </motion.div>
 
             {/* CTA Button */}
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={fadeInUp} className="w-full sm:w-auto">
               <Button
                 size="lg"
                 onClick={handleCreateCV}
                 disabled={isLoading}
                 className={cn(
-                  "group relative overflow-hidden px-8 py-6 text-lg font-semibold",
+                  "group relative overflow-hidden px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto",
                   "btn-geds-primary"
                 )}
               >
@@ -161,12 +161,12 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Right content - CV Preview */}
+          {/* Right content - CV Preview - Only visible on xl (1280px+) */}
           <motion.div
             initial={{ opacity: 0, x: 50, rotateY: -10 }}
             animate={{ opacity: 1, x: 0, rotateY: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:block"
+            className="hidden xl:block"
           >
             <div 
               className={cn(
