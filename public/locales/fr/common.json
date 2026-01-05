@@ -3,6 +3,7 @@
   "description": "Créez votre CV professionnel en quelques étapes simples",
   "navigation": {
     "home": "Accueil",
+    "dashboard": "Mes CV",
     "cvgen": "Créer un CV",
     "cvedit": "Éditer un CV",
     "about": "À propos",

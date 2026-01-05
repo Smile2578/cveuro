@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { User, LogOut, Settings, ChevronDown, LogIn, FileText } from 'lucide-react';
+import { User, LogOut, Settings, ChevronDown, LogIn, FileText, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -116,6 +116,12 @@ export default function UserMenu({ locale }: UserMenuProps) {
           <p className="text-xs text-gray-500 truncate">{user.email}</p>
         </div>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href={`/${locale}/dashboard`} className="cursor-pointer">
+            <LayoutDashboard className="w-4 h-4 mr-2" />
+            {t('navigation.dashboard')}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href={`/${locale}/cvgen`} className="cursor-pointer">
             <FileText className="w-4 h-4 mr-2" />
