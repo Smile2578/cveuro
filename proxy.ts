@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { updateSession } from '@/lib/supabase/proxy';
 
 const intlMiddleware = createMiddleware({
-  locales: ['en', 'fr'],
+  locales: ['en', 'fr', 'it'],
   defaultLocale: 'en',
   localePrefix: 'always'
 });
@@ -32,7 +32,7 @@ export const config = {
   matcher: [
     // Match all paths except static files and API routes
     '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-    '/(fr|en)/:path*'
+    '/(fr|en|it)/:path*'
   ]
 };
 
