@@ -1,0 +1,70 @@
+{
+  "title": "✨ Crea il Tuo CV Professionale",
+  "description": "Uno strumento semplice ed efficace per costruire il tuo CV in pochi passi",
+  "dontShowAgain": "🔔 Non mostrare più questo messaggio",
+  "subSteps": "📑 Sotto-passi",
+  "startButton": "🚀 Inizia",
+  "steps": {
+    "personal": {
+      "title": "👤 Profilo Personale",
+      "description": "La prima impressione conta! Iniziamo con le tue informazioni essenziali",
+      "identity": "📝 Identità • Nome e Cognome",
+      "contact": "📞 Contatto • Email e Telefono",
+      "info": "ℹ️ Dettagli • Data di Nascita, Nazionalità, Sesso",
+      "address": "📍 Posizione • Indirizzo Completo",
+      "social": "🌐 Presenza Web • LinkedIn e Sito Personale"
+    },
+    "education": {
+      "title": "🎓 Percorso Accademico",
+      "description": "Metti in mostra la tua formazione e i tuoi titoli",
+      "details": "📚 Formazione • Titoli e Certificazioni",
+      "achievements": "🏆 Distinzioni • Premi e Riconoscimenti"
+    },
+    "experience": {
+      "title": "💼 Percorso Professionale",
+      "description": "Racconta la tua storia professionale con impatto",
+      "details": "⚡ Esperienza • Posizioni e Aziende",
+      "responsibilities": "🎯 Risultati • Missioni e Traguardi"
+    },
+    "skills": {
+      "title": "🛠️ Competenze e Talenti",
+      "description": "Distinguiti con i tuoi punti di forza unici",
+      "languages": "🗣️ Lingue • Livelli di Competenza",
+      "technical": "💻 Expertise • Competenze Tecniche",
+      "hobbies": "🎨 Interessi • Hobby"
+    },
+    "talents": {
+      "title": "🎯 Talenti e Passioni",
+      "description": "Metti in mostra i tuoi punti di forza unici e le tue passioni",
+      "skills": {
+        "title": "💪 Competenze • Talenti Unici",
+        "description": "Metti in mostra i tuoi punti di forza unici",
+        "technical": "💻 Expertise • Competenze Tecniche",
+        "soft": "🤝 Soft Skills • Abilità Interpersonali",
+        "other": "🎯 Altri Talenti • Punti di Forza Unici"
+      },
+      "languages": {
+        "title": "🗣️ Lingue • Livelli di Competenza",
+        "description": "Metti in mostra le tue competenze linguistiche",
+        "native": "🇮🇹 Lingua Madre",
+        "foreign": "🌍 Lingue Straniere",
+        "certifications": "📜 Certificazioni • Competenza Linguistica"
+      },
+      "hobbies": {
+        "title": "🎨 Interessi • Hobby",
+        "description": "Metti in mostra i tuoi hobby e interessi",
+        "interests": "🎯 Interessi • Hobby",
+        "activities": "🏆 Risultati • Hobby e Interessi",
+        "achievements": "🏆 Risultati • Hobby e Interessi"
+      }
+    }
+  },
+  "buttons": {
+    "start": "🚀 Inizia",
+    "next": "Avanti",
+    "back": "Indietro",
+    "skip": "Salta",
+    "finish": "Fine"
+  }
+}
+

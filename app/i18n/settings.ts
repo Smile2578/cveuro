@@ -1,8 +1,8 @@
 // app/i18n/settings.ts
 
-export type Locale = 'fr' | 'en';
+export type Locale = 'fr' | 'en' | 'it';
 
-export const locales: Locale[] = ['fr', 'en'];
+export const locales: Locale[] = ['fr', 'en', 'it'];
 export const defaultLocale: Locale = 'en';
 export const timeZone = 'Europe/Paris';
 

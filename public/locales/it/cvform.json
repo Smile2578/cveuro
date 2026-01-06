@@ -1,0 +1,475 @@
+{
+  "validation": {
+    "errorsFound": "Correggi i seguenti errori:",
+    "moreErrors": "altri errori"
+  },
+  "steps": {
+    "personalInfo": "Informazioni Personali",
+    "education": "Formazione",
+    "experience": "Esperienza Lavorativa",
+    "skills": "Competenze",
+    "languages": "Lingue",
+    "hobbies": "Hobby",
+    "combined": {
+      "title": "Competenze e Lingue",
+      "description": "Aggiungi le tue competenze, lingue e hobby"
+    }
+  },
+  "personalInfo": {
+    "title": "Informazioni Personali",
+    "description": "Iniziamo con le tue informazioni di base",
+    "subSteps": {
+      "0": {
+        "label": "Identità",
+        "title": "Chi sei?",
+        "description": "Inizia con le tue informazioni di identità di base"
+      },
+      "1": {
+        "label": "Contatto",
+        "title": "Come possiamo contattarti?",
+        "description": "Aggiungi le tue informazioni di contatto"
+      },
+      "2": {
+        "label": "Dettagli",
+        "title": "Raccontaci di più su di te",
+        "description": "Aggiungi alcuni dettagli personali aggiuntivi"
+      },
+      "3": {
+        "label": "Indirizzo",
+        "title": "Dove vivi?",
+        "description": "Aggiungi il tuo indirizzo attuale"
+      },
+      "4": {
+        "label": "Social",
+        "title": "La tua presenza online",
+        "description": "Aggiungi i tuoi profili social media"
+      },
+      "null": {
+        "title": "Informazioni Personali",
+        "description": "Iniziamo con le tue informazioni di base"
+      }
+    },
+    "identity": {
+      "title": "Identità",
+      "description": "Inizia con le tue informazioni di identità di base",
+      "firstName": {
+        "label": "Nome",
+        "placeholder": "es. Mario",
+        "maxLength": "Massimo 50 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "lastName": {
+        "label": "Cognome",
+        "placeholder": "es. Rossi",
+        "maxLength": "Massimo 50 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "errors": {
+        "required": "Questo campo è obbligatorio",
+        "minLength": "Minimo 2 caratteri",
+        "maxLength": "Massimo 50 caratteri",
+        "checkFields": "Controlla i campi"
+      }
+    },
+    "contact": {
+      "title": "Informazioni di Contatto",
+      "description": "Come possono contattarti?",
+      "email": {
+        "label": "Email",
+        "placeholder": "es. mario.rossi@esempio.com",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "phone": {
+        "label": "Numero di Telefono",
+        "placeholder": "es. +39 333 123 4567",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      }
+    },
+    "info": {
+      "title": "Dettagli Personali",
+      "description": "Raccontaci di più su di te",
+      "birthDate": {
+        "label": "Data di Nascita",
+        "placeholder": "GG/MM/AAAA",
+        "maxLength": "Massimo 10 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "nationality": {
+        "label": "Nazionalità",
+        "placeholder": "Seleziona la tua nazionalità",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "gender": {
+        "label": "Sesso",
+        "options": {
+          "male": "Uomo",
+          "female": "Donna",
+          "other": "Altro"
+        },
+        "placeholder": "Seleziona il tuo sesso",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      }
+    },
+    "address": {
+      "title": "Indirizzo",
+      "description": "Dove possiamo trovarti?",
+      "maxLength": "Massimo 100 caratteri",
+      "minLength": "Minimo 2 caratteri",
+      "street": {
+        "label": "Via",
+        "placeholder": "es. Via Roma 123",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "city": {
+        "label": "Città",
+        "placeholder": "es. Roma",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "zip": {
+        "label": "CAP",
+        "placeholder": "es. 00100",
+        "maxLength": "Massimo 10 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      }
+    },
+    "social": {
+      "title": "Social Media (Facoltativo)",
+      "description": "Condividi la tua presenza online",
+      "linkedin": {
+        "label": "Profilo LinkedIn (Facoltativo)",
+        "placeholder": "solo l'URL del tuo profilo da https://linkedin.com/in/tuo-profilo",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      },
+      "website": {
+        "label": "Sito Web Personale (Facoltativo)",
+        "placeholder": "es. https://mariorossi.it",
+        "maxLength": "Massimo 100 caratteri",
+        "minLength": "Minimo 2 caratteri"
+      }
+    }
+  },
+  "education": {
+    "main": {
+      "title": "Formazione",
+      "description": "Raccontaci del tuo percorso accademico"
+    },
+    "school": {
+      "label": "Scuola / Università",
+      "placeholder": "Es: Università di Roma",
+      "minLength": "Il nome della scuola deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome della scuola non può superare 100 caratteri",
+      "required": "Il nome della scuola è obbligatorio",
+      "error": "Il nome della scuola è obbligatorio"
+    },
+    "degree": {
+      "label": "Titolo di Studio",
+      "placeholder": "Seleziona il tuo titolo di studio",
+      "minLength": "Il titolo deve contenere almeno 2 caratteri",
+      "maxLength": "Il titolo non può superare 100 caratteri",
+      "required": "Il titolo di studio è obbligatorio",
+      "error": "Il titolo di studio è obbligatorio",
+      "options": {
+        "baccalaureat": "Diploma di Scuola Superiore",
+        "licence": "Laurea Triennale",
+        "bachelor": "Laurea Triennale",
+        "master": "Laurea Magistrale",
+        "doctorat": "Dottorato",
+        "other": "Altro"
+      }
+    },
+    "customDegree": {
+      "label": "Specifica il tuo titolo di studio",
+      "placeholder": "Es: Laurea in Ingegneria Informatica",
+      "minLength": "Il titolo personalizzato deve contenere almeno 2 caratteri",
+      "maxLength": "Il titolo personalizzato non può superare 100 caratteri",
+      "required": "Specifica il tuo titolo di studio",
+      "error": "Specifica il tuo titolo di studio"
+    },
+    "fieldOfStudy": {
+      "label": "Campo di Studio",
+      "placeholder": "Es: Informatica, Giurisprudenza, Economia...",
+      "minLength": "Il campo di studio deve contenere almeno 2 caratteri",
+      "maxLength": "Il campo di studio non può superare 100 caratteri",
+      "required": "Il campo di studio è obbligatorio"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Data di Inizio",
+        "placeholder": "MM/AAAA",
+        "format": "Formato data non valido (MM/AAAA)",
+        "future": "La data di inizio non può essere nel futuro",
+        "required": "La data di inizio è obbligatoria",
+        "error": "La data di inizio è obbligatoria"
+      },
+      "endDate": {
+        "label": "Data di Fine",
+        "placeholder": "MM/AAAA",
+        "format": "Formato data non valido (MM/AAAA)",
+        "future": "La data di fine non può essere nel futuro",
+        "beforeStart": "La data di fine deve essere successiva alla data di inizio",
+        "required": "La data di fine è obbligatoria",
+        "error": "La data di fine è obbligatoria"
+      },
+      "ongoing": "Attualmente Studente"
+    },
+    "achievements": {
+      "label": "Risultati",
+      "placeholder": "Es: Primo della classe, Progetto premiato...",
+      "add": "Aggiungi Risultato",
+      "remove": "Rimuovi Risultato",
+      "minLength": "Il risultato deve contenere almeno 10 caratteri",
+      "maxLength": "Il risultato non può superare 200 caratteri",
+      "maxItems": "Non puoi aggiungere più di 4 risultati"
+    },
+    "actions": {
+      "add": "Aggiungi Formazione",
+      "remove": "Rimuovi Formazione",
+      "maxLength": "Non puoi aggiungere più di 4 formazioni",
+      "confirmDelete": "Sei sicuro di voler eliminare questa formazione?"
+    },
+    "validation": {
+      "required": "Questo campo è obbligatorio",
+      "dateFormat": "Formato data non valido",
+      "endDateBeforeStart": "La data di fine deve essere successiva alla data di inizio",
+      "futureDateNotAllowed": "La data non può essere nel futuro"
+    },
+    "errors": {
+      "hasErrors": "Questa formazione contiene errori. Clicca per vedere i dettagli."
+    }
+  },
+  "experience": {
+    "main": {
+      "title": "Esperienza Lavorativa",
+      "description": "Condividi il tuo percorso professionale",
+      "hasExperience": "Ho esperienza lavorativa",
+      "noExperienceMessage": "Non hai ancora aggiunto esperienze lavorative. Attiva l'interruttore sopra per iniziare ad aggiungerne.",
+      "confirmNoExperienceTitle": "Rimuovere tutte le esperienze?",
+      "confirmNoExperience": "Sei sicuro di voler rimuovere tutte le tue esperienze lavorative? Questa azione non può essere annullata."
+    },
+    "company": {
+      "label": "Azienda",
+      "placeholder": "Es: Google, Microsoft, Apple...",
+      "minLength": "Il nome dell'azienda deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome dell'azienda non può superare 100 caratteri"
+    },
+    "position": {
+      "label": "Posizione",
+      "placeholder": "Es: Volontario, Stagista, Project Manager...",
+      "minLength": "La posizione deve contenere almeno 2 caratteri",
+      "maxLength": "La posizione non può superare 100 caratteri"
+    },
+    "location": {
+      "label": "Località",
+      "placeholder": "Es: Milano, Italia",
+      "minLength": "La località deve contenere almeno 2 caratteri",
+      "maxLength": "La località non può superare 100 caratteri"
+    },
+    "dates": {
+      "startDate": {
+        "label": "Data di Inizio",
+        "placeholder": "MM/AAAA"
+      },
+      "endDate": {
+        "label": "Data di Fine",
+        "placeholder": "MM/AAAA"
+      },
+      "ongoing": "Posizione attuale"
+    },
+    "responsibilities": {
+      "label": "Responsabilità e risultati",
+      "placeholder": "Descrivi le tue principali responsabilità e risultati",
+      "add": "Aggiungi responsabilità",
+      "maxItems": "Non puoi aggiungere più di 5 responsabilità",
+      "minLength": "La descrizione deve contenere almeno 10 caratteri",
+      "maxLength": "La descrizione non può superare 500 caratteri"
+    },
+    "actions": {
+      "add": "Aggiungi esperienza",
+      "addFirst": "Aggiungi prima esperienza",
+      "remove": "Rimuovi questa esperienza",
+      "maxLength": "Hai raggiunto il numero massimo di esperienze (4)"
+    },
+    "errors": {
+      "required": "Aggiungi almeno un'esperienza lavorativa",
+      "hasErrors": "Questa esperienza lavorativa contiene errori. Clicca per vedere i dettagli.",
+      "checkFields": "Alcune esperienze lavorative contengono errori. Controlla i campi."
+    }
+  },
+  "skills": {
+    "main": {
+      "title": "Competenze ed Expertise",
+      "description": "Aggiungi le tue competenze e il livello di expertise"
+    },
+    "name": {
+      "label": "Competenza",
+      "placeholder": "Es: Microsoft Office, Comunicazione, Lavoro di squadra..."
+    },
+    "level": {
+      "label": "Livello",
+      "placeholder": "Seleziona il tuo livello",
+      "options": {
+        "beginner": "Principiante",
+        "intermediate": "Intermedio",
+        "advanced": "Avanzato",
+        "expert": "Esperto"
+      }
+    },
+    "suggestions": {
+      "title": "Suggerimenti competenze",
+      "description": "Clicca per aggiungere rapidamente competenze comuni",
+      "items": {
+        "office": "Microsoft Office",
+        "communication": "Comunicazione",
+        "teamwork": "Lavoro di squadra",
+        "timeManagement": "Gestione del tempo",
+        "research": "Ricerca",
+        "presentation": "Presentazione",
+        "analysis": "Analisi",
+        "writing": "Scrittura",
+        "programming": "Programmazione",
+        "socialMedia": "Social Media",
+        "adaptability": "Adattabilità",
+        "problemSolving": "Problem Solving",
+        "organization": "Organizzazione",
+        "leadership": "Leadership",
+        "creativity": "Creatività"
+      }
+    },
+    "actions": {
+      "add": "Aggiungi competenza",
+      "addFirst": "Aggiungi la tua prima competenza",
+      "remove": "Rimuovi questa competenza",
+      "maxLength": "Hai raggiunto il numero massimo di competenze (5)"
+    },
+    "errors": {
+      "hasErrors": "Questa competenza contiene errori",
+      "checkFields": "Alcune competenze contengono errori. Controlla i campi."
+    }
+  },
+  "languages": {
+    "main": {
+      "title": "Lingue",
+      "description": "Aggiungi le lingue che parli"
+    },
+    "language": {
+      "label": "Lingua",
+      "placeholder": "Es: Inglese, Spagnolo, Tedesco..."
+    },
+    "proficiency": {
+      "label": "Competenza",
+      "placeholder": "Seleziona il tuo livello",
+      "options": {
+        "A1": "Principiante (A1)",
+        "A2": "Elementare (A2)",
+        "B1": "Intermedio (B1)",
+        "B2": "Intermedio Superiore (B2)",
+        "C1": "Avanzato (C1)",
+        "C2": "Padronanza (C2)",
+        "Native": "Madrelingua"
+      }
+    },
+    "test": {
+      "name": {
+        "label": "Test Linguistico (Facoltativo)",
+        "placeholder": "Es: TOEFL, IELTS, Cambridge..."
+      },
+      "score": {
+        "label": "Punteggio/Livello Ottenuto (Facoltativo)",
+        "placeholder": "Es: 95/120, B2..."
+      }
+    },
+    "validation": {
+      "required": "Questo campo è obbligatorio"
+    },
+    "actions": {
+      "add": "Aggiungi lingua",
+      "addFirst": "Aggiungi la tua prima lingua",
+      "remove": "Rimuovi questa lingua",
+      "maxLength": "Hai raggiunto il numero massimo di lingue (5)"
+    },
+    "errors": {
+      "hasErrors": "Questa lingua contiene errori",
+      "checkFields": "Alcune lingue contengono errori",
+      "required": "È richiesta almeno una lingua"
+    },
+    "suggestions": {
+      "title": "Suggerimenti lingue",
+      "description": "Clicca per aggiungere rapidamente lingue comuni",
+      "items": {
+        "english": "Inglese",
+        "german": "Tedesco",
+        "spanish": "Spagnolo",
+        "italian": "Italiano",
+        "dutch": "Olandese",
+        "portuguese": "Portoghese",
+        "russian": "Russo",
+        "chinese": "Cinese",
+        "japanese": "Giapponese",
+        "arabic": "Arabo",
+        "french": "Francese"
+      }
+    }
+  },
+  "hobbies": {
+    "main": {
+      "title": "Hobby",
+      "description": "Condividi le tue passioni e attività"
+    },
+    "hobby": {
+      "label": "Hobby",
+      "placeholder": "Es: Lettura, Musica, Sport..."
+    },
+    "actions": {
+      "add": "Aggiungi hobby",
+      "addFirst": "Aggiungi il tuo primo hobby",
+      "remove": "Rimuovi questo hobby",
+      "maxLength": "Hai raggiunto il numero massimo di hobby (5)"
+    },
+    "errors": {
+      "hasErrors": "Questo hobby contiene errori",
+      "checkFields": "Alcuni hobby contengono errori"
+    },
+    "suggestions": {
+      "title": "Suggerimenti hobby",
+      "description": "Clicca per aggiungere rapidamente hobby comuni",
+      "items": {
+        "reading": "Lettura",
+        "sports": "Sport",
+        "music": "Musica",
+        "travel": "Viaggi",
+        "photography": "Fotografia",
+        "cooking": "Cucina",
+        "gardening": "Giardinaggio",
+        "volunteering": "Volontariato",
+        "arts": "Arti",
+        "theater": "Teatro"
+      }
+    }
+  },
+  "buttons": {
+    "next": "Avanti",
+    "previous": "Indietro",
+    "nextStep": "Passo Successivo",
+    "save": "Salva il mio CV",
+    "cancel": "Annulla",
+    "reset": "Reimposta"
+  },
+  "common": {
+    "required": "Questo campo è obbligatorio",
+    "optional": "Facoltativo",
+    "confirmReset": "Sei sicuro di voler reimpostare il modulo? Tutti i dati andranno persi.",
+    "showDetails": "Mostra dettagli",
+    "hideDetails": "Nascondi dettagli",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "delete": "Elimina"
+  }
+}
+

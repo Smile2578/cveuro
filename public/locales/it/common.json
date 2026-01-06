@@ -1,0 +1,149 @@
+{
+  "title": "CVBuilder",
+  "description": "Crea il tuo CV professionale in pochi semplici passi",
+  "navigation": {
+    "home": "Home",
+    "dashboard": "I miei CV",
+    "cvgen": "Crea CV",
+    "cvedit": "Modifica CV",
+    "about": "Chi siamo",
+    "login": "Accedi",
+    "register": "Registrati",
+    "logout": "Esci",
+    "settings": "Impostazioni",
+    "profile": "Il mio profilo"
+  },
+  "landing": {
+    "tag": "Creatore di CV Europeo",
+    "title": "Crea il tuo CV professionale in pochi clic",
+    "subtitle": "Uno strumento semplice e intuitivo per creare un CV che ti rappresenta. Segui i nostri passaggi guidati e ottieni un CV professionale in pochi minuti.",
+    "mainContent": "Contenuto principale",
+    "stats": {
+      "title": "Numeri che parlano da soli",
+      "visitors": "Visitatori",
+      "cvsCreated": "CV creati da Gennaio 2025",
+      "minutes": "in media",
+      "satisfaction": "Tasso di soddisfazione",
+      "universities": "Apprezzato dalle università europee"
+    },
+    "features": {
+      "title": "Crea il tuo CV in pochi semplici passi",
+      "subtitle": "La nostra piattaforma offre tutto ciò di cui hai bisogno per creare un CV professionale adatto agli standard europei.",
+      "personalInfo": {
+        "title": "Informazioni Personali",
+        "description": "Inizia con le basi: i tuoi contatti e le informazioni essenziali"
+      },
+      "education": {
+        "title": "Formazione",
+        "description": "Metti in risalto il tuo percorso accademico e i tuoi diplomi"
+      },
+      "experience": {
+        "title": "Esperienza Professionale",
+        "description": "Dettaglia le tue esperienze e i tuoi risultati professionali"
+      },
+      "languages": {
+        "title": "Lingue",
+        "description": "Indica le lingue che padroneggi e il tuo livello"
+      },
+      "skills": {
+        "title": "Competenze",
+        "description": "Elenca le tue competenze tecniche e professionali"
+      },
+      "projects": {
+        "title": "Progetti",
+        "description": "Presenta i tuoi progetti personali e professionali"
+      }
+    },
+    "cta": {
+      "title": "Pronto a creare il tuo CV europeo?",
+      "subtitle": "Unisciti a più di 1500 studenti che hanno già creato il loro CV professionale con la nostra piattaforma."
+    }
+  },
+  "progress": {
+    "step": "Passo {current} di {total}",
+    "subStep": "Sotto-passo {current} di {total}",
+    "completion": "Progresso: {percentage}%",
+    "previous": "Precedente",
+    "next": "Successivo",
+    "clickToEdit": "Clicca per modificare",
+    "steps": {
+      "personalInfo": "Profilo",
+      "education": "Formazione",
+      "experience": "Esperienza",
+      "review": "Finalizzazione"
+    },
+    "quality": {
+      "0": "Iniziamo!",
+      "25": "Buon inizio!",
+      "50": "Continua così!",
+      "75": "Quasi finito!",
+      "100": "Ultimo passo!"
+    }
+  },
+  "buttons": {
+    "createCV": "Crea il mio CV gratis",
+    "editCV": "Modifica il mio CV",
+    "downloadCV": "Scarica il mio CV",
+    "next": "Avanti",
+    "previous": "Indietro",
+    "save": "Completa il mio CV",
+    "cancel": "Annulla",
+    "reset": "Reimposta",
+    "finish": "Fine",
+    "skip": "Salta",
+    "back": "Indietro"
+  },
+  "status": {
+    "loading": "Caricamento...",
+    "saving": "Salvataggio...",
+    "saved": "Salvato",
+    "error": "Errore",
+    "success": "Successo",
+    "completed": "Completato",
+    "incomplete": "Incompleto",
+    "required": "Obbligatorio"
+  },
+  "autoSave": {
+    "enabled": "Salvataggio automatico attivato",
+    "message": "Salvataggio automatico attivato"
+  },
+  "validation": {
+    "required": "Questo campo è obbligatorio",
+    "optional": "Facoltativo",
+    "minLength": "Minimo {min} caratteri",
+    "maxLength": "Massimo {max} caratteri",
+    "invalidFormat": "Formato non valido",
+    "futureDate": "La data non può essere nel futuro",
+    "endDateBeforeStart": "La data di fine deve essere successiva alla data di inizio"
+  },
+  "errors": {
+    "generic": "Si è verificato un errore",
+    "network": "Errore di connessione",
+    "validation": "Errore di validazione",
+    "notFound": "Pagina non trovata",
+    "unauthorized": "Non autorizzato"
+  },
+  "language": {
+    "fr": "Francese",
+    "en": "Inglese",
+    "it": "Italiano",
+    "select": "Seleziona lingua"
+  },
+  "confirmations": {
+    "reset": "Sei sicuro di voler reimpostare il modulo? Tutti i dati andranno persi.",
+    "delete": "Sei sicuro di voler eliminare questo elemento?",
+    "unsavedChanges": "Hai modifiche non salvate. Vuoi davvero uscire?"
+  },
+  "accessibility": {
+    "skipToContent": "Passa al contenuto principale"
+  },
+  "terms": {
+    "accept": "Accetto i",
+    "terms": "Termini e Condizioni d'Uso",
+    "and": "e la",
+    "privacy": "Politica sulla Privacy",
+    "error": "Devi accettare i termini per continuare",
+    "english": "Attenzione: Le università richiedono un CV in inglese! Se vedi questo messaggio, assicurati di cambiare la lingua del sito in inglese."
+  }
+}
+

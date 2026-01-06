@@ -1,0 +1,227 @@
+{
+  "required": "Questo campo è obbligatorio",
+  "email": {
+    "required": "L'indirizzo email è obbligatorio",
+    "invalid": "Indirizzo email non valido",
+    "format": "Formato previsto: esempio@dominio.com"
+  },
+  "phone": {
+    "required": "Il numero di telefono è obbligatorio",
+    "invalid": "Numero di telefono non valido",
+    "format": "Formato previsto: +39 333 123 4567 o 333 123 4567"
+  },
+  "name": {
+    "required": "Il nome è obbligatorio",
+    "minLength": "Il nome è obbligatorio e deve contenere almeno 2 caratteri",
+    "maxLength": "Il nome non può superare 50 caratteri",
+    "format": "Il nome deve contenere solo lettere"
+  },
+  "date": {
+    "required": "La data è obbligatoria",
+    "invalid": "La data non è valida",
+    "future": "La data non può essere nel futuro",
+    "past": "La data non può essere nel passato",
+    "format": "Formato previsto: MM/AAAA",
+    "endBeforeStart": "La data di fine deve essere successiva alla data di inizio",
+    "startAfterEnd": "La data di inizio deve essere precedente alla data di fine"
+  },
+  "url": {
+    "invalid": "URL non valido",
+    "format": "Formato previsto: https://www.esempio.com",
+    "required": "L'URL è obbligatorio"
+  },
+  "text": {
+    "minLength": "Il testo deve contenere almeno 2 caratteri",
+    "maxLength": "Il testo non può superare 1000 caratteri",
+    "required": "Il testo è obbligatorio"
+  },
+  "education": {
+    "school": {
+      "required": "Il nome della scuola è obbligatorio",
+      "minLength": "Il nome della scuola deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome della scuola non può superare 100 caratteri"
+    },
+    "degree": {
+      "required": "Il titolo di studio è obbligatorio",
+      "minLength": "Il titolo di studio deve contenere almeno 2 caratteri",
+      "maxLength": "Il titolo di studio non può superare 100 caratteri"
+    },
+    "customDegree": {
+      "minLength": "Il titolo di studio deve contenere almeno 2 caratteri",
+      "maxLength": "Il titolo di studio non può superare 100 caratteri",
+      "required": "Il titolo di studio è obbligatorio"
+    },
+    "startDate": {
+      "required": "La data di inizio è obbligatoria",
+      "format": "Formato data non valido (MM/AAAA)",
+      "future": "La data non può essere nel futuro"
+    },
+    "endDate": {
+      "required": "La data di fine è obbligatoria",
+      "format": "Formato data non valido (MM/AAAA)",
+      "future": "La data non può essere nel futuro",
+      "beforeStart": "La data di fine deve essere successiva alla data di inizio"
+    },
+    "fieldOfStudy": {
+      "required": "Il campo di studio è obbligatorio",
+      "minLength": "Il campo di studio deve contenere almeno 2 caratteri",
+      "maxLength": "Il campo di studio non può superare 100 caratteri"
+    },
+    "dates": {
+      "chronology": "La data di fine deve essere successiva alla data di inizio"
+    },
+    "achievements": {
+      "required": "Il risultato è obbligatorio",
+      "minLength": "Il risultato deve contenere almeno 2 caratteri",
+      "maxLength": "Il risultato non può superare 100 caratteri"
+    },
+    "maxItems": "Non puoi aggiungere più di 4 formazioni",
+    "required": "Aggiungi almeno una formazione"
+  },
+  "languages": {
+    "name": {
+      "required": "La lingua è obbligatoria",
+      "minLength": "Il nome della lingua deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome della lingua non può superare 50 caratteri"
+    },
+    "proficiency": {
+      "required": "Il livello di competenza è obbligatorio",
+      "invalid": "Livello di competenza non valido"
+    }
+  },
+  "hobbies": {
+    "minLength": "L'hobby deve contenere almeno 2 caratteri",
+    "maxLength": "L'hobby non può superare 50 caratteri",
+    "maxItems": "Non puoi aggiungere più di 5 hobby"
+  },
+  "personalInfo": {
+    "firstName": {
+      "required": "Il nome è obbligatorio",
+      "minLength": "Il nome deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome non può superare 50 caratteri",
+      "format": "Il nome deve contenere solo lettere"
+    },
+    "lastName": {
+      "required": "Il cognome è obbligatorio",
+      "minLength": "Il cognome deve contenere almeno 2 caratteri",
+      "maxLength": "Il cognome non può superare 50 caratteri",
+      "format": "Il cognome deve contenere solo lettere"
+    },
+    "email": {
+      "required": "L'indirizzo email è obbligatorio",
+      "format": "Inserisci un indirizzo email valido",
+      "maxLength": "L'email non può superare 100 caratteri"
+    },
+    "phone": {
+      "required": "Il numero di telefono è obbligatorio",
+      "format": "Inserisci un numero di telefono valido"
+    },
+    "dateOfBirth": {
+      "required": "La data di nascita è obbligatoria",
+      "format": "Formato data non valido (GG/MM/AAAA)",
+      "future": "La data non può essere nel futuro",
+      "age": "Data di nascita non valida"
+    },
+    "nationality": {
+      "required": "Seleziona almeno una nazionalità",
+      "maxLength": "Non puoi selezionare più di 3 nazionalità"
+    },
+    "sex": {
+      "required": "Seleziona il tuo sesso"
+    },
+    "gender": {
+      "required": "Seleziona il tuo genere"
+    },
+    "address": {
+      "required": "L'indirizzo è obbligatorio",
+      "maxLength": "L'indirizzo non può superare 200 caratteri"
+    },
+    "city": {
+      "required": "La città è obbligatoria",
+      "maxLength": "La città non può superare 100 caratteri"
+    },
+    "zip": {
+      "required": "Il CAP è obbligatorio",
+      "format": "Il CAP deve contenere 5 cifre"
+    },
+    "url": {
+      "required": "L'URL è obbligatorio",
+      "invalid": "URL non valido"
+    }
+  },
+  "experience": {
+    "company": {
+      "required": "Il nome dell'azienda è obbligatorio",
+      "minLength": "Il nome dell'azienda deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome dell'azienda non può superare 100 caratteri"
+    },
+    "position": {
+      "required": "La posizione è obbligatoria",
+      "minLength": "La posizione deve contenere almeno 2 caratteri",
+      "maxLength": "La posizione non può superare 100 caratteri"
+    },
+    "location": {
+      "required": "La località è obbligatoria",
+      "minLength": "La località deve contenere almeno 2 caratteri",
+      "maxLength": "La località non può superare 100 caratteri"
+    },
+    "responsibilities": {
+      "required": "La responsabilità non può essere vuota",
+      "minLength": "La responsabilità deve contenere almeno 10 caratteri",
+      "maxLength": "La responsabilità non può superare 500 caratteri"
+    },
+    "required": "Aggiungi almeno un'esperienza lavorativa"
+  },
+  "skills": {
+    "minimum": "Seleziona almeno 3 competenze",
+    "maximum": "Non puoi selezionare più di 15 competenze",
+    "name": {
+      "required": "Il nome della competenza è obbligatorio",
+      "minLength": "Il nome della competenza deve contenere almeno 2 caratteri",
+      "maxLength": "Il nome della competenza non può superare 50 caratteri"
+    },
+    "level": {
+      "required": "Il livello della competenza è obbligatorio",
+      "invalid": "Il livello selezionato non è valido"
+    },
+    "list": {
+      "min": "Devi aggiungere almeno una competenza",
+      "max": "Non puoi aggiungere più di 15 competenze"
+    }
+  },
+  "combined": {
+    "skills": {
+      "required": "È richiesta almeno una competenza",
+      "maxItems": "Non puoi aggiungere più di 15 competenze",
+      "name": {
+        "required": "Il nome della competenza è obbligatorio",
+        "minLength": "Il nome della competenza deve contenere almeno 2 caratteri",
+        "maxLength": "Il nome della competenza non può superare 50 caratteri"
+      },
+      "level": {
+        "required": "Il livello è obbligatorio",
+        "invalid": "Il livello selezionato non è valido"
+      }
+    },
+    "languages": {
+      "required": "È richiesta almeno una lingua",
+      "maxItems": "Non puoi aggiungere più di 5 lingue",
+      "name": {
+        "required": "La lingua è obbligatoria",
+        "minLength": "Il nome della lingua deve contenere almeno 2 caratteri",
+        "maxLength": "Il nome della lingua non può superare 50 caratteri"
+      },
+      "proficiency": {
+        "required": "Il livello di competenza è obbligatorio",
+        "invalid": "Il livello di competenza selezionato non è valido"
+      }
+    },
+    "hobbies": {
+      "maxItems": "Non puoi aggiungere più di 5 hobby",
+      "minLength": "L'hobby deve contenere almeno 2 caratteri",
+      "maxLength": "L'hobby non può superare 50 caratteri",
+      "required": "L'hobby è obbligatorio"
+    }
+  }
+}
+

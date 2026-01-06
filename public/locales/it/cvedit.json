@@ -1,0 +1,167 @@
+{
+  "editor": {
+    "loading": "Caricamento del tuo CV...",
+    "success": "Il tuo CV è stato aggiornato con successo!",
+    "backToForm": "Torna al modulo",
+    "dragAndDrop": "Puoi modificare l'ordine delle sezioni usando il drag and drop",
+    "noUser": "Nessun utente specificato",
+    "redirecting": "Reindirizzamento alla home page...",
+    "printError": "Si è verificato un errore durante la generazione del PDF. Riprova.",
+    "showEdit": "Mostra modalità modifica",
+    "hideEdit": "Nascondi modalità modifica",
+    "textPreview": "Puoi modificare il tuo CV qui sotto o visualizzarlo qui",
+    "viewPreview": "Visualizza anteprima",
+    "hidePreview": "Nascondi anteprima",
+    "chooseView": "Scegli una vista",
+    "chooseViewDescription": "Clicca su uno dei pulsanti sopra per visualizzare l'anteprima del tuo CV o modificarlo",
+    "chooseViewDescriptionBis": "Attenzione: L'anteprima su mobile non è ottimizzata. Scaricare il PDF ti darà una resa migliore.",
+    "editCV": "Modifica CV",
+    "print": {
+      "button": "Scarica come PDF",
+      "generating": "Generazione PDF...",
+      "error": "Riprova."
+    }
+  },
+  "sections": {
+    "personalInfo": "Informazioni Personali",
+    "education": "Formazione",
+    "experience": "Esperienza Lavorativa",
+    "skills": "Competenze",
+    "languages": "Lingue",
+    "hobbies": "Hobby",
+    "workExperience": "Esperienza Lavorativa",
+    "null": "Nullo"
+  },
+  "common": {
+    "ongoing": "In corso",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "add": "Aggiungi",
+    "dragHandle": "Sposta",
+    "select": "Seleziona",
+    "confirmDelete": "Conferma eliminazione",
+    "deleteWarning": "Sei sicuro di voler eliminare questo elemento?"
+  },
+  "personalInfo": {
+    "firstname": "Nome",
+    "lastname": "Cognome",
+    "name": "Nome Completo",
+    "email": "Email",
+    "phoneNumber": "Numero di Telefono",
+    "contact": "Contatto",
+    "address": "Indirizzo",
+    "city": "Città",
+    "zip": "CAP",
+    "dateofBirth": "Data di Nascita",
+    "placeofBirth": "Luogo di Nascita",
+    "nationality": "Nazionalità",
+    "sex": {
+      "label": "Sesso",
+      "male": "Uomo",
+      "female": "Donna",
+      "other": "Altro"
+    },
+    "linkedIn": "LinkedIn",
+    "personalWebsite": "Sito Web Personale",
+    "identity": "Identità",
+    "info": "Info",
+    "social": "Social"
+  },
+  "education": {
+    "degree": {
+      "label": "Titolo di Studio",
+      "placeholder": "Seleziona il tuo titolo di studio",
+      "minLength": "Il titolo deve contenere almeno 2 caratteri",
+      "maxLength": "Il titolo non può superare 100 caratteri",
+      "required": "Il titolo di studio è obbligatorio",
+      "error": "Il titolo di studio è obbligatorio",
+      "options": {
+        "baccalaureat": "Diploma di Scuola Superiore",
+        "licence": "Laurea Triennale",
+        "bachelor": "Laurea Triennale",
+        "master": "Laurea Magistrale",
+        "doctorat": "Dottorato",
+        "other": "Altro"
+      }
+    },
+    "customDegree": "Titolo Personalizzato",
+    "schoolName": "Nome della Scuola",
+    "fieldOfStudy": "Campo di Studio",
+    "startDate": "Data di Inizio",
+    "endDate": "Data di Fine",
+    "ongoing": "Attualmente Studente",
+    "achievements": "Risultati",
+    "add": "Aggiungi Formazione",
+    "addAchievement": "Aggiungi Risultato"
+  },
+  "experience": {
+    "position": "Posizione",
+    "companyName": "Nome dell'Azienda",
+    "location": "Località",
+    "startDate": "Data di Inizio",
+    "endDate": "Data di Fine",
+    "ongoing": "Attualmente in corso",
+    "responsibilities": "Responsabilità",
+    "add": "Aggiungi Esperienza",
+    "addResponsibility": "Aggiungi Responsabilità"
+  },
+  "skills": {
+    "skillName": "Nome della Competenza",
+    "level": "Livello",
+    "levels": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "advanced": "Avanzato",
+      "expert": "Esperto"
+    },
+    "add": "Aggiungi Competenza",
+    "name": "Nome della Competenza"
+  },
+  "languages": {
+    "language": "Lingua",
+    "proficiency": "Livello di Competenza",
+    "levels": {
+      "A1": "Base (A1)",
+      "A2": "Elementare (A2)",
+      "B1": "Intermedio (B1)",
+      "B2": "Intermedio Superiore (B2)",
+      "C1": "Avanzato (C1)",
+      "C2": "Padronanza (C2)",
+      "Native": "Madrelingua"
+    },
+    "add": "Aggiungi Lingua",
+    "test": {
+      "name": {
+        "label": "Nome del Test",
+        "placeholder": "Es: TOEFL, IELTS..."
+      },
+      "score": {
+        "label": "Punteggio del Test",
+        "placeholder": "Es: 95/120, C1..."
+      }
+    }
+  },
+  "hobbies": {
+    "hobby": "Hobby",
+    "addHobby": "Aggiungi un hobby",
+    "add": "Aggiungi Hobby"
+  },
+  "title": "Editor CV",
+  "description": "Modifica il tuo CV online",
+  "validation": {
+    "required": "Questo campo è obbligatorio",
+    "invalidEmail": "Email non valida",
+    "invalidPhone": "Numero di telefono non valido",
+    "invalidDate": "Data non valida (formato: GG/MM/AAAA)",
+    "invalidPostalCode": "CAP non valido",
+    "invalidUrl": "Formato URL non valido",
+    "dateFormat": "Formato data non valido (formato: MM/AAAA)",
+    "birthDateFormat": "Formato data non valido (formato: GG/MM/AAAA)",
+    "error": "Errore",
+    "checkFields": "Controlla i campi",
+    "zipFormat": "Formato CAP non valido (formato: 12345)"
+  }
+}
+

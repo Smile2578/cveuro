@@ -143,7 +143,7 @@ export async function register(
   const { email, password, fullName } = validatedFields.data;
   const locale = formData.get('locale') as string || 'en';
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -158,7 +158,25 @@ export async function register(
     const errorCode = mapSupabaseError(error.message);
     return {
       errorCode,
-      message: error.message, // Keep original for debugging
+      message: error.message,
+    };
+  }
+
+  // Check if user already exists (Supabase returns user with empty identities array)
+  // This happens when email is already registered and confirmed
+  if (data?.user?.identities?.length === 0) {
+    return {
+      errorCode: 'user_already_exists',
+      message: 'User already registered',
+    };
+  }
+
+  // Check if it's a re-registration (user exists but not confirmed)
+  // In this case, Supabase resends the confirmation email
+  if (data?.user && !data?.session) {
+    // This is expected - user needs to confirm email
+    return {
+      success: true,
     };
   }
 
