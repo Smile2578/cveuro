@@ -27,7 +27,12 @@ export default function LanguageSelector() {
   const currentLanguage = languages.find((lang) => lang.code === currentLocale) || languages[0];
 
   const handleLocaleChange = (newLocale: string) => {
-    const newPath = pathname.replace(`/${currentLocale}`, `/${newLocale}`);
+    // Split pathname into segments and replace the locale (first segment)
+    const segments = pathname.split('/');
+    // segments[0] is empty string (before first /), segments[1] is the locale
+    segments[1] = newLocale;
+    const newPath = segments.join('/');
+    
     const params = searchParams.toString();
     const fullPath = params ? `${newPath}?${params}` : newPath;
     router.push(fullPath);
