@@ -1,16 +1,17 @@
 'use client';
 
-import { useActionState, useState, useEffect } from 'react';
+import { useActionState, useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Loader2, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Mail, Lock, Loader2, AlertCircle, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { login, type AuthFormState } from '@/app/actions/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { getErrorKey, type AuthErrorCode } from '@/lib/auth/error-messages';
 
 interface LoginFormProps {
   locale: string;
@@ -21,6 +22,7 @@ export default function LoginForm({ locale }: LoginFormProps) {
   const searchParams = useSearchParams();
   const errorFromUrl = searchParams.get('error');
   const [guestId, setGuestId] = useState<string>('');
+  const [showPassword, setShowPassword] = useState(false);
   
   // Get guest ID from localStorage to migrate CVs after login
   useEffect(() => {
@@ -34,6 +36,16 @@ export default function LoginForm({ locale }: LoginFormProps) {
     login,
     undefined
   );
+
+  // Get translated error message
+  const errorMessage = useMemo(() => {
+    if (errorFromUrl) return errorFromUrl;
+    if (state?.errorCode) {
+      const key = getErrorKey(state.errorCode);
+      return t(key);
+    }
+    return null;
+  }, [errorFromUrl, state?.errorCode, t]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
@@ -69,13 +81,15 @@ export default function LoginForm({ locale }: LoginFormProps) {
             </div>
 
             {/* Error messages */}
-            {(errorFromUrl || state?.message) && (
-              <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-100 flex items-start gap-3">
+            {errorMessage && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 rounded-lg bg-red-50 border border-red-100 flex items-start gap-3"
+              >
                 <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">
-                  {errorFromUrl || state?.message}
-                </p>
-              </div>
+                <p className="text-sm text-red-700">{errorMessage}</p>
+              </motion.div>
             )}
 
             {/* Login Form */}
@@ -125,14 +139,27 @@ export default function LoginForm({ locale }: LoginFormProps) {
                   <Input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
+                    autoComplete="current-password"
                     className={cn(
-                      'pl-10 h-12 rounded-lg',
+                      'pl-10 pr-10 h-12 rounded-lg',
                       state?.errors?.password && 'border-red-500'
                     )}
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
                 </div>
                 {state?.errors?.password && (
                   <p className="text-sm text-red-500">

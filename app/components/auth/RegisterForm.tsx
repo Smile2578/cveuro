@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { motion } from 'framer-motion';
@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
+import { getErrorKey } from '@/lib/auth/error-messages';
 
 interface RegisterFormProps {
   locale: string;
@@ -23,6 +24,15 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
     register,
     undefined
   );
+
+  // Get translated error message
+  const errorMessage = useMemo(() => {
+    if (state?.errorCode) {
+      const key = getErrorKey(state.errorCode);
+      return t(key);
+    }
+    return null;
+  }, [state?.errorCode, t]);
 
   // Show success message
   if (state?.success) {
@@ -51,7 +61,7 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
               <h2 className="text-xl font-bold text-gray-900 mb-2">
                 {t('register.checkEmail')}
               </h2>
-              <p className="text-gray-600 mb-6">{state.message}</p>
+              <p className="text-gray-600 mb-6">{t('register.confirmationSent')}</p>
               <Link href={`/${locale}/login`}>
                 <Button variant="outline" className="w-full">
                   {t('register.backToLogin')}
@@ -98,11 +108,15 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
             </div>
 
             {/* Error message */}
-            {state?.message && !state.success && (
-              <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-100 flex items-start gap-3">
+            {errorMessage && !state?.success && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-4 rounded-lg bg-red-50 border border-red-100 flex items-start gap-3"
+              >
                 <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-red-700">{state.message}</p>
-              </div>
+                <p className="text-sm text-red-700">{errorMessage}</p>
+              </motion.div>
             )}
 
             {/* Register Form */}

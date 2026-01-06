@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { mapSupabaseError, type AuthErrorCode } from '@/lib/auth/error-messages';
 import * as z from 'zod';
 
 // ============================================================================
@@ -40,6 +41,7 @@ export type AuthFormState = {
     fullName?: string[];
   };
   message?: string;
+  errorCode?: AuthErrorCode; // Add error code for i18n
   success?: boolean;
 } | undefined;
 
@@ -74,8 +76,10 @@ export async function login(
   });
 
   if (error) {
+    const errorCode = mapSupabaseError(error.message);
     return {
-      message: error.message,
+      errorCode,
+      message: error.message, // Keep original for debugging
     };
   }
 
@@ -151,14 +155,15 @@ export async function register(
   });
 
   if (error) {
+    const errorCode = mapSupabaseError(error.message);
     return {
-      message: error.message,
+      errorCode,
+      message: error.message, // Keep original for debugging
     };
   }
 
   return {
     success: true,
-    message: 'Check your email to confirm your account.',
   };
 }
 
@@ -221,15 +226,13 @@ export async function resetPassword(
     redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/callback?next=/reset-password`,
   });
 
+  // For security, always show success message (don't reveal if email exists)
   if (error) {
-    return {
-      message: error.message,
-    };
+    console.error('Password reset error:', error.message);
   }
 
   return {
     success: true,
-    message: 'Check your email for a password reset link.',
   };
 }
 
@@ -273,7 +276,9 @@ export async function updatePassword(
   });
 
   if (error) {
+    const errorCode = mapSupabaseError(error.message);
     return {
+      errorCode,
       message: error.message,
     };
   }
