@@ -121,6 +121,8 @@ async function migrateCVsToUser(
 
 /**
  * Register with email and password
+ * For anonymous users, this converts them to permanent users using updateUser()
+ * For new users, this creates a new account using signUp()
  */
 export async function register(
   prevState: AuthFormState,
@@ -142,12 +144,44 @@ export async function register(
   const supabase = await createClient();
   const { email, password, fullName } = validatedFields.data;
   const locale = formData.get('locale') as string || 'en';
+  const isAnonymous = formData.get('isAnonymous') === 'true';
 
+  // For anonymous users, use updateUser to convert them to permanent users
+  // This keeps the same user_id, so CVs remain linked automatically
+  if (isAnonymous) {
+    // Update the email - this sends a confirmation email
+    // After email verification, user will be redirected to set-password page
+    const { error: emailError } = await supabase.auth.updateUser({
+      email,
+      data: {
+        full_name: fullName,
+      },
+    }, {
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/confirm?next=/auth/set-password`,
+    });
+
+    if (emailError) {
+      const errorCode = mapSupabaseError(emailError.message);
+      return {
+        errorCode,
+        message: emailError.message,
+      };
+    }
+
+    return {
+      success: true,
+      // Flag to indicate this is anonymous user flow
+      // The client will store the password in localStorage
+      message: 'anonymous_conversion',
+    };
+  }
+
+  // For non-anonymous users, use the standard signUp flow
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/callback`,
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/confirm?next=/dashboard`,
       data: {
         full_name: fullName,
       },

@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 import { getErrorKey } from '@/lib/auth/error-messages';
+import { useAuth } from '@/app/hooks/useAuth';
 
 interface RegisterFormProps {
   locale: string;
@@ -20,10 +21,24 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
   const t = useTranslations('auth');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { isAnonymous } = useAuth();
   const [state, formAction, isPending] = useActionState<AuthFormState, FormData>(
     register,
     undefined
   );
+  
+  // Store password in localStorage before form submission for anonymous users
+  // This will be retrieved after email confirmation on the set-password page
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (isAnonymous) {
+      const form = e.currentTarget;
+      const password = (form.elements.namedItem('password') as HTMLInputElement)?.value;
+      if (password) {
+        localStorage.setItem('pendingPassword', password);
+      }
+    }
+    // Form will continue to submit via action={formAction}
+  };
 
   // Get translated error message
   const errorMessage = useMemo(() => {
@@ -120,8 +135,9 @@ export default function RegisterForm({ locale }: RegisterFormProps) {
             )}
 
             {/* Register Form */}
-            <form action={formAction} className="space-y-5">
+            <form action={formAction} onSubmit={handleSubmit} className="space-y-5">
               <input type="hidden" name="locale" value={locale} />
+              <input type="hidden" name="isAnonymous" value={isAnonymous ? 'true' : 'false'} />
 
               {/* Full Name */}
               <div className="space-y-2">
