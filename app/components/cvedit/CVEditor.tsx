@@ -76,9 +76,10 @@ interface CVEditorProps {
   onUpdate: (data: CVData) => Promise<void>;
   showSuccess: boolean;
   locale: string;
+  autoPrint?: boolean;
 }
 
-export default function CVEditor({ cvData: initialCvData, onUpdate, showSuccess, locale }: CVEditorProps) {
+export default function CVEditor({ cvData: initialCvData, onUpdate, showSuccess, locale, autoPrint = false }: CVEditorProps) {
   const t = useTranslations('cvedit');
   const router = useRouter();
   const [selectedSection, setSelectedSection] = useState<string | null>(null);
@@ -130,6 +131,7 @@ export default function CVEditor({ cvData: initialCvData, onUpdate, showSuccess,
           data={localCvData}
           locale={locale}
           onError={handlePrintError}
+          autoPrint={autoPrint}
         />
 
         {/* Boutons de basculement */}

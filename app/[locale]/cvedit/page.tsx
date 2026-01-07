@@ -14,12 +14,12 @@ function LoadingFallback() {
 
 interface PageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ userId?: string }>;
+  searchParams: Promise<{ userId?: string; print?: string }>;
 }
 
 export default async function CVEditPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
-  const { userId } = await searchParams;
+  const { userId, print } = await searchParams;
   
   setRequestLocale(locale);
   
@@ -29,7 +29,7 @@ export default async function CVEditPage({ params, searchParams }: PageProps) {
 
   return (
     <Suspense fallback={<LoadingFallback />}>
-      <CVEditClient key={userId} locale={locale} userId={userId} />
+      <CVEditClient key={userId} locale={locale} userId={userId} autoPrint={print === 'true'} />
     </Suspense>
   );
 }

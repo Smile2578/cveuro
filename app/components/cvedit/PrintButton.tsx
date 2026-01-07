@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslations, useMessages } from 'next-intl';
 import { FileText, Loader2 } from 'lucide-react';
 import { pdf } from '@alexandernanberg/react-pdf-renderer';
@@ -22,18 +22,32 @@ interface PrintButtonProps {
   data: CVData;
   locale: string;
   onError?: (error: Error) => void;
+  autoPrint?: boolean;
 }
 
-export default function PrintButton({ data, locale, onError }: PrintButtonProps) {
+export default function PrintButton({ data, locale, onError, autoPrint = false }: PrintButtonProps) {
   const t = useTranslations('cvedit.editor.print');
   const messages = useMessages();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const hasAutoPrinted = useRef(false);
 
   // S'assurer que les polices sont bien enregistrées
   useEffect(() => {
     registerFonts();
   }, []);
+
+  // Auto-print si demandé (une seule fois)
+  useEffect(() => {
+    if (autoPrint && !hasAutoPrinted.current && data) {
+      hasAutoPrinted.current = true;
+      // Petit délai pour laisser les fonts se charger
+      const timer = setTimeout(() => {
+        handleGeneratePDF();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPrint, data]);
 
   const handleGeneratePDF = async () => {
     try {

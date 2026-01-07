@@ -77,9 +77,10 @@ interface CVEditClientProps {
   initialData?: CVData | null;
   locale: string;
   userId?: string;
+  autoPrint?: boolean;
 }
 
-export default function CVEditClient({ initialData, locale, userId }: CVEditClientProps) {
+export default function CVEditClient({ initialData, locale, userId, autoPrint = false }: CVEditClientProps) {
   const router = useRouter();
   const t = useTranslations('cvedit');
   const [showSuccess, setShowSuccess] = useState(false);
@@ -232,6 +233,7 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
                 onUpdate={handleUpdate}
                 showSuccess={showSuccess}
                 locale={locale}
+                autoPrint={autoPrint}
               />
             )}
           </motion.div>

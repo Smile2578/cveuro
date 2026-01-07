@@ -14,20 +14,12 @@ import {
   Briefcase,
   GraduationCap,
   Loader2,
-  MoreVertical,
-  Eye,
   Calendar,
   AlertTriangle,
-  Printer
+  MapPin,
+  Mail
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,14 +43,15 @@ interface CVData {
     lastName?: string;
     email?: string;
     jobTitle?: string;
+    city?: string;
   };
   has_work_exp: boolean;
   skills: Array<{ name: string }>;
   languages: Array<{ language: string }>;
   created_at: string;
   updated_at: string;
-  educations?: Array<{ school_name: string; degree: string }>;
-  work_experiences?: Array<{ company_name: string; position: string }>;
+  educations?: Array<{ school_name: string; degree: string; field_of_study?: string }>;
+  work_experiences?: Array<{ company_name: string; position: string; location?: string }>;
 }
 
 export default function DashboardPage() {
@@ -105,8 +98,8 @@ export default function DashboardPage() {
           .from('cvs')
           .select(`
             *,
-            educations (school_name, degree),
-            work_experiences (company_name, position)
+            educations (school_name, degree, field_of_study),
+            work_experiences (company_name, position, location)
           `)
           .eq('user_id', user.id)
           .order('updated_at', { ascending: false });
@@ -281,126 +274,129 @@ export default function DashboardPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-geds-blue/30 transition-all group cursor-pointer"
-                  onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all group"
                 >
-                  {/* Card Header */}
-                  <div className="p-5 pb-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 truncate group-hover:text-geds-blue transition-colors">
-                          {getCVDisplayName(cv, index)}
-                        </h3>
-                        {cv.personal_info?.jobTitle && (
-                          <p className="text-sm text-gray-500 truncate mt-0.5">
-                            {cv.personal_info.jobTitle}
-                          </p>
+                  {/* CV Preview - Mini version stylisée */}
+                  <div className="p-4 border-b border-gray-100 bg-gradient-to-br from-slate-50 to-white">
+                    {/* Header du mini-CV */}
+                    <div className="text-center mb-3 pb-3 border-b border-dashed border-gray-200">
+                      <h3 className="font-bold text-gray-900 text-lg truncate">
+                        {getFullName(cv) || getCVDisplayName(cv, index)}
+                      </h3>
+                      {cv.personal_info?.jobTitle && (
+                        <p className="text-sm text-geds-blue font-medium truncate mt-0.5">
+                          {cv.personal_info.jobTitle}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-center gap-3 mt-2 text-xs text-gray-500">
+                        {cv.personal_info?.email && (
+                          <span className="flex items-center gap-1 truncate max-w-[120px]">
+                            <Mail className="w-3 h-3 shrink-0" />
+                            <span className="truncate">{cv.personal_info.email}</span>
+                          </span>
                         )}
-                        {getFullName(cv) && (
-                          <p className="text-xs text-gray-400 truncate mt-1">
-                            {getFullName(cv)}
-                          </p>
+                        {cv.personal_info?.city && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3 shrink-0" />
+                            {cv.personal_info.city}
+                          </span>
                         )}
                       </div>
+                    </div>
+                    
+                    {/* Sections du mini-CV */}
+                    <div className="space-y-2 text-xs">
+                      {/* Expérience */}
+                      {cv.work_experiences && cv.work_experiences.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-1.5 text-gray-700 font-semibold mb-1">
+                            <Briefcase className="w-3 h-3 text-geds-green" />
+                            {locale === 'fr' ? 'Expérience' : 'Experience'}
+                          </div>
+                          <div className="pl-4 text-gray-600 truncate">
+                            {cv.work_experiences[0].position} 
+                            {cv.work_experiences[0].company_name && (
+                              <span className="text-gray-400"> - {cv.work_experiences[0].company_name}</span>
+                            )}
+                          </div>
+                          {cv.work_experiences.length > 1 && (
+                            <p className="pl-4 text-gray-400 italic">
+                              +{cv.work_experiences.length - 1} {locale === 'fr' ? 'autre(s)' : 'more'}
+                            </p>
+                          )}
+                        </div>
+                      )}
                       
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}`); }}>
-                            <Eye className="w-4 h-4 mr-2" />
-                            {locale === 'fr' ? 'Voir' : 'View'}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvgen?edit=${cv.id}`); }}>
-                            <Edit3 className="w-4 h-4 mr-2" />
-                            {locale === 'fr' ? 'Modifier' : 'Edit'}
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`); }}>
-                            <Download className="w-4 h-4 mr-2" />
-                            {locale === 'fr' ? 'Télécharger' : 'Download'}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem 
-                            onClick={(e) => { e.stopPropagation(); setCvToDelete(cv); }}
-                            className="text-red-600 focus:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            {locale === 'fr' ? 'Supprimer' : 'Delete'}
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </div>
-                  
-                  {/* Card Stats */}
-                  <div className="px-5 pb-4">
-                    <div className="flex flex-wrap gap-2">
-                      {(cv.educations?.length ?? 0) > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-blue-50 text-blue-700 text-xs">
-                          <GraduationCap className="w-3 h-3" />
-                          {cv.educations?.length} {locale === 'fr' ? 'formation' : 'education'}
-                          {(cv.educations?.length ?? 0) > 1 ? 's' : ''}
-                        </span>
+                      {/* Formation */}
+                      {cv.educations && cv.educations.length > 0 && (
+                        <div>
+                          <div className="flex items-center gap-1.5 text-gray-700 font-semibold mb-1">
+                            <GraduationCap className="w-3 h-3 text-geds-blue" />
+                            {locale === 'fr' ? 'Formation' : 'Education'}
+                          </div>
+                          <div className="pl-4 text-gray-600 truncate">
+                            {cv.educations[0].degree}
+                            {cv.educations[0].school_name && (
+                              <span className="text-gray-400"> - {cv.educations[0].school_name}</span>
+                            )}
+                          </div>
+                          {cv.educations.length > 1 && (
+                            <p className="pl-4 text-gray-400 italic">
+                              +{cv.educations.length - 1} {locale === 'fr' ? 'autre(s)' : 'more'}
+                            </p>
+                          )}
+                        </div>
                       )}
-                      {(cv.work_experiences?.length ?? 0) > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-green-50 text-green-700 text-xs">
-                          <Briefcase className="w-3 h-3" />
-                          {cv.work_experiences?.length} {locale === 'fr' ? 'expérience' : 'experience'}
-                          {(cv.work_experiences?.length ?? 0) > 1 ? 's' : ''}
-                        </span>
-                      )}
-                      {(cv.skills?.length ?? 0) > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-purple-50 text-purple-700 text-xs">
-                          {cv.skills?.length} {locale === 'fr' ? 'compétence' : 'skill'}
-                          {(cv.skills?.length ?? 0) > 1 ? 's' : ''}
-                        </span>
-                      )}
-                      {(cv.languages?.length ?? 0) > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-50 text-orange-700 text-xs">
-                          {cv.languages?.length} {locale === 'fr' ? 'langue' : 'language'}
-                          {(cv.languages?.length ?? 0) > 1 ? 's' : ''}
-                        </span>
+                      
+                      {/* Message si CV vide */}
+                      {(!cv.work_experiences || cv.work_experiences.length === 0) && 
+                       (!cv.educations || cv.educations.length === 0) && (
+                        <p className="text-center text-gray-400 italic py-2">
+                          {locale === 'fr' ? 'CV en cours de création...' : 'CV in progress...'}
+                        </p>
                       )}
                     </div>
                   </div>
                   
-                  {/* Card Footer */}
-                  <div className="px-5 py-3 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                      <Calendar className="w-3.5 h-3.5" />
+                  {/* Date de modification */}
+                  <div className="px-4 py-2 bg-gray-50 border-b border-gray-100">
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
+                      <Calendar className="w-3 h-3" />
                       <span>
                         {locale === 'fr' ? 'Modifié le' : 'Updated'} {formatDate(cv.updated_at)}
                       </span>
                     </div>
+                  </div>
+                  
+                  {/* Actions - 3 boutons clairs */}
+                  <div className="p-3 flex gap-2">
+                    <Button 
+                      size="sm"
+                      className="flex-1 bg-geds-blue hover:bg-geds-blue/90 text-white"
+                      onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}
+                    >
+                      <Edit3 className="w-3.5 h-3.5 mr-1.5" />
+                      {locale === 'fr' ? 'Voir / Modifier' : 'View / Edit'}
+                    </Button>
                     
-                    <div className="flex items-center gap-1">
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="h-7 text-xs hover:bg-geds-blue/10 hover:text-geds-blue"
-                        onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`); }}
-                      >
-                        <Printer className="w-3 h-3 mr-1" />
-                        PDF
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost" 
-                        className="h-7 text-xs hover:bg-geds-blue/10 hover:text-geds-blue"
-                        onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvgen?edit=${cv.id}`); }}
-                      >
-                        <Edit3 className="w-3 h-3 mr-1" />
-                        {locale === 'fr' ? 'Éditer' : 'Edit'}
-                      </Button>
-                    </div>
+                    <Button 
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 border-geds-green text-geds-green hover:bg-geds-green hover:text-white"
+                      onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`)}
+                    >
+                      <Download className="w-3.5 h-3.5 mr-1.5" />
+                      PDF
+                    </Button>
+                    
+                    <Button 
+                      size="sm"
+                      variant="outline"
+                      className="border-red-300 text-red-500 hover:bg-red-500 hover:text-white hover:border-red-500"
+                      onClick={() => setCvToDelete(cv)}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
                   </div>
                 </motion.div>
               ))}
@@ -419,8 +415,8 @@ export default function DashboardPage() {
             </AlertDialogTitle>
             <AlertDialogDescription>
               {locale === 'fr'
-                ? `Êtes-vous sûr de vouloir supprimer le CV de "${cvToDelete ? getFullName(cvToDelete) : ''}" ? Cette action est irréversible.`
-                : `Are you sure you want to delete the CV for "${cvToDelete ? getFullName(cvToDelete) : ''}"? This action cannot be undone.`}
+                ? `Êtes-vous sûr de vouloir supprimer "${cvToDelete ? (getFullName(cvToDelete) || getCVDisplayName(cvToDelete, cvs.findIndex(c => c.id === cvToDelete.id))) : ''}" ? Cette action est irréversible.`
+                : `Are you sure you want to delete "${cvToDelete ? (getFullName(cvToDelete) || getCVDisplayName(cvToDelete, cvs.findIndex(c => c.id === cvToDelete.id))) : ''}"? This action cannot be undone.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
