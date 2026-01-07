@@ -176,6 +176,35 @@
     "createAccountFree": "Create free account",
     "later": "Later",
     "continueAsGuest": "Continue without account"
+  },
+  "dashboard": {
+    "title": "My CVs",
+    "cvCount": "{count} CV saved",
+    "cvCountPlural": "{count} CVs saved",
+    "newCV": "New CV",
+    "noCVs": "No CVs yet",
+    "noCVsDesc": "Start creating your first professional CV in just a few minutes.",
+    "createFirst": "Create my first CV",
+    "loginRequired": "Login required",
+    "loginRequiredDesc": "Sign in to access your dashboard and manage your CVs.",
+    "updatedAt": "Updated",
+    "experience": "Experience",
+    "education": "Education",
+    "cvInProgress": "CV in progress...",
+    "other": "more",
+    "others": "more",
+    "actions": {
+      "viewEdit": "View / Edit",
+      "pdf": "PDF",
+      "delete": "Delete"
+    },
+    "deleteDialog": {
+      "title": "Delete this CV?",
+      "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "deleting": "Deleting..."
+    }
   }
 }
   

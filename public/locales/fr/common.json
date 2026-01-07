@@ -176,6 +176,35 @@
     "createAccountFree": "Créer un compte gratuit",
     "later": "Plus tard",
     "continueAsGuest": "Continuer sans compte"
+  },
+  "dashboard": {
+    "title": "Mes CV",
+    "cvCount": "{count} CV enregistré",
+    "cvCountPlural": "{count} CV enregistrés",
+    "newCV": "Nouveau CV",
+    "noCVs": "Aucun CV pour le moment",
+    "noCVsDesc": "Commencez à créer votre premier CV professionnel en quelques minutes.",
+    "createFirst": "Créer mon premier CV",
+    "loginRequired": "Connexion requise",
+    "loginRequiredDesc": "Connectez-vous pour accéder à votre tableau de bord et gérer vos CV.",
+    "updatedAt": "Modifié le",
+    "experience": "Expérience",
+    "education": "Formation",
+    "cvInProgress": "CV en cours de création...",
+    "other": "autre",
+    "others": "autres",
+    "actions": {
+      "viewEdit": "Voir / Modifier",
+      "pdf": "PDF",
+      "delete": "Supprimer"
+    },
+    "deleteDialog": {
+      "title": "Supprimer ce CV ?",
+      "description": "Êtes-vous sûr de vouloir supprimer \"{name}\" ? Cette action est irréversible.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer",
+      "deleting": "Suppression..."
+    }
   }
 }
   

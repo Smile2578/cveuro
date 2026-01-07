@@ -184,12 +184,10 @@ export default function DashboardPage() {
               <FileText className="w-8 h-8 text-geds-blue" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-4">
-              {locale === 'fr' ? 'Connexion requise' : 'Login required'}
+              {t('dashboard.loginRequired')}
             </h1>
             <p className="text-gray-600 mb-6">
-              {locale === 'fr' 
-                ? 'Connectez-vous pour accéder à votre tableau de bord et gérer vos CV.' 
-                : 'Sign in to access your dashboard and manage your CVs.'}
+              {t('dashboard.loginRequiredDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <Link href={`/${locale}/login`}>
@@ -218,19 +216,19 @@ export default function DashboardPage() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
-              {locale === 'fr' ? 'Mes CV' : 'My CVs'}
+              {t('dashboard.title')}
             </h1>
             <p className="text-gray-500 mt-1">
-              {locale === 'fr' 
-                ? `${cvs.length} CV${cvs.length > 1 ? 's' : ''} enregistré${cvs.length > 1 ? 's' : ''}`
-                : `${cvs.length} CV${cvs.length !== 1 ? 's' : ''} saved`}
+              {cvs.length > 1 
+                ? t('dashboard.cvCountPlural', { count: cvs.length })
+                : t('dashboard.cvCount', { count: cvs.length })}
             </p>
           </div>
           
           <Link href={`/${locale}/cvgen`}>
             <Button className="bg-geds-blue hover:bg-geds-blue/90 w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
-              {locale === 'fr' ? 'Nouveau CV' : 'New CV'}
+              {t('dashboard.newCV')}
             </Button>
           </Link>
         </div>
@@ -246,17 +244,15 @@ export default function DashboardPage() {
               <FileText className="w-10 h-10 text-gray-400" />
             </div>
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {locale === 'fr' ? 'Aucun CV pour le moment' : 'No CVs yet'}
+              {t('dashboard.noCVs')}
             </h2>
             <p className="text-gray-500 mb-6 max-w-md mx-auto">
-              {locale === 'fr' 
-                ? 'Commencez à créer votre premier CV professionnel en quelques minutes.'
-                : 'Start creating your first professional CV in just a few minutes.'}
+              {t('dashboard.noCVsDesc')}
             </p>
             <Link href={`/${locale}/cvgen`}>
               <Button className="bg-geds-blue hover:bg-geds-blue/90">
                 <Plus className="w-4 h-4 mr-2" />
-                {locale === 'fr' ? 'Créer mon premier CV' : 'Create my first CV'}
+                {t('dashboard.createFirst')}
               </Button>
             </Link>
           </motion.div>
@@ -311,7 +307,7 @@ export default function DashboardPage() {
                         <div>
                           <div className="flex items-center gap-1.5 text-gray-700 font-semibold mb-1">
                             <Briefcase className="w-3 h-3 text-geds-green" />
-                            {locale === 'fr' ? 'Expérience' : 'Experience'}
+                            {t('dashboard.experience')}
                           </div>
                           <div className="pl-4 text-gray-600 truncate">
                             {cv.work_experiences[0].position} 
@@ -321,7 +317,7 @@ export default function DashboardPage() {
                           </div>
                           {cv.work_experiences.length > 1 && (
                             <p className="pl-4 text-gray-400 italic">
-                              +{cv.work_experiences.length - 1} {locale === 'fr' ? 'autre(s)' : 'more'}
+                              +{cv.work_experiences.length - 1} {cv.work_experiences.length - 1 > 1 ? t('dashboard.others') : t('dashboard.other')}
                             </p>
                           )}
                         </div>
@@ -332,7 +328,7 @@ export default function DashboardPage() {
                         <div>
                           <div className="flex items-center gap-1.5 text-gray-700 font-semibold mb-1">
                             <GraduationCap className="w-3 h-3 text-geds-blue" />
-                            {locale === 'fr' ? 'Formation' : 'Education'}
+                            {t('dashboard.education')}
                           </div>
                           <div className="pl-4 text-gray-600 truncate">
                             {cv.educations[0].degree}
@@ -342,7 +338,7 @@ export default function DashboardPage() {
                           </div>
                           {cv.educations.length > 1 && (
                             <p className="pl-4 text-gray-400 italic">
-                              +{cv.educations.length - 1} {locale === 'fr' ? 'autre(s)' : 'more'}
+                              +{cv.educations.length - 1} {cv.educations.length - 1 > 1 ? t('dashboard.others') : t('dashboard.other')}
                             </p>
                           )}
                         </div>
@@ -352,7 +348,7 @@ export default function DashboardPage() {
                       {(!cv.work_experiences || cv.work_experiences.length === 0) && 
                        (!cv.educations || cv.educations.length === 0) && (
                         <p className="text-center text-gray-400 italic py-2">
-                          {locale === 'fr' ? 'CV en cours de création...' : 'CV in progress...'}
+                          {t('dashboard.cvInProgress')}
                         </p>
                       )}
                     </div>
@@ -363,7 +359,7 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-center gap-1.5 text-xs text-gray-500">
                       <Calendar className="w-3 h-3" />
                       <span>
-                        {locale === 'fr' ? 'Modifié le' : 'Updated'} {formatDate(cv.updated_at)}
+                        {t('dashboard.updatedAt')} {formatDate(cv.updated_at)}
                       </span>
                     </div>
                   </div>
@@ -376,7 +372,7 @@ export default function DashboardPage() {
                       onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}
                     >
                       <Edit3 className="w-3.5 h-3.5 mr-1.5" />
-                      {locale === 'fr' ? 'Voir / Modifier' : 'View / Edit'}
+                      {t('dashboard.actions.viewEdit')}
                     </Button>
                     
                     <Button 
@@ -386,7 +382,7 @@ export default function DashboardPage() {
                       onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`)}
                     >
                       <Download className="w-3.5 h-3.5 mr-1.5" />
-                      PDF
+                      {t('dashboard.actions.pdf')}
                     </Button>
                     
                     <Button 
@@ -411,17 +407,17 @@ export default function DashboardPage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <AlertTriangle className="w-5 h-5 text-red-500" />
-              {locale === 'fr' ? 'Supprimer ce CV ?' : 'Delete this CV?'}
+              {t('dashboard.deleteDialog.title')}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {locale === 'fr'
-                ? `Êtes-vous sûr de vouloir supprimer "${cvToDelete ? (getFullName(cvToDelete) || getCVDisplayName(cvToDelete, cvs.findIndex(c => c.id === cvToDelete.id))) : ''}" ? Cette action est irréversible.`
-                : `Are you sure you want to delete "${cvToDelete ? (getFullName(cvToDelete) || getCVDisplayName(cvToDelete, cvs.findIndex(c => c.id === cvToDelete.id))) : ''}"? This action cannot be undone.`}
+              {t('dashboard.deleteDialog.description', { 
+                name: cvToDelete ? (getFullName(cvToDelete) || getCVDisplayName(cvToDelete, cvs.findIndex(c => c.id === cvToDelete.id))) : '' 
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={!!deletingId}>
-              {locale === 'fr' ? 'Annuler' : 'Cancel'}
+              {t('dashboard.deleteDialog.cancel')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => cvToDelete && handleDeleteCV(cvToDelete)}
@@ -431,12 +427,12 @@ export default function DashboardPage() {
               {deletingId ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {locale === 'fr' ? 'Suppression...' : 'Deleting...'}
+                  {t('dashboard.deleteDialog.deleting')}
                 </>
               ) : (
                 <>
                   <Trash2 className="w-4 h-4 mr-2" />
-                  {locale === 'fr' ? 'Supprimer' : 'Delete'}
+                  {t('dashboard.deleteDialog.confirm')}
                 </>
               )}
             </AlertDialogAction>
