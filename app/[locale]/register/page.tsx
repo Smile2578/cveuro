@@ -23,9 +23,15 @@ export default async function RegisterPage({
   
   const { data: { user } } = await supabase.auth.getUser();
   
-  // Redirect if already logged in (but allow anonymous users to access register)
-  if (user && !user.is_anonymous) {
-    redirect(`/${locale}/cvgen`);
+  // Check if user is fully authenticated (not anonymous AND has email identity with password)
+  // Users who confirmed email but haven't set password should still access register
+  const hasEmailIdentity = user?.identities?.some(
+    (identity) => identity.provider === 'email'
+  );
+  
+  // Only redirect if user is fully authenticated (non-anonymous with email identity)
+  if (user && !user.is_anonymous && hasEmailIdentity) {
+    redirect(`/${locale}/dashboard`);
   }
   
   return <RegisterForm locale={locale} />;
