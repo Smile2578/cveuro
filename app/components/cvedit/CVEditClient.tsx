@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useSyncExternalStore } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -79,103 +79,64 @@ interface CVEditClientProps {
   userId?: string;
 }
 
-// External store for CV data fetching
-let cvData: CVData | null = null;
-let cvError: string | null = null;
-let cvLoading = true;
-let cvListeners: Set<() => void> = new Set();
-
-function notifyCVListeners() {
-  cvListeners.forEach(listener => listener());
-}
-
 export default function CVEditClient({ initialData, locale, userId }: CVEditClientProps) {
   const router = useRouter();
   const t = useTranslations('cvedit');
-  const fetchAttemptedRef = useRef(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [bannerDismissed, setBannerDismissed] = useState(false);
+  
+  // Local state for CV data (reset on each mount)
+  const [cvData, setCvData] = useState<CVData | null>(initialData || null);
+  const [cvError, setCvError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(!initialData);
   
   // Get authentication state
   const { isAnonymous, userId: authUserId, isInitializing } = useAuth();
 
-  // Use external store for CV data
-  const currentCVData = useSyncExternalStore(
-    (listener) => {
-      cvListeners.add(listener);
-      return () => cvListeners.delete(listener);
-    },
-    () => cvData,
-    () => null
-  );
-
-  const currentError = useSyncExternalStore(
-    (listener) => {
-      cvListeners.add(listener);
-      return () => cvListeners.delete(listener);
-    },
-    () => cvError,
-    () => null
-  );
-
-  const isLoading = useSyncExternalStore(
-    (listener) => {
-      cvListeners.add(listener);
-      return () => cvListeners.delete(listener);
-    },
-    () => cvLoading,
-    () => true
-  );
-
-  // Initialize on client side
-  if (typeof window !== 'undefined' && !fetchAttemptedRef.current && !isInitializing) {
-    fetchAttemptedRef.current = true;
-
-    // If we have initialData, use it
-    if (initialData) {
-      cvData = initialData;
-      cvLoading = false;
-      notifyCVListeners();
-    } else if (authUserId) {
-      // Fetch CV data
-      const fetchCV = async () => {
-        try {
-          const queryUserId = userId || authUserId;
-          const response = await fetch(`/api/cvedit/fetchCV?userId=${queryUserId}`, {
-            cache: 'no-store',
-          });
-          
-          if (response.status === 404) {
-            cvError = 'notFound';
-            cvLoading = false;
-            notifyCVListeners();
-            
-            setTimeout(() => {
-              router.push(`/${locale}/cvgen`);
-            }, 3000);
-            return;
-          }
-          
-          if (!response.ok) throw new Error('Failed to fetch CV data');
-          
-          const data = await response.json();
-          cvData = data;
-          cvLoading = false;
-          notifyCVListeners();
-        } catch (err) {
-          console.error("Error fetching CV data:", err);
-          cvError = 'fetch';
-          cvLoading = false;
-          notifyCVListeners();
-        }
-      };
-
-      fetchCV();
-    } else if (!userId) {
-      // No userId and no auth - redirect to home
-      router.push('/');
+  // Fetch CV data on mount
+  useEffect(() => {
+    // Skip if we have initial data or still initializing auth
+    if (initialData || isInitializing) {
+      return;
     }
-  }
+
+    const fetchCV = async () => {
+      const queryUserId = userId || authUserId;
+      
+      if (!queryUserId) {
+        router.push('/');
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/cvedit/fetchCV?userId=${queryUserId}`, {
+          cache: 'no-store',
+        });
+        
+        if (response.status === 404) {
+          setCvError('notFound');
+          setIsLoading(false);
+          
+          setTimeout(() => {
+            router.push(`/${locale}/cvgen`);
+          }, 3000);
+          return;
+        }
+        
+        if (!response.ok) throw new Error('Failed to fetch CV data');
+        
+        const data = await response.json();
+        setCvData(data);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error fetching CV data:", err);
+        setCvError('fetch');
+        setIsLoading(false);
+      }
+    };
+
+    fetchCV();
+  }, [initialData, userId, authUserId, isInitializing, locale, router]);
 
   const handleUpdate = async (updatedData: CVData) => {
     const queryUserId = userId || authUserId;
@@ -192,14 +153,12 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
 
       if (!response.ok) throw new Error('Failed to update CV');
 
-      cvData = updatedData;
-      notifyCVListeners();
+      setCvData(updatedData);
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
       console.error("Error updating CV:", err);
-      cvError = 'update';
-      notifyCVListeners();
+      setCvError('update');
     }
   };
 
@@ -232,17 +191,17 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     );
   }
 
-  if (currentError === 'notFound') {
+  if (cvError === 'notFound') {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4 bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
-        <h2 className="text-xl font-semibold text-foreground">{t('editor.noUser')}</h2>
+        <h2 className="text-xl font-semibold text-foreground">{t('editor.notFound')}</h2>
         <p className="text-muted-foreground">{t('editor.redirecting')}</p>
       </div>
     );
   }
 
   // Show banner for anonymous users (not dismissed)
-  const shouldShowBanner = isAnonymous && !bannerDismissed && currentCVData;
+  const shouldShowBanner = isAnonymous && !bannerDismissed && cvData;
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
@@ -267,9 +226,9 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
             exit="exit"
             className="flex-1"
           >
-            {currentCVData && (
+            {cvData && (
               <CVEditor 
-                cvData={currentCVData}
+                cvData={cvData}
                 onUpdate={handleUpdate}
                 showSuccess={showSuccess}
                 locale={locale}

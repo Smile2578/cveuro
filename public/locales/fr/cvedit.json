@@ -5,6 +5,7 @@
     "backToForm": "Retour au formulaire",
     "dragAndDrop": "Vous pouvez modifier l'ordre des sections par glisser-déposer",
     "noUser": "Aucun utilisateur spécifié",
+    "notFound": "CV non trouvé",
     "printError": "Une erreur est survenue lors de la génération du PDF. Veuillez réessayer.",
     "showEdit": "Afficher le mode édition",
     "hideEdit": "Masquer le mode édition",
@@ -20,7 +21,7 @@
       "button": "Télécharger le CV",
       "generating": "Génération en cours..."
     },
-    "redirecting": "Redirection vers la page d'accueil..."
+    "redirecting": "Redirection vers le générateur de CV..."
   },
   "sections": {
     "personalInfo": "Informations Personnelles",

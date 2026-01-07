@@ -11,15 +11,14 @@ import {
   Edit3, 
   Trash2, 
   Download,
-  Clock,
-  User,
   Briefcase,
   GraduationCap,
   Loader2,
   MoreVertical,
   Eye,
   Calendar,
-  AlertTriangle
+  AlertTriangle,
+  Printer
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -160,7 +159,14 @@ export default function DashboardPage() {
     const { firstName, lastName } = cv.personal_info || {};
     if (firstName && lastName) return `${firstName} ${lastName}`;
     if (firstName) return firstName;
-    return locale === 'fr' ? 'Sans nom' : 'Unnamed';
+    if (lastName) return lastName;
+    return null; // Will use CV index as fallback
+  };
+
+  const getCVDisplayName = (cv: CVData, index: number) => {
+    const fullName = getFullName(cv);
+    if (fullName) return fullName;
+    return `CV ${cvs.length - index}`; // CV 1 for the most recent, etc.
   };
 
   if (isLoading) {
@@ -275,18 +281,24 @@ export default function DashboardPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow group"
+                  className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-geds-blue/30 transition-all group cursor-pointer"
+                  onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}
                 >
                   {/* Card Header */}
                   <div className="p-5 pb-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-gray-900 truncate">
-                          {getFullName(cv)}
+                        <h3 className="font-semibold text-gray-900 truncate group-hover:text-geds-blue transition-colors">
+                          {getCVDisplayName(cv, index)}
                         </h3>
                         {cv.personal_info?.jobTitle && (
                           <p className="text-sm text-gray-500 truncate mt-0.5">
                             {cv.personal_info.jobTitle}
+                          </p>
+                        )}
+                        {getFullName(cv) && (
+                          <p className="text-xs text-gray-400 truncate mt-1">
+                            {getFullName(cv)}
                           </p>
                         )}
                       </div>
@@ -297,26 +309,27 @@ export default function DashboardPage() {
                             variant="ghost"
                             size="sm"
                             className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                            onClick={(e) => e.stopPropagation()}
                           >
                             <MoreVertical className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}>
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}`); }}>
                             <Eye className="w-4 h-4 mr-2" />
                             {locale === 'fr' ? 'Voir' : 'View'}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push(`/${locale}/cvgen?edit=${cv.id}`)}>
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvgen?edit=${cv.id}`); }}>
                             <Edit3 className="w-4 h-4 mr-2" />
                             {locale === 'fr' ? 'Modifier' : 'Edit'}
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push(`/${locale}/cvedit?userId=${cv.user_id}`)}>
+                          <DropdownMenuItem onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`); }}>
                             <Download className="w-4 h-4 mr-2" />
                             {locale === 'fr' ? 'Télécharger' : 'Download'}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
-                            onClick={() => setCvToDelete(cv)}
+                            onClick={(e) => { e.stopPropagation(); setCvToDelete(cv); }}
                             className="text-red-600 focus:text-red-600"
                           >
                             <Trash2 className="w-4 h-4 mr-2" />
@@ -368,12 +381,26 @@ export default function DashboardPage() {
                       </span>
                     </div>
                     
-                    <Link href={`/${locale}/cvedit?userId=${cv.user_id}`}>
-                      <Button size="sm" variant="ghost" className="h-7 text-xs">
-                        <Eye className="w-3 h-3 mr-1" />
-                        {locale === 'fr' ? 'Voir' : 'View'}
+                    <div className="flex items-center gap-1">
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="h-7 text-xs hover:bg-geds-blue/10 hover:text-geds-blue"
+                        onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvedit?userId=${cv.user_id}&print=true`); }}
+                      >
+                        <Printer className="w-3 h-3 mr-1" />
+                        PDF
                       </Button>
-                    </Link>
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="h-7 text-xs hover:bg-geds-blue/10 hover:text-geds-blue"
+                        onClick={(e) => { e.stopPropagation(); router.push(`/${locale}/cvgen?edit=${cv.id}`); }}
+                      >
+                        <Edit3 className="w-3 h-3 mr-1" />
+                        {locale === 'fr' ? 'Éditer' : 'Edit'}
+                      </Button>
+                    </div>
                   </div>
                 </motion.div>
               ))}
