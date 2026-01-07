@@ -123,6 +123,8 @@ async function migrateCVsToUser(
  * Register with email and password
  * For anonymous users, this converts them to permanent users using updateUser()
  * For new users, this creates a new account using signUp()
+ * 
+ * Note: Email confirmation is disabled, so users are immediately active
  */
 export async function register(
   prevState: AuthFormState,
@@ -149,31 +151,26 @@ export async function register(
   // For anonymous users, use updateUser to convert them to permanent users
   // This keeps the same user_id, so CVs remain linked automatically
   if (isAnonymous) {
-    // Update the email - this sends a confirmation email
-    // After email verification, user will be redirected to set-password page
-    const { error: emailError } = await supabase.auth.updateUser({
+    // Update email and password in one go - no email confirmation needed
+    const { error: updateError } = await supabase.auth.updateUser({
       email,
+      password,
       data: {
         full_name: fullName,
       },
-    }, {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/confirm?next=/auth/set-password`,
     });
 
-    if (emailError) {
-      const errorCode = mapSupabaseError(emailError.message);
+    if (updateError) {
+      const errorCode = mapSupabaseError(updateError.message);
       return {
         errorCode,
-        message: emailError.message,
+        message: updateError.message,
       };
     }
 
-    return {
-      success: true,
-      // Flag to indicate this is anonymous user flow
-      // The client will store the password in localStorage
-      message: 'anonymous_conversion',
-    };
+    // Success! Redirect to dashboard
+    revalidatePath('/', 'layout');
+    redirect(`/${locale}/dashboard`);
   }
 
   // For non-anonymous users, use the standard signUp flow
@@ -181,7 +178,6 @@ export async function register(
     email,
     password,
     options: {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/auth/confirm?next=/dashboard`,
       data: {
         full_name: fullName,
       },
@@ -197,7 +193,6 @@ export async function register(
   }
 
   // Check if user already exists (Supabase returns user with empty identities array)
-  // This happens when email is already registered and confirmed
   if (data?.user?.identities?.length === 0) {
     return {
       errorCode: 'user_already_exists',
@@ -205,18 +200,9 @@ export async function register(
     };
   }
 
-  // Check if it's a re-registration (user exists but not confirmed)
-  // In this case, Supabase resends the confirmation email
-  if (data?.user && !data?.session) {
-    // This is expected - user needs to confirm email
-    return {
-      success: true,
-    };
-  }
-
-  return {
-    success: true,
-  };
+  // Success! Redirect to dashboard
+  revalidatePath('/', 'layout');
+  redirect(`/${locale}/dashboard`);
 }
 
 /**
