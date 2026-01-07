@@ -5,6 +5,7 @@ import { Document, Page, Text, View, StyleSheet, Image } from '@alexandernanberg
 import { useTranslations } from 'next-intl';
 import './fonts';
 import { registerFonts } from './fonts';
+import { getNationalityLabel } from '@/app/components/cvgen/utils/Nationalities';
 
 // S'assurer que les polices sont bien enregistrées
 registerFonts();
@@ -398,7 +399,7 @@ const CVDocument = memo(function CVDocument({ data, locale }: CVDocumentProps) {
               <View style={styles.nationalityContainer}>
                 {data.personalInfo.nationality.map((nat, index) => (
                   <Text key={index} style={styles.nationalityChip}>
-                    {nat.label}
+                    {getNationalityLabel(nat.code, data.personalInfo?.sex || '', locale)}
                   </Text>
                 ))}
               </View>

@@ -53,8 +53,12 @@ export default function UserMenu({ locale }: UserMenuProps) {
     );
   }
 
-  // Not logged in - Show engaging CTA
-  if (!user) {
+  // Check if user is anonymous (guest) or not logged in
+  const isAnonymous = user?.is_anonymous ?? false;
+  const isAuthenticated = user && !isAnonymous;
+
+  // Not logged in OR anonymous user - Show engaging CTA
+  if (!isAuthenticated) {
     return (
       <div className="flex items-center gap-2">
         {/* Mobile: just icon */}
@@ -90,7 +94,7 @@ export default function UserMenu({ locale }: UserMenuProps) {
     );
   }
 
-  // Logged in
+  // Logged in (permanent user, not anonymous)
   const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
   const initials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
@@ -148,4 +152,3 @@ export default function UserMenu({ locale }: UserMenuProps) {
     </DropdownMenu>
   );
 }
-

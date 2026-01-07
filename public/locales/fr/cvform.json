@@ -115,7 +115,11 @@
         "placeholder": "Sélectionnez votre/vos nationalité(s)",
         "required": "Veuillez sélectionner au moins une nationalité",
         "maxLength": "Vous ne pouvez pas sélectionner plus de 3 nationalités",
-        "minLength": "Minimum 2 caractères"
+        "minLength": "Minimum 2 caractères",
+        "selectedSingular": "nationalité",
+        "selectedPlural": "nationalités",
+        "addAnother": "Ajouter une autre",
+        "otherNationalities": "Autres nationalités"
       },
       "gender": {
         "label": "Genre",

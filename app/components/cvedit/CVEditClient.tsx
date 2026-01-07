@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef, useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -79,83 +79,110 @@ interface CVEditClientProps {
   userId?: string;
 }
 
+// External store for CV data fetching
+let cvData: CVData | null = null;
+let cvError: string | null = null;
+let cvLoading = true;
+let cvListeners: Set<() => void> = new Set();
+
+function notifyCVListeners() {
+  cvListeners.forEach(listener => listener());
+}
+
 export default function CVEditClient({ initialData, locale, userId }: CVEditClientProps) {
-  const [cvData, setCvData] = useState<CVData | null>(initialData || null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [showBanner, setShowBanner] = useState(false);
   const router = useRouter();
   const t = useTranslations('cvedit');
   const fetchAttemptedRef = useRef(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [bannerDismissed, setBannerDismissed] = useState(false);
   
-  // Get authentication state from the auth hook
-  const { isGuest } = useAuth();
+  // Get authentication state
+  const { isAnonymous, userId: authUserId, isInitializing } = useAuth();
 
-  // Show account benefits banner for guest users after 3 seconds
-  useEffect(() => {
-    if (isGuest && !isLoading && cvData) {
-      const timer = setTimeout(() => {
-        setShowBanner(true);
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [isGuest, isLoading, cvData]);
+  // Use external store for CV data
+  const currentCVData = useSyncExternalStore(
+    (listener) => {
+      cvListeners.add(listener);
+      return () => cvListeners.delete(listener);
+    },
+    () => cvData,
+    () => null
+  );
 
-  useEffect(() => {
-    // Prevent double fetch in React 18 Strict Mode
-    if (fetchAttemptedRef.current) return;
-    
-    // If we have initialData, use it directly
-    if (initialData) {
-      setCvData(initialData);
-      setIsLoading(false);
-      return;
-    }
+  const currentError = useSyncExternalStore(
+    (listener) => {
+      cvListeners.add(listener);
+      return () => cvListeners.delete(listener);
+    },
+    () => cvError,
+    () => null
+  );
 
-    // If no userId, redirect to home
-    if (!userId) {
-      router.push('/');
-      return;
-    }
+  const isLoading = useSyncExternalStore(
+    (listener) => {
+      cvListeners.add(listener);
+      return () => cvListeners.delete(listener);
+    },
+    () => cvLoading,
+    () => true
+  );
 
-    // Fetch CV data
+  // Initialize on client side
+  if (typeof window !== 'undefined' && !fetchAttemptedRef.current && !isInitializing) {
     fetchAttemptedRef.current = true;
-    
-    const fetchCVData = async () => {
-      try {
-        const response = await fetch(`/api/cvedit/fetchCV?userId=${userId}`, {
-          cache: 'no-store', // Prevent caching issues
-        });
-        
-        if (response.status === 404) {
-          setError('notFound');
-          setTimeout(() => {
-            router.push(`/${locale}/cvgen`);
-          }, 3000);
-          return;
+
+    // If we have initialData, use it
+    if (initialData) {
+      cvData = initialData;
+      cvLoading = false;
+      notifyCVListeners();
+    } else if (authUserId) {
+      // Fetch CV data
+      const fetchCV = async () => {
+        try {
+          const queryUserId = userId || authUserId;
+          const response = await fetch(`/api/cvedit/fetchCV?userId=${queryUserId}`, {
+            cache: 'no-store',
+          });
+          
+          if (response.status === 404) {
+            cvError = 'notFound';
+            cvLoading = false;
+            notifyCVListeners();
+            
+            setTimeout(() => {
+              router.push(`/${locale}/cvgen`);
+            }, 3000);
+            return;
+          }
+          
+          if (!response.ok) throw new Error('Failed to fetch CV data');
+          
+          const data = await response.json();
+          cvData = data;
+          cvLoading = false;
+          notifyCVListeners();
+        } catch (err) {
+          console.error("Error fetching CV data:", err);
+          cvError = 'fetch';
+          cvLoading = false;
+          notifyCVListeners();
         }
-        
-        if (!response.ok) throw new Error('Failed to fetch CV data');
-        
-        const data = await response.json();
-        setCvData(data);
-      } catch (err) {
-        console.error("Error fetching CV data:", err);
-        setError('fetch');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchCVData();
-  }, [initialData, router, userId, locale]);
+      };
+
+      fetchCV();
+    } else if (!userId) {
+      // No userId and no auth - redirect to home
+      router.push('/');
+    }
+  }
 
   const handleUpdate = async (updatedData: CVData) => {
-    if (!userId) return;
+    const queryUserId = userId || authUserId;
+    if (!queryUserId) return;
 
     try {
-      const response = await fetch(`/api/cvedit/updateCV?userId=${userId}`, {
+      const response = await fetch(`/api/cvedit/updateCV?userId=${queryUserId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -165,12 +192,14 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
 
       if (!response.ok) throw new Error('Failed to update CV');
 
-      setCvData(updatedData);
+      cvData = updatedData;
+      notifyCVListeners();
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (err) {
       console.error("Error updating CV:", err);
-      setError('update');
+      cvError = 'update';
+      notifyCVListeners();
     }
   };
 
@@ -194,7 +223,7 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     }
   };
 
-  if (isLoading) {
+  if (isLoading || isInitializing) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4 bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
         <Loader2 className="w-10 h-10 animate-spin text-primary" />
@@ -203,7 +232,7 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     );
   }
 
-  if (error === 'notFound') {
+  if (currentError === 'notFound') {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4 bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
         <h2 className="text-xl font-semibold text-foreground">{t('editor.noUser')}</h2>
@@ -212,16 +241,19 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     );
   }
 
+  // Show banner for anonymous users (not dismissed)
+  const shouldShowBanner = isAnonymous && !bannerDismissed && currentCVData;
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
       <NavBar />
       <main className="flex-1 container mx-auto px-4 py-6 mt-16">
-        {/* Account benefits banner for guest users */}
-        {isGuest && showBanner && (
+        {/* Account benefits banner for anonymous users */}
+        {shouldShowBanner && (
           <div className="mb-6">
             <AccountBenefitsBanner 
               variant="inline" 
-              onDismiss={() => setShowBanner(false)}
+              onDismiss={() => setBannerDismissed(true)}
             />
           </div>
         )}
@@ -235,9 +267,9 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
             exit="exit"
             className="flex-1"
           >
-            {cvData && (
+            {currentCVData && (
               <CVEditor 
-                cvData={cvData}
+                cvData={currentCVData}
                 onUpdate={handleUpdate}
                 showSuccess={showSuccess}
                 locale={locale}
@@ -249,4 +281,3 @@ export default function CVEditClient({ initialData, locale, userId }: CVEditClie
     </div>
   );
 }
-

@@ -144,6 +144,38 @@
     "privacy": "Politique de Confidentialité",
     "error": "Vous devez accepter les conditions pour continuer",
     "english": "Attention: Les universités demandent un CV en anglais ! Veuillez changer la langue du site si vous voyez ce message."
+  },
+  "accountBenefits": {
+    "modalTitle": "Votre CV est prêt ! 🎉",
+    "modalSubtitle": "Créez un compte gratuit pour le sauvegarder",
+    "inlineTitle": "Sauvegardez votre CV",
+    "inlineDesc": "Créez un compte gratuit pour ne jamais perdre votre travail",
+    "title": "Créez un compte gratuit",
+    "subtitle": "Débloquez toutes les fonctionnalités",
+    "multipleCvs": {
+      "title": "Plusieurs CV",
+      "desc": "Créez et gérez plusieurs versions de votre CV",
+      "short": "Plusieurs CV"
+    },
+    "accessAnywhere": {
+      "title": "Accès partout",
+      "desc": "Retrouvez vos CV depuis n'importe quel appareil",
+      "short": "Accès partout"
+    },
+    "unlimitedEdits": {
+      "title": "Modifications illimitées",
+      "desc": "Revenez modifier vos CV quand vous voulez",
+      "short": "Modif. illimitées"
+    },
+    "secureData": {
+      "title": "Données sécurisées",
+      "desc": "Vos données sont chiffrées et protégées",
+      "short": "Sécurisé"
+    },
+    "createAccount": "Créer un compte",
+    "createAccountFree": "Créer un compte gratuit",
+    "later": "Plus tard",
+    "continueAsGuest": "Continuer sans compte"
   }
 }
   

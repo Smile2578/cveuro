@@ -100,7 +100,11 @@
         "label": "Nationality",
         "placeholder": "Select your nationality",
         "maxLength": "Maximum 100 characters",
-        "minLength": "Minimum 2 characters"
+        "minLength": "Minimum 2 characters",
+        "selectedSingular": "nationality",
+        "selectedPlural": "nationalities",
+        "addAnother": "Add another",
+        "otherNationalities": "Other nationalities"
       },
       "gender": {
         "label": "Gender",

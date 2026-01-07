@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, 
-  Save, 
+  FolderOpen, 
+  Globe, 
   Edit3, 
-  FileText, 
-  Sparkles, 
   Shield,
   ChevronRight 
 } from 'lucide-react';
@@ -22,70 +21,11 @@ interface AccountBenefitsBannerProps {
   showAfterDelay?: number;
 }
 
-// Fallback translations (used if next-intl fails to load)
-const translations = {
-  fr: {
-    title: "Créez un compte gratuit",
-    subtitle: "Débloquez toutes les fonctionnalités",
-    modalTitle: "Votre CV est prêt ! 🎉",
-    modalSubtitle: "Créez un compte gratuit pour le sauvegarder",
-    inlineTitle: "Sauvegardez votre CV",
-    inlineDesc: "Créez un compte gratuit pour ne jamais perdre votre travail",
-    saveTitle: "Sauvegarde automatique",
-    saveDesc: "Votre CV est sauvegardé automatiquement dans le cloud",
-    saveShort: "Sauvegarde cloud",
-    editTitle: "Modifications illimitées",
-    editDesc: "Revenez modifier votre CV quand vous voulez",
-    editShort: "Modif. illimitées",
-    coverLetterTitle: "Lettre de motivation IA",
-    coverLetterDesc: "Générez des lettres personnalisées avec l'IA",
-    coverLetterShort: "Lettre IA",
-    aiTitle: "Améliorations IA",
-    aiDesc: "Obtenez des suggestions pour améliorer votre CV",
-    aiShort: "Suggestions IA",
-    secureTitle: "Données sécurisées",
-    secureDesc: "Vos données sont chiffrées et protégées",
-    secureShort: "Sécurisé",
-    createAccount: "Créer un compte",
-    createAccountFree: "Créer un compte gratuit",
-    later: "Plus tard",
-    continueAsGuest: "Continuer sans compte"
-  },
-  en: {
-    title: "Create a free account",
-    subtitle: "Unlock all features",
-    modalTitle: "Your CV is ready! 🎉",
-    modalSubtitle: "Create a free account to save it",
-    inlineTitle: "Save your CV",
-    inlineDesc: "Create a free account to never lose your work",
-    saveTitle: "Auto-save",
-    saveDesc: "Your CV is automatically saved in the cloud",
-    saveShort: "Cloud save",
-    editTitle: "Unlimited edits",
-    editDesc: "Come back and edit your CV anytime",
-    editShort: "Unlimited edits",
-    coverLetterTitle: "AI Cover Letter",
-    coverLetterDesc: "Generate personalized cover letters with AI",
-    coverLetterShort: "AI Letter",
-    aiTitle: "AI Improvements",
-    aiDesc: "Get suggestions to improve your CV",
-    aiShort: "AI tips",
-    secureTitle: "Secure data",
-    secureDesc: "Your data is encrypted and protected",
-    secureShort: "Secure",
-    createAccount: "Create account",
-    createAccountFree: "Create free account",
-    later: "Later",
-    continueAsGuest: "Continue without account"
-  }
-};
-
 const benefits = [
-  { icon: Save, key: 'save' as const },
-  { icon: Edit3, key: 'edit' as const },
-  { icon: FileText, key: 'coverLetter' as const },
-  { icon: Sparkles, key: 'ai' as const },
-  { icon: Shield, key: 'secure' as const },
+  { icon: FolderOpen, key: 'multipleCvs' as const },
+  { icon: Globe, key: 'accessAnywhere' as const },
+  { icon: Edit3, key: 'unlimitedEdits' as const },
+  { icon: Shield, key: 'secureData' as const },
 ];
 
 export default function AccountBenefitsBanner({ 
@@ -93,8 +33,8 @@ export default function AccountBenefitsBanner({
   onDismiss,
   showAfterDelay = 0
 }: AccountBenefitsBannerProps) {
-  const locale = useLocale() as 'fr' | 'en';
-  const t = translations[locale] || translations.en;
+  const locale = useLocale();
+  const t = useTranslations('common.accountBenefits');
   const [isVisible, setIsVisible] = useState(showAfterDelay === 0);
   const [isDismissed, setIsDismissed] = useState(false);
 
@@ -145,8 +85,8 @@ export default function AccountBenefitsBanner({
             <div className="bg-gradient-to-r from-geds-blue to-geds-cyan p-4 text-white">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5" />
-                  <h3 className="font-semibold">{t.title}</h3>
+                  <FolderOpen className="w-5 h-5" />
+                  <h3 className="font-semibold">{t('title')}</h3>
                 </div>
                 <button 
                   onClick={handleDismiss}
@@ -155,7 +95,7 @@ export default function AccountBenefitsBanner({
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <p className="text-white/90 text-sm mt-1">{t.subtitle}</p>
+              <p className="text-white/90 text-sm mt-1">{t('subtitle')}</p>
             </div>
             
             <div className="p-4 space-y-3">
@@ -164,7 +104,7 @@ export default function AccountBenefitsBanner({
                   <div className="w-8 h-8 rounded-lg bg-geds-blue/10 flex items-center justify-center flex-shrink-0">
                     <Icon className="w-4 h-4 text-geds-blue" />
                   </div>
-                  <span className="text-gray-700">{t[`${key}Short` as keyof typeof t]}</span>
+                  <span className="text-gray-700">{t(`${key}.short`)}</span>
                 </div>
               ))}
             </div>
@@ -172,7 +112,7 @@ export default function AccountBenefitsBanner({
             <div className="p-4 pt-0 flex gap-2">
               <Link href={`/${locale}/register`} className="flex-1">
                 <Button className="w-full bg-geds-blue hover:bg-geds-blue/90">
-                  {t.createAccount}
+                  {t('createAccount')}
                 </Button>
               </Link>
               <Button 
@@ -180,7 +120,7 @@ export default function AccountBenefitsBanner({
                 onClick={handleDismiss}
                 className="text-gray-500"
               >
-                {t.later}
+                {t('later')}
               </Button>
             </div>
           </div>
@@ -218,11 +158,11 @@ export default function AccountBenefitsBanner({
               
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Sparkles className="w-6 h-6" />
+                  <FolderOpen className="w-6 h-6" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">{t.modalTitle}</h2>
-                  <p className="text-white/80 text-sm">{t.modalSubtitle}</p>
+                  <h2 className="text-xl font-bold">{t('modalTitle')}</h2>
+                  <p className="text-white/80 text-sm">{t('modalSubtitle')}</p>
                 </div>
               </div>
             </div>
@@ -235,8 +175,8 @@ export default function AccountBenefitsBanner({
                     <Icon className="w-5 h-5 text-geds-blue" />
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">{t[`${key}Title` as keyof typeof t]}</h4>
-                    <p className="text-sm text-gray-500">{t[`${key}Desc` as keyof typeof t]}</p>
+                    <h4 className="font-medium text-gray-900">{t(`${key}.title`)}</h4>
+                    <p className="text-sm text-gray-500">{t(`${key}.desc`)}</p>
                   </div>
                 </div>
               ))}
@@ -246,7 +186,7 @@ export default function AccountBenefitsBanner({
             <div className="p-6 pt-0 space-y-3">
               <Link href={`/${locale}/register`} className="block">
                 <Button className="w-full h-12 bg-gradient-to-r from-geds-blue to-geds-cyan hover:shadow-lg transition-shadow">
-                  {t.createAccountFree}
+                  {t('createAccountFree')}
                   <ChevronRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
@@ -255,7 +195,7 @@ export default function AccountBenefitsBanner({
                 onClick={handleDismiss}
                 className="w-full text-gray-500 hover:text-gray-700"
               >
-                {t.continueAsGuest}
+                {t('continueAsGuest')}
               </Button>
             </div>
           </motion.div>
@@ -277,16 +217,16 @@ export default function AccountBenefitsBanner({
       <div className="flex flex-col sm:flex-row sm:items-center gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Sparkles className="w-5 h-5 text-geds-blue" />
-            <h3 className="font-semibold text-gray-900">{t.inlineTitle}</h3>
+            <FolderOpen className="w-5 h-5 text-geds-blue" />
+            <h3 className="font-semibold text-gray-900">{t('inlineTitle')}</h3>
           </div>
-          <p className="text-sm text-gray-600">{t.inlineDesc}</p>
+          <p className="text-sm text-gray-600">{t('inlineDesc')}</p>
           
           <div className="flex flex-wrap gap-3 mt-3">
-            {benefits.slice(0, 4).map(({ icon: Icon, key }) => (
+            {benefits.map(({ icon: Icon, key }) => (
               <div key={key} className="flex items-center gap-1.5 text-xs text-gray-600">
                 <Icon className="w-3.5 h-3.5 text-geds-blue" />
-                <span>{t[`${key}Short` as keyof typeof t]}</span>
+                <span>{t(`${key}.short`)}</span>
               </div>
             ))}
           </div>
@@ -295,7 +235,7 @@ export default function AccountBenefitsBanner({
         <div className="flex gap-2 sm:flex-col">
           <Link href={`/${locale}/register`}>
             <Button size="sm" className="bg-geds-blue hover:bg-geds-blue/90">
-              {t.createAccount}
+              {t('createAccount')}
             </Button>
           </Link>
           <Button 

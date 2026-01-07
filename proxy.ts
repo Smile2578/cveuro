@@ -35,4 +35,3 @@ export const config = {
     '/(fr|en|it)/:path*'
   ]
 };
-

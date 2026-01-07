@@ -214,7 +214,12 @@ export default function InfoForm() {
                         {selectedNationalities.length > 0 ? (
                           <>
                             <span className="text-geds-green font-medium">{selectedNationalities.length}</span>
-                            <span>{selectedNationalities.length === 1 ? 'nationalité' : 'nationalités'} • Ajouter une autre</span>
+                            <span>
+                              {selectedNationalities.length === 1 
+                                ? t('personalInfo.info.nationality.selectedSingular') 
+                                : t('personalInfo.info.nationality.selectedPlural')
+                              } • {t('personalInfo.info.nationality.addAnother')}
+                            </span>
                           </>
                         ) : (
                           t('personalInfo.info.nationality.placeholder')
@@ -232,7 +237,7 @@ export default function InfoForm() {
                               key={nationality.code} 
                               className="px-2 py-1.5 text-xs text-muted-foreground select-none border-t my-1"
                             >
-                              Autres nationalités
+                              {t('personalInfo.info.nationality.otherNationalities')}
                             </div>
                           ) : (
                             <button

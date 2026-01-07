@@ -11,6 +11,7 @@ import {
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { getNationalityLabel } from '@/app/components/cvgen/utils/Nationalities';
 
 interface CVData {
   personalInfo?: {
@@ -101,13 +102,6 @@ export default function LiveCV({ data, locale }: LiveCVProps) {
     return phone;
   };
 
-  const formatNationality = (nationality: string, sex: string) => {
-    if (sex === 'male' && locale === 'fr') {
-      return nationality.replace(/e$/, '');
-    }
-    return nationality;
-  };
-
   const getSkillColor = (level: string) => {
     switch (level) {
       case 'expert': return 'bg-red-100 text-red-700 border-red-300';
@@ -184,7 +178,7 @@ export default function LiveCV({ data, locale }: LiveCVProps) {
                 key={index}
                 className="bg-gradient-to-r from-primary to-primary/70 text-white"
               >
-                {formatNationality(nat.label, personalInfo.sex || '')}
+                {getNationalityLabel(nat.code, personalInfo.sex || '', locale)}
               </Badge>
             ))}
           </div>

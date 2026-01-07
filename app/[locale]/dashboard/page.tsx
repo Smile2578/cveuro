@@ -40,6 +40,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { createClient } from '@/lib/supabase/client';
+import { getLegacyGuestId, clearLegacyGuestIds } from '@/lib/supabase/auth-service';
 import NavBar from '@/app/components/common/NavBar';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -82,17 +83,22 @@ export default function DashboardPage() {
       setUser(user);
       
       if (user) {
-        // Check if there's a guest ID to migrate
-        const guestId = localStorage.getItem('guestId');
-        if (guestId) {
-          // Migrate guest CVs to authenticated user
+        // Only show dashboard to permanent users (not anonymous)
+        if (user.is_anonymous) {
+          // Anonymous users should be redirected to login
+          router.push(`/${locale}/login`);
+          return;
+        }
+        
+        // Migrate legacy guest CVs if any exist
+        const legacyGuestId = getLegacyGuestId();
+        if (legacyGuestId) {
           await supabase
             .from('cvs')
             .update({ user_id: user.id })
-            .eq('user_id', guestId);
+            .eq('user_id', legacyGuestId);
           
-          // Clear the guest ID after migration
-          localStorage.removeItem('guestId');
+          clearLegacyGuestIds();
         }
         
         // Fetch CVs for this user
@@ -115,7 +121,7 @@ export default function DashboardPage() {
     };
     
     fetchData();
-  }, []);
+  }, [locale, router]);
 
   const handleDeleteCV = async (cv: CVData) => {
     setDeletingId(cv.id);
@@ -168,8 +174,8 @@ export default function DashboardPage() {
     );
   }
 
-  // Not logged in
-  if (!user) {
+  // Not logged in or anonymous user
+  if (!user || user.is_anonymous) {
     return (
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
         <NavBar />
@@ -417,4 +423,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

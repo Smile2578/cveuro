@@ -1,69 +1,27 @@
 // app/[locale]/cvgen/CVGenPageClient.tsx
 'use client';
 
-import React, { Suspense, useState, useCallback, useRef, useSyncExternalStore } from 'react';
+import React, { useState, useCallback, useRef, useSyncExternalStore } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import dynamic from 'next/dynamic';
 import { NextIntlClientProvider } from 'next-intl';
 import { useCVStore } from '../../store/cvStore';
+import { useAuth } from '../../hooks/useAuth';
 import { cn } from '@/lib/utils';
-
-// Elegant loading component matching GEDS brand
-function FormSkeleton({ className }: { className?: string }) {
-  return (
-    <div className={cn("flex flex-col items-center justify-center", className)}>
-      <div className="w-full max-w-md mx-auto space-y-4 px-4">
-        {/* Form skeleton */}
-        <div className="bg-white/50 rounded-xl p-6 space-y-4 border border-gray-100">
-          <div className="flex items-center gap-3 pb-3 border-b border-gray-100">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-geds-blue/20 to-geds-cyan/20 animate-pulse" />
-            <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
-          </div>
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="space-y-1.5">
-              <div className="h-3 w-20 bg-gray-100 rounded animate-pulse" />
-              <div className="h-10 w-full bg-gray-50 rounded-lg animate-pulse" />
-            </div>
-          ))}
-        </div>
-        {/* Loading dots */}
-        <div className="flex justify-center gap-1.5 pt-2">
-          <div className="w-2 h-2 bg-geds-blue rounded-full animate-bounce" style={{ animationDelay: '0s' }} />
-          <div className="w-2 h-2 bg-geds-cyan rounded-full animate-bounce" style={{ animationDelay: '0.15s' }} />
-          <div className="w-2 h-2 bg-geds-green rounded-full animate-bounce" style={{ animationDelay: '0.3s' }} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Dynamic imports with loading states
-const NavBar = dynamic(() => import('../../components/common/NavBar'), {
-  loading: () => <div className="h-16" />,
-  ssr: false
-});
-
-const DynamicForm = dynamic(() => import('../../components/cvgen/Form'), {
-  loading: () => <FormSkeleton className="h-[60vh]" />,
-  ssr: false
-});
-
-const DynamicWelcomeDialog = dynamic(() => import('../../components/cvgen/welcome/WelcomeDialog'), {
-  loading: () => <FormSkeleton className="h-[60vh]" />,
-  ssr: false
-});
+import NavBar from '../../components/common/NavBar';
+import Form from '../../components/cvgen/Form';
+import WelcomeDialog from '../../components/cvgen/welcome/WelcomeDialog';
 
 const pageVariants = {
   initial: { opacity: 0, y: 20 },
   animate: { 
     opacity: 1, 
     y: 0, 
-    transition: { duration: 0.5, ease: "easeOut" } 
+    transition: { duration: 0.4, ease: "easeOut" } 
   },
   exit: { 
     opacity: 0, 
     y: -20, 
-    transition: { duration: 0.3 } 
+    transition: { duration: 0.2 } 
   }
 };
 
@@ -88,18 +46,15 @@ interface CVGenPageClientProps {
 
 export default function CVGenPageClient({ locale, messages }: CVGenPageClientProps) {
   const [showWelcome, setShowWelcome] = useState(true);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isReady, setIsReady] = useState(false);
   const store = useCVStore();
   const hasFetched = useRef(false);
   const isMounted = useRef(true);
 
-  // Use useSyncExternalStore for localStorage access (no useEffect for initial check)
-  const userId = useSyncExternalStore(
-    subscribeToStorage,
-    () => getStorageSnapshot('userId'),
-    getServerSnapshot
-  );
+  // Use the new auth hook - will auto-sign in anonymously if needed
+  const { userId, isInitializing } = useAuth();
 
+  // Use useSyncExternalStore for localStorage access (welcomeSeen flag only)
   const welcomeSeen = useSyncExternalStore(
     subscribeToStorage,
     () => getStorageSnapshot('welcomeSeen'),
@@ -142,11 +97,14 @@ export default function CVGenPageClient({ locale, messages }: CVGenPageClientPro
     };
   }, []);
 
-  // Fetch CV data on mount - using startTransition pattern instead of useEffect
+  // Fetch CV data on mount - only after auth is ready
   const fetchCVData = useCallback(async () => {
-    if (!userId || hasFetched.current) {
-      setIsLoading(false);
-      setShowWelcome(!welcomeSeen);
+    // Wait for auth to be ready
+    if (isInitializing || !userId || hasFetched.current) {
+      if (!isInitializing && !userId) {
+        setIsReady(true);
+        setShowWelcome(!welcomeSeen);
+      }
       return;
     }
 
@@ -159,11 +117,18 @@ export default function CVGenPageClient({ locale, messages }: CVGenPageClientPro
         cache: 'no-store'
       });
 
-      // 404 = pas de CV existant, ce n'est pas une erreur
+      // 404 = pas de CV existant, c'est normal pour un nouvel utilisateur
       if (response.status === 404) {
         if (isMounted.current) {
+          setIsReady(true);
           setShowWelcome(!welcomeSeen);
         }
+        return;
+      }
+
+      // 401 = pas encore authentifié, réessayer plus tard
+      if (response.status === 401) {
+        hasFetched.current = false;
         return;
       }
 
@@ -179,31 +144,28 @@ export default function CVGenPageClient({ locale, messages }: CVGenPageClientPro
         store.setIsEditing(true);
         store.setUserId(userId);
         setShowWelcome(false);
+        setIsReady(true);
       }
     } catch (error) {
-      // Erreur réseau ou autre erreur réelle
       console.error('Error fetching CV:', error);
       if (isMounted.current) {
         hasFetched.current = false;
         setShowWelcome(!welcomeSeen);
-      }
-    } finally {
-      if (isMounted.current) {
-        setIsLoading(false);
+        setIsReady(true);
       }
     }
-  }, [userId, welcomeSeen, store, transformData]);
+  }, [userId, isInitializing, welcomeSeen, store, transformData]);
 
-  // Initialize on client
+  // Initialize on client - trigger fetch when auth is ready
   React.useEffect(() => {
     isMounted.current = true;
     
-    if (typeof window !== 'undefined' && !hasFetched.current) {
+    if (typeof window !== 'undefined' && !isInitializing) {
       fetchCVData();
     }
 
     return () => { isMounted.current = false; };
-  }, [fetchCVData]);
+  }, [fetchCVData, isInitializing]);
 
   const handleWelcomeClose = useCallback(() => {
     if (typeof window !== 'undefined') {
@@ -212,20 +174,16 @@ export default function CVGenPageClient({ locale, messages }: CVGenPageClientPro
     setShowWelcome(false);
   }, []);
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gradient-to-br from-gray-50 to-white">
-        <FormSkeleton className="w-full" />
-      </div>
-    );
+  // Single loading state - let loading.tsx handle initial display
+  // Only show minimal transition when ready
+  if (!isReady || isInitializing) {
+    return null; // loading.tsx handles this
   }
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)] w-full">
-        <Suspense fallback={<div className="h-16" />}>
-          <NavBar />
-        </Suspense>
+        <NavBar />
 
         <main className="flex-1 container mx-auto px-4 mt-24 mb-8">
           <div className={cn(
@@ -234,36 +192,32 @@ export default function CVGenPageClient({ locale, messages }: CVGenPageClientPro
             "p-4 sm:p-6 md:p-8",
             "max-w-3xl"
           )}>
-            <Suspense fallback={<FormSkeleton className="h-[60vh]" />}>
-              <AnimatePresence mode="wait">
-                {showWelcome ? (
-                  <motion.div
-                    key="welcome"
-                    variants={pageVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <DynamicWelcomeDialog onClose={handleWelcomeClose} />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="form"
-                    variants={pageVariants}
-                    initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <DynamicForm />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Suspense>
+            <AnimatePresence mode="wait">
+              {showWelcome ? (
+                <motion.div
+                  key="welcome"
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <WelcomeDialog onClose={handleWelcomeClose} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="form"
+                  variants={pageVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  <Form />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </main>
-
       </div>
     </NextIntlClientProvider>
   );
 }
-

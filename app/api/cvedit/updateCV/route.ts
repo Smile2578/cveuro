@@ -1,5 +1,5 @@
 // app/api/cvedit/updateCV/route.ts
-// Compatibility route for updating CV from edit page
+// Updates CV for the authenticated user
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { PersonalInfo, Education, WorkExperience, Skill, Language, CVTemplate } from '@/types/cv.types';
@@ -20,21 +20,28 @@ export async function PUT(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    if (!userId) {
+    const supabase = await createClient();
+
+    // Get the authenticated user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
       return NextResponse.json(
-        { success: false, error: 'userId is required' },
-        { status: 400 }
+        { success: false, error: 'Utilisateur non authentifié' },
+        { status: 401 }
       );
     }
 
-    const supabase = await createClient();
+    // Only allow updating own CVs
+    const queryUserId = userId && userId === user.id ? userId : user.id;
+
     const body: CVUpdateBody = await request.json();
 
     // Find existing CV
     const { data: existingCV, error: findError } = await supabase
       .from('cvs')
       .select('id')
-      .eq('user_id', userId)
+      .eq('user_id', queryUserId)
       .order('created_at', { ascending: false })
       .limit(1)
       .single();
@@ -117,7 +124,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: { userId, cvId },
+      data: { userId: queryUserId, cvId },
     });
   } catch (error) {
     console.error('API Error:', error);
@@ -127,4 +134,3 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
-

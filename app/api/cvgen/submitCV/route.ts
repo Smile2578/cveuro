@@ -1,8 +1,7 @@
 // app/api/cvgen/submitCV/route.ts
-// Compatibility route - redirects to new API
+// Creates a new CV for the authenticated user (anonymous or permanent)
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { randomBytes } from 'crypto';
 import { parse, format } from 'date-fns';
 import type { PersonalInfo, Education, WorkExperience, Skill, Language, CVTemplate } from '@/types/cv.types';
 
@@ -31,7 +30,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userId = randomBytes(16).toString('hex');
+    // Get the authenticated user (anonymous or permanent)
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json(
+        { success: false, error: 'Utilisateur non authentifié. Veuillez vous reconnecter.' },
+        { status: 401 }
+      );
+    }
+
+    const userId = user.id;
 
     // Format dates
     const formattedPersonalInfo = { ...body.personalInfo };
@@ -94,7 +103,10 @@ export async function POST(request: NextRequest) {
         };
       });
 
-      await supabase.from('educations').insert(educationInserts);
+      const { error: eduError } = await supabase.from('educations').insert(educationInserts);
+      if (eduError) {
+        console.error('Education creation error:', eduError);
+      }
     }
 
     // Create work experience entries
@@ -123,7 +135,10 @@ export async function POST(request: NextRequest) {
         };
       });
 
-      await supabase.from('work_experiences').insert(workInserts);
+      const { error: workError } = await supabase.from('work_experiences').insert(workInserts);
+      if (workError) {
+        console.error('Work experience creation error:', workError);
+      }
     }
 
     return NextResponse.json(
@@ -144,4 +159,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-

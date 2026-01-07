@@ -1,5 +1,5 @@
 // app/api/cvedit/fetchCV/route.ts
-// Compatibility route for fetching CV
+// Fetches CV for the authenticated user
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import type { PersonalInfo, Skill, Language, CVTemplate } from '@/types/cv.types';
@@ -49,20 +49,28 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
-    if (!userId) {
+    const supabase = await createClient();
+
+    // Get the authenticated user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
       return NextResponse.json(
-        { success: false, error: 'userId is required' },
-        { status: 400 }
+        { success: false, error: 'Utilisateur non authentifié' },
+        { status: 401 }
       );
     }
 
-    const supabase = await createClient();
+    // Determine which user_id to query
+    // If userId is provided and matches the authenticated user, use it
+    // Otherwise use the authenticated user's id
+    const queryUserId = userId && userId === user.id ? userId : user.id;
 
     // Find CV by user_id
     const { data: cv, error: cvError } = await supabase
       .from('cvs')
       .select('*')
-      .eq('user_id', userId)
+      .eq('user_id', queryUserId)
       .order('created_at', { ascending: false })
       .limit(1)
       .single();
@@ -137,4 +145,3 @@ export async function GET(request: NextRequest) {
     );
   }
 }
-

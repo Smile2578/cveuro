@@ -144,6 +144,38 @@
     "privacy": "Privacy Policy",
     "error": "You must accept the terms to continue !",
     "english": "Warning: Universities require a CV/Resume in English ! If you see this message make sure to leave the website in English."
+  },
+  "accountBenefits": {
+    "modalTitle": "Your CV is ready! 🎉",
+    "modalSubtitle": "Create a free account to save it",
+    "inlineTitle": "Save your CV",
+    "inlineDesc": "Create a free account to never lose your work",
+    "title": "Create a free account",
+    "subtitle": "Unlock all features",
+    "multipleCvs": {
+      "title": "Multiple CVs",
+      "desc": "Create and manage multiple versions of your CV",
+      "short": "Multiple CVs"
+    },
+    "accessAnywhere": {
+      "title": "Access anywhere",
+      "desc": "Access your CVs from any device",
+      "short": "Access anywhere"
+    },
+    "unlimitedEdits": {
+      "title": "Unlimited edits",
+      "desc": "Come back and edit your CVs anytime",
+      "short": "Unlimited edits"
+    },
+    "secureData": {
+      "title": "Secure data",
+      "desc": "Your data is encrypted and protected",
+      "short": "Secure"
+    },
+    "createAccount": "Create account",
+    "createAccountFree": "Create free account",
+    "later": "Later",
+    "continueAsGuest": "Continue without account"
   }
 }
   

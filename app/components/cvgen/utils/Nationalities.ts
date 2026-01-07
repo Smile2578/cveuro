@@ -2,12 +2,12 @@
 
 export interface Nationality {
   code: string;
-  label: string;
-  flag?: string;
+  label: string;        // Default/feminine form (for selection display)
+  labelMale?: string;   // Male form (for languages with gender)
   separator?: boolean;
 }
 
-export type SupportedLocale = 'fr' | 'en';
+export type SupportedLocale = 'fr' | 'en' | 'it';
 
 // Country code to flag emoji
 export const countryFlags: Record<string, string> = {
@@ -29,110 +29,136 @@ export const countryFlags: Record<string, string> = {
 
 export const getFlag = (code: string): string => countryFlags[code] || '🏳️';
 
+/**
+ * Get nationality label based on gender and locale
+ * @param code - Country code (e.g., 'FR', 'IT')
+ * @param sex - 'male' or 'female'
+ * @param locale - 'fr', 'en', or 'it'
+ */
+export function getNationalityLabel(code: string, sex: string, locale: string): string {
+  const localeKey = (locale === 'fr' || locale === 'en' || locale === 'it') ? locale : 'en';
+  const nationalityList = nationalities[localeKey];
+  const nationality = nationalityList.find(n => n.code === code);
+  
+  if (!nationality) return code;
+  
+  // For English, no gender distinction
+  if (locale === 'en') {
+    return nationality.label;
+  }
+  
+  // For French and Italian, use male form if available and sex is male
+  if (sex === 'male' && nationality.labelMale) {
+    return nationality.labelMale;
+  }
+  
+  return nationality.label;
+}
+
 export const nationalities: Record<SupportedLocale, Nationality[]> = {
   fr: [
     // Nationalités prioritaires
-    { code: 'FR', label: 'Française' },
-    { code: 'IT', label: 'Italienne' },
-    { code: 'BE', label: 'Belge' },
-    { code: 'CH', label: 'Suisse' },
-    { code: 'MA', label: 'Marocaine' },
-    { code: 'TN', label: 'Tunisienne' },
-    { code: 'DZ', label: 'Algérienne' },
+    { code: 'FR', label: 'Française', labelMale: 'Français' },
+    { code: 'IT', label: 'Italienne', labelMale: 'Italien' },
+    { code: 'BE', label: 'Belge' }, // Pas de changement
+    { code: 'CH', label: 'Suisse' }, // Pas de changement
+    { code: 'MA', label: 'Marocaine', labelMale: 'Marocain' },
+    { code: 'TN', label: 'Tunisienne', labelMale: 'Tunisien' },
+    { code: 'DZ', label: 'Algérienne', labelMale: 'Algérien' },
     // Séparateur
     { code: '---', label: '───────────────', separator: true },
     // Autres nationalités (ordre alphabétique)
-    { code: 'AF', label: 'Afghane' },
-    { code: 'ZA', label: 'Africaine du Sud' },
-    { code: 'AL', label: 'Albanaise' },
-    { code: 'DE', label: 'Allemande' },
-    { code: 'US', label: 'Américaine' },
-    { code: 'AD', label: 'Andorrane' },
-    { code: 'AO', label: 'Angolaise' },
-    { code: 'SA', label: 'Arabie Saoudienne' },
-    { code: 'AR', label: 'Argentine' },
-    { code: 'AM', label: 'Arménienne' },
-    { code: 'AU', label: 'Australienne' },
-    { code: 'AT', label: 'Autrichienne' },
-    { code: 'BR', label: 'Brésilienne' },
-    { code: 'GB', label: 'Britannique' },
-    { code: 'BG', label: 'Bulgare' },
-    { code: 'KH', label: 'Cambodgienne' },
-    { code: 'CM', label: 'Camerounaise' },
-    { code: 'CA', label: 'Canadienne' },
-    { code: 'CL', label: 'Chilienne' },
-    { code: 'CN', label: 'Chinoise' },
-    { code: 'CO', label: 'Colombienne' },
-    { code: 'CG', label: 'Congolaise' },
-    { code: 'KR', label: 'Coréenne du Sud' },
-    { code: 'HR', label: 'Croate' },
-    { code: 'CU', label: 'Cubaine' },
-    { code: 'DK', label: 'Danoise' },
-    { code: 'EG', label: 'Égyptienne' },
-    { code: 'AE', label: 'Émiratie' },
-    { code: 'EC', label: 'Équatorienne' },
-    { code: 'ES', label: 'Espagnole' },
-    { code: 'EE', label: 'Estonienne' },
-    { code: 'FI', label: 'Finlandaise' },
-    { code: 'GE', label: 'Géorgienne' },
-    { code: 'GH', label: 'Ghanéenne' },
-    { code: 'GR', label: 'Grecque' },
-    { code: 'GT', label: 'Guatémaltèque' },
-    { code: 'HT', label: 'Haïtienne' },
-    { code: 'HU', label: 'Hongroise' },
-    { code: 'IN', label: 'Indienne' },
-    { code: 'ID', label: 'Indonésienne' },
-    { code: 'IQ', label: 'Irakienne' },
-    { code: 'IR', label: 'Iranienne' },
-    { code: 'IE', label: 'Irlandaise' },
-    { code: 'IS', label: 'Islandaise' },
-    { code: 'IL', label: 'Israélienne' },
-    { code: 'CI', label: 'Ivoirienne' },
-    { code: 'JP', label: 'Japonaise' },
-    { code: 'JO', label: 'Jordanienne' },
-    { code: 'KZ', label: 'Kazakhe' },
-    { code: 'KE', label: 'Kényane' },
-    { code: 'LB', label: 'Libanaise' },
-    { code: 'LY', label: 'Libyenne' },
-    { code: 'LU', label: 'Luxembourgeoise' },
-    { code: 'MK', label: 'Macédonienne' },
-    { code: 'MY', label: 'Malaisienne' },
-    { code: 'ML', label: 'Malienne' },
-    { code: 'MX', label: 'Mexicaine' },
-    { code: 'MC', label: 'Monégasque' },
-    { code: 'MN', label: 'Mongole' },
-    { code: 'ME', label: 'Monténégrine' },
-    { code: 'NL', label: 'Néerlandaise' },
-    { code: 'NZ', label: 'Néo-Zélandaise' },
-    { code: 'NE', label: 'Nigérienne' },
-    { code: 'NG', label: 'Nigériane' },
-    { code: 'NO', label: 'Norvégienne' },
-    { code: 'PK', label: 'Pakistanaise' },
-    { code: 'PE', label: 'Péruvienne' },
-    { code: 'PH', label: 'Philippine' },
-    { code: 'PL', label: 'Polonaise' },
-    { code: 'PT', label: 'Portugaise' },
-    { code: 'QA', label: 'Qatarienne' },
-    { code: 'RO', label: 'Roumaine' },
-    { code: 'RU', label: 'Russe' },
-    { code: 'SN', label: 'Sénégalaise' },
-    { code: 'RS', label: 'Serbe' },
-    { code: 'SG', label: 'Singapourienne' },
-    { code: 'SK', label: 'Slovaque' },
-    { code: 'SI', label: 'Slovène' },
-    { code: 'SE', label: 'Suédoise' },
-    { code: 'TW', label: 'Taïwanaise' },
-    { code: 'TD', label: 'Tchadienne' },
-    { code: 'CZ', label: 'Tchèque' },
-    { code: 'TH', label: 'Thaïlandaise' },
-    { code: 'TR', label: 'Turque' },
-    { code: 'UA', label: 'Ukrainienne' },
-    { code: 'UY', label: 'Uruguayenne' },
-    { code: 'VE', label: 'Vénézuélienne' },
-    { code: 'VN', label: 'Vietnamienne' },
+    { code: 'AF', label: 'Afghane', labelMale: 'Afghan' },
+    { code: 'ZA', label: 'Sud-Africaine', labelMale: 'Sud-Africain' },
+    { code: 'AL', label: 'Albanaise', labelMale: 'Albanais' },
+    { code: 'DE', label: 'Allemande', labelMale: 'Allemand' },
+    { code: 'US', label: 'Américaine', labelMale: 'Américain' },
+    { code: 'AD', label: 'Andorrane', labelMale: 'Andorran' },
+    { code: 'AO', label: 'Angolaise', labelMale: 'Angolais' },
+    { code: 'SA', label: 'Saoudienne', labelMale: 'Saoudien' },
+    { code: 'AR', label: 'Argentine', labelMale: 'Argentin' },
+    { code: 'AM', label: 'Arménienne', labelMale: 'Arménien' },
+    { code: 'AU', label: 'Australienne', labelMale: 'Australien' },
+    { code: 'AT', label: 'Autrichienne', labelMale: 'Autrichien' },
+    { code: 'BR', label: 'Brésilienne', labelMale: 'Brésilien' },
+    { code: 'GB', label: 'Britannique' }, // Pas de changement
+    { code: 'BG', label: 'Bulgare' }, // Pas de changement
+    { code: 'KH', label: 'Cambodgienne', labelMale: 'Cambodgien' },
+    { code: 'CM', label: 'Camerounaise', labelMale: 'Camerounais' },
+    { code: 'CA', label: 'Canadienne', labelMale: 'Canadien' },
+    { code: 'CL', label: 'Chilienne', labelMale: 'Chilien' },
+    { code: 'CN', label: 'Chinoise', labelMale: 'Chinois' },
+    { code: 'CO', label: 'Colombienne', labelMale: 'Colombien' },
+    { code: 'CG', label: 'Congolaise', labelMale: 'Congolais' },
+    { code: 'KR', label: 'Sud-Coréenne', labelMale: 'Sud-Coréen' },
+    { code: 'HR', label: 'Croate' }, // Pas de changement
+    { code: 'CU', label: 'Cubaine', labelMale: 'Cubain' },
+    { code: 'DK', label: 'Danoise', labelMale: 'Danois' },
+    { code: 'EG', label: 'Égyptienne', labelMale: 'Égyptien' },
+    { code: 'AE', label: 'Émiratie', labelMale: 'Émirati' },
+    { code: 'EC', label: 'Équatorienne', labelMale: 'Équatorien' },
+    { code: 'ES', label: 'Espagnole', labelMale: 'Espagnol' },
+    { code: 'EE', label: 'Estonienne', labelMale: 'Estonien' },
+    { code: 'FI', label: 'Finlandaise', labelMale: 'Finlandais' },
+    { code: 'GE', label: 'Géorgienne', labelMale: 'Géorgien' },
+    { code: 'GH', label: 'Ghanéenne', labelMale: 'Ghanéen' },
+    { code: 'GR', label: 'Grecque', labelMale: 'Grec' },
+    { code: 'GT', label: 'Guatémaltèque' }, // Pas de changement
+    { code: 'HT', label: 'Haïtienne', labelMale: 'Haïtien' },
+    { code: 'HU', label: 'Hongroise', labelMale: 'Hongrois' },
+    { code: 'IN', label: 'Indienne', labelMale: 'Indien' },
+    { code: 'ID', label: 'Indonésienne', labelMale: 'Indonésien' },
+    { code: 'IQ', label: 'Irakienne', labelMale: 'Irakien' },
+    { code: 'IR', label: 'Iranienne', labelMale: 'Iranien' },
+    { code: 'IE', label: 'Irlandaise', labelMale: 'Irlandais' },
+    { code: 'IS', label: 'Islandaise', labelMale: 'Islandais' },
+    { code: 'IL', label: 'Israélienne', labelMale: 'Israélien' },
+    { code: 'CI', label: 'Ivoirienne', labelMale: 'Ivoirien' },
+    { code: 'JP', label: 'Japonaise', labelMale: 'Japonais' },
+    { code: 'JO', label: 'Jordanienne', labelMale: 'Jordanien' },
+    { code: 'KZ', label: 'Kazakhe' }, // Pas de changement
+    { code: 'KE', label: 'Kényane', labelMale: 'Kényan' },
+    { code: 'LB', label: 'Libanaise', labelMale: 'Libanais' },
+    { code: 'LY', label: 'Libyenne', labelMale: 'Libyen' },
+    { code: 'LU', label: 'Luxembourgeoise', labelMale: 'Luxembourgeois' },
+    { code: 'MK', label: 'Macédonienne', labelMale: 'Macédonien' },
+    { code: 'MY', label: 'Malaisienne', labelMale: 'Malaisien' },
+    { code: 'ML', label: 'Malienne', labelMale: 'Malien' },
+    { code: 'MX', label: 'Mexicaine', labelMale: 'Mexicain' },
+    { code: 'MC', label: 'Monégasque' }, // Pas de changement
+    { code: 'MN', label: 'Mongole' }, // Pas de changement
+    { code: 'ME', label: 'Monténégrine', labelMale: 'Monténégrin' },
+    { code: 'NL', label: 'Néerlandaise', labelMale: 'Néerlandais' },
+    { code: 'NZ', label: 'Néo-Zélandaise', labelMale: 'Néo-Zélandais' },
+    { code: 'NE', label: 'Nigérienne', labelMale: 'Nigérien' },
+    { code: 'NG', label: 'Nigériane', labelMale: 'Nigérian' },
+    { code: 'NO', label: 'Norvégienne', labelMale: 'Norvégien' },
+    { code: 'PK', label: 'Pakistanaise', labelMale: 'Pakistanais' },
+    { code: 'PE', label: 'Péruvienne', labelMale: 'Péruvien' },
+    { code: 'PH', label: 'Philippine', labelMale: 'Philippin' },
+    { code: 'PL', label: 'Polonaise', labelMale: 'Polonais' },
+    { code: 'PT', label: 'Portugaise', labelMale: 'Portugais' },
+    { code: 'QA', label: 'Qatarienne', labelMale: 'Qatarien' },
+    { code: 'RO', label: 'Roumaine', labelMale: 'Roumain' },
+    { code: 'RU', label: 'Russe' }, // Pas de changement
+    { code: 'SN', label: 'Sénégalaise', labelMale: 'Sénégalais' },
+    { code: 'RS', label: 'Serbe' }, // Pas de changement
+    { code: 'SG', label: 'Singapourienne', labelMale: 'Singapourien' },
+    { code: 'SK', label: 'Slovaque' }, // Pas de changement
+    { code: 'SI', label: 'Slovène' }, // Pas de changement
+    { code: 'SE', label: 'Suédoise', labelMale: 'Suédois' },
+    { code: 'TW', label: 'Taïwanaise', labelMale: 'Taïwanais' },
+    { code: 'TD', label: 'Tchadienne', labelMale: 'Tchadien' },
+    { code: 'CZ', label: 'Tchèque' }, // Pas de changement
+    { code: 'TH', label: 'Thaïlandaise', labelMale: 'Thaïlandais' },
+    { code: 'TR', label: 'Turque', labelMale: 'Turc' },
+    { code: 'UA', label: 'Ukrainienne', labelMale: 'Ukrainien' },
+    { code: 'UY', label: 'Uruguayenne', labelMale: 'Uruguayen' },
+    { code: 'VE', label: 'Vénézuélienne', labelMale: 'Vénézuélien' },
+    { code: 'VN', label: 'Vietnamienne', labelMale: 'Vietnamien' },
   ],
   en: [
-    // Priority nationalities
+    // Priority nationalities - No gender in English
     { code: 'FR', label: 'French' },
     { code: 'IT', label: 'Italian' },
     { code: 'BE', label: 'Belgian' },
@@ -194,7 +220,7 @@ export const nationalities: Record<SupportedLocale, Nationality[]> = {
     { code: 'JO', label: 'Jordanian' },
     { code: 'KZ', label: 'Kazakh' },
     { code: 'KE', label: 'Kenyan' },
-    { code: 'KR', label: 'Korean' },
+    { code: 'KR', label: 'South Korean' },
     { code: 'LB', label: 'Lebanese' },
     { code: 'LY', label: 'Libyan' },
     { code: 'LU', label: 'Luxembourgish' },
@@ -211,7 +237,7 @@ export const nationalities: Record<SupportedLocale, Nationality[]> = {
     { code: 'NO', label: 'Norwegian' },
     { code: 'PK', label: 'Pakistani' },
     { code: 'PE', label: 'Peruvian' },
-    { code: 'PH', label: 'Philippine' },
+    { code: 'PH', label: 'Filipino' },
     { code: 'PL', label: 'Polish' },
     { code: 'PT', label: 'Portuguese' },
     { code: 'QA', label: 'Qatari' },
@@ -233,5 +259,106 @@ export const nationalities: Record<SupportedLocale, Nationality[]> = {
     { code: 'UY', label: 'Uruguayan' },
     { code: 'VE', label: 'Venezuelan' },
     { code: 'VN', label: 'Vietnamese' },
+  ],
+  it: [
+    // Nazionalità prioritarie
+    { code: 'FR', label: 'Francese' },
+    { code: 'IT', label: 'Italiana', labelMale: 'Italiano' },
+    { code: 'BE', label: 'Belga' },
+    { code: 'CH', label: 'Svizzera', labelMale: 'Svizzero' },
+    { code: 'MA', label: 'Marocchina', labelMale: 'Marocchino' },
+    { code: 'TN', label: 'Tunisina', labelMale: 'Tunisino' },
+    { code: 'DZ', label: 'Algerina', labelMale: 'Algerino' },
+    // Separatore
+    { code: '---', label: '───────────────', separator: true },
+    // Altre nazionalità (ordine alfabetico)
+    { code: 'AF', label: 'Afghana', labelMale: 'Afghano' },
+    { code: 'ZA', label: 'Sudafricana', labelMale: 'Sudafricano' },
+    { code: 'AL', label: 'Albanese' },
+    { code: 'DE', label: 'Tedesca', labelMale: 'Tedesco' },
+    { code: 'US', label: 'Americana', labelMale: 'Americano' },
+    { code: 'AD', label: 'Andorrana', labelMale: 'Andorrano' },
+    { code: 'AO', label: 'Angolana', labelMale: 'Angolano' },
+    { code: 'SA', label: 'Saudita' },
+    { code: 'AR', label: 'Argentina', labelMale: 'Argentino' },
+    { code: 'AM', label: 'Armena', labelMale: 'Armeno' },
+    { code: 'AU', label: 'Australiana', labelMale: 'Australiano' },
+    { code: 'AT', label: 'Austriaca', labelMale: 'Austriaco' },
+    { code: 'BR', label: 'Brasiliana', labelMale: 'Brasiliano' },
+    { code: 'GB', label: 'Britannica', labelMale: 'Britannico' },
+    { code: 'BG', label: 'Bulgara', labelMale: 'Bulgaro' },
+    { code: 'KH', label: 'Cambogiana', labelMale: 'Cambogiano' },
+    { code: 'CM', label: 'Camerunese' },
+    { code: 'CA', label: 'Canadese' },
+    { code: 'CL', label: 'Cilena', labelMale: 'Cileno' },
+    { code: 'CN', label: 'Cinese' },
+    { code: 'CO', label: 'Colombiana', labelMale: 'Colombiano' },
+    { code: 'CG', label: 'Congolese' },
+    { code: 'KR', label: 'Sudcoreana', labelMale: 'Sudcoreano' },
+    { code: 'HR', label: 'Croata' },
+    { code: 'CU', label: 'Cubana', labelMale: 'Cubano' },
+    { code: 'DK', label: 'Danese' },
+    { code: 'EG', label: 'Egiziana', labelMale: 'Egiziano' },
+    { code: 'AE', label: 'Emiratina', labelMale: 'Emiratino' },
+    { code: 'EC', label: 'Ecuadoriana', labelMale: 'Ecuadoriano' },
+    { code: 'ES', label: 'Spagnola', labelMale: 'Spagnolo' },
+    { code: 'EE', label: 'Estone' },
+    { code: 'FI', label: 'Finlandese' },
+    { code: 'GE', label: 'Georgiana', labelMale: 'Georgiano' },
+    { code: 'GH', label: 'Ghanese' },
+    { code: 'GR', label: 'Greca', labelMale: 'Greco' },
+    { code: 'GT', label: 'Guatemalteca', labelMale: 'Guatemalteco' },
+    { code: 'HT', label: 'Haitiana', labelMale: 'Haitiano' },
+    { code: 'HU', label: 'Ungherese' },
+    { code: 'IN', label: 'Indiana', labelMale: 'Indiano' },
+    { code: 'ID', label: 'Indonesiana', labelMale: 'Indonesiano' },
+    { code: 'IQ', label: 'Irachena', labelMale: 'Iracheno' },
+    { code: 'IR', label: 'Iraniana', labelMale: 'Iraniano' },
+    { code: 'IE', label: 'Irlandese' },
+    { code: 'IS', label: 'Islandese' },
+    { code: 'IL', label: 'Israeliana', labelMale: 'Israeliano' },
+    { code: 'CI', label: 'Ivoriana', labelMale: 'Ivoriano' },
+    { code: 'JP', label: 'Giapponese' },
+    { code: 'JO', label: 'Giordana', labelMale: 'Giordano' },
+    { code: 'KZ', label: 'Kazaka', labelMale: 'Kazako' },
+    { code: 'KE', label: 'Keniota' },
+    { code: 'LB', label: 'Libanese' },
+    { code: 'LY', label: 'Libica', labelMale: 'Libico' },
+    { code: 'LU', label: 'Lussemburghese' },
+    { code: 'MK', label: 'Macedone' },
+    { code: 'MY', label: 'Malese' },
+    { code: 'ML', label: 'Maliana', labelMale: 'Maliano' },
+    { code: 'MX', label: 'Messicana', labelMale: 'Messicano' },
+    { code: 'MC', label: 'Monegasca', labelMale: 'Monegasco' },
+    { code: 'MN', label: 'Mongola', labelMale: 'Mongolo' },
+    { code: 'ME', label: 'Montenegrina', labelMale: 'Montenegrino' },
+    { code: 'NL', label: 'Olandese' },
+    { code: 'NZ', label: 'Neozelandese' },
+    { code: 'NE', label: 'Nigerina', labelMale: 'Nigerino' },
+    { code: 'NG', label: 'Nigeriana', labelMale: 'Nigeriano' },
+    { code: 'NO', label: 'Norvegese' },
+    { code: 'PK', label: 'Pakistana', labelMale: 'Pakistano' },
+    { code: 'PE', label: 'Peruviana', labelMale: 'Peruviano' },
+    { code: 'PH', label: 'Filippina', labelMale: 'Filippino' },
+    { code: 'PL', label: 'Polacca', labelMale: 'Polacco' },
+    { code: 'PT', label: 'Portoghese' },
+    { code: 'QA', label: 'Qatariota' },
+    { code: 'RO', label: 'Rumena', labelMale: 'Rumeno' },
+    { code: 'RU', label: 'Russa', labelMale: 'Russo' },
+    { code: 'SN', label: 'Senegalese' },
+    { code: 'RS', label: 'Serba', labelMale: 'Serbo' },
+    { code: 'SG', label: 'Singaporiana', labelMale: 'Singaporiano' },
+    { code: 'SK', label: 'Slovacca', labelMale: 'Slovacco' },
+    { code: 'SI', label: 'Slovena', labelMale: 'Sloveno' },
+    { code: 'SE', label: 'Svedese' },
+    { code: 'TW', label: 'Taiwanese' },
+    { code: 'TD', label: 'Ciadiana', labelMale: 'Ciadiano' },
+    { code: 'CZ', label: 'Ceca', labelMale: 'Ceco' },
+    { code: 'TH', label: 'Tailandese' },
+    { code: 'TR', label: 'Turca', labelMale: 'Turco' },
+    { code: 'UA', label: 'Ucraina', labelMale: 'Ucraino' },
+    { code: 'UY', label: 'Uruguaiana', labelMale: 'Uruguaiano' },
+    { code: 'VE', label: 'Venezuelana', labelMale: 'Venezuelano' },
+    { code: 'VN', label: 'Vietnamita' },
   ],
 };

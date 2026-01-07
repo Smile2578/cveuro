@@ -100,7 +100,11 @@
         "label": "Nazionalità",
         "placeholder": "Seleziona la tua nazionalità",
         "maxLength": "Massimo 100 caratteri",
-        "minLength": "Minimo 2 caratteri"
+        "minLength": "Minimo 2 caratteri",
+        "selectedSingular": "nazionalità",
+        "selectedPlural": "nazionalità",
+        "addAnother": "Aggiungi un'altra",
+        "otherNationalities": "Altre nazionalità"
       },
       "gender": {
         "label": "Sesso",

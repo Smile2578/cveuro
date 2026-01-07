@@ -23,8 +23,8 @@ export default async function RegisterPage({
   
   const { data: { user } } = await supabase.auth.getUser();
   
-  // Redirect if already logged in
-  if (user) {
+  // Redirect if already logged in (but allow anonymous users to access register)
+  if (user && !user.is_anonymous) {
     redirect(`/${locale}/cvgen`);
   }
   
