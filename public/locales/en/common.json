@@ -143,7 +143,8 @@
     "and": "and the",
     "privacy": "Privacy Policy",
     "error": "You must accept the terms to continue !",
-    "english": "Warning: Universities require a CV/Resume in English ! If you see this message make sure to leave the website in English."
+    "english": "Warning: Universities require a CV/Resume in English ! If you see this message make sure to leave the website in English.",
+    "clickAccept": "By clicking this button, you accept the"
   },
   "languageModal": {
     "title": "Choose the language of your CV",

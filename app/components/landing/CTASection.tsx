@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -89,6 +90,18 @@ export default function CTASection() {
               {t('buttons.createCV')}
               <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
+            
+            {/* Terms acceptance notice */}
+            <p className="text-xs text-white/70 mt-3 leading-relaxed">
+              {t('terms.clickAccept')}{' '}
+              <Link href="/terms" className="text-white hover:underline font-medium">
+                {t('terms.terms')}
+              </Link>
+              {' '}{t('terms.and')}{' '}
+              <Link href="/privacy" className="text-white hover:underline font-medium">
+                {t('terms.privacy')}
+              </Link>
+            </p>
           </motion.div>
 
           <motion.p 

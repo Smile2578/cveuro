@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { AlertTriangle, Globe, CheckCircle2 } from 'lucide-react';
 
@@ -186,26 +185,6 @@ export default function LanguageChoiceModal({ open, onOpenChange }: LanguageChoi
                   <span className="text-sm font-medium text-gray-600">Italiano</span>
                 </button>
               </div>
-
-              {/* Terms acceptance notice */}
-              <p className="text-xs text-center text-gray-500 leading-relaxed">
-                {t('languageModal.termsNotice')}{' '}
-                <Link 
-                  href="/terms" 
-                  className="text-geds-blue hover:underline font-medium"
-                  target="_blank"
-                >
-                  {t('terms.terms')}
-                </Link>
-                {' '}{t('terms.and')}{' '}
-                <Link 
-                  href="/privacy" 
-                  className="text-geds-blue hover:underline font-medium"
-                  target="_blank"
-                >
-                  {t('terms.privacy')}
-                </Link>
-              </p>
             </>
           ) : (
             <>
@@ -219,7 +198,7 @@ export default function LanguageChoiceModal({ open, onOpenChange }: LanguageChoi
                 </p>
               </div>
 
-              <div className="flex flex-col gap-3 mb-6">
+              <div className="flex flex-col gap-3">
                 <Button
                   onClick={handleSwitchToEnglish}
                   disabled={isNavigating}
@@ -238,26 +217,6 @@ export default function LanguageChoiceModal({ open, onOpenChange }: LanguageChoi
                   {t('languageModal.continueInOther', { language: selectedLangLabel })}
                 </Button>
               </div>
-
-              {/* Terms acceptance notice */}
-              <p className="text-xs text-center text-gray-500 leading-relaxed">
-                {t('languageModal.termsNotice')}{' '}
-                <Link 
-                  href="/terms" 
-                  className="text-geds-blue hover:underline font-medium"
-                  target="_blank"
-                >
-                  {t('terms.terms')}
-                </Link>
-                {' '}{t('terms.and')}{' '}
-                <Link 
-                  href="/privacy" 
-                  className="text-geds-blue hover:underline font-medium"
-                  target="_blank"
-                >
-                  {t('terms.privacy')}
-                </Link>
-              </p>
             </>
           )}
         </div>

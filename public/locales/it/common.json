@@ -143,7 +143,8 @@
     "and": "e la",
     "privacy": "Politica sulla Privacy",
     "error": "Devi accettare i termini per continuare",
-    "english": "Attenzione: Le università richiedono un CV in inglese! Se vedi questo messaggio, assicurati di cambiare la lingua del sito in inglese."
+    "english": "Attenzione: Le università richiedono un CV in inglese! Se vedi questo messaggio, assicurati di cambiare la lingua del sito in inglese.",
+    "clickAccept": "Cliccando su questo pulsante, accetti i"
   },
   "languageModal": {
     "title": "Scegli la lingua del tuo CV",

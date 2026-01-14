@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 
@@ -101,6 +102,18 @@ export default function HeroSection() {
                 {t('buttons.createCV')}
                 <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
+              
+              {/* Terms acceptance notice */}
+              <p className="text-xs text-center lg:text-left text-gray-500 mt-3 leading-relaxed">
+                {t('terms.clickAccept')}{' '}
+                <Link href="/terms" className="text-geds-blue hover:underline font-medium">
+                  {t('terms.terms')}
+                </Link>
+                {' '}{t('terms.and')}{' '}
+                <Link href="/privacy" className="text-geds-blue hover:underline font-medium">
+                  {t('terms.privacy')}
+                </Link>
+              </p>
             </motion.div>
           </motion.div>
 
