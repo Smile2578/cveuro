@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, Loader2 } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useCVStore } from '@/app/store/cvStore';
 import { cn } from '@/lib/utils';
+import { useCVStore } from '@/app/store/cvStore';
+import LanguageChoiceModal from '@/app/components/cvgen/LanguageChoiceModal';
 
 // Animation variants
 const fadeInUp = {
@@ -24,16 +25,22 @@ const staggerContainer = {
 };
 
 export default function CTASection() {
-  const router = useRouter();
   const t = useTranslations('common');
-  const [isLoading, setIsLoading] = useState(false);
+  const locale = useLocale();
+  const router = useRouter();
   const { resetForm } = useCVStore();
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const handleCreateCV = useCallback(() => {
-    setIsLoading(true);
-    resetForm();
-    router.push('/cvgen');
-  }, [resetForm, router]);
+    // Si déjà en anglais, naviguer directement sans modal
+    if (locale === 'en') {
+      resetForm();
+      router.push('/en/cvgen');
+      return;
+    }
+    // Sinon, afficher la modal de choix de langue
+    setShowLanguageModal(true);
+  }, [locale, resetForm, router]);
 
   return (
     <section className="py-20 relative overflow-hidden">
@@ -74,20 +81,13 @@ export default function CTASection() {
             <Button
               size="lg"
               onClick={handleCreateCV}
-              disabled={isLoading}
               className={cn(
                 "group px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto",
                 "btn-geds-white"
               )}
             >
-              {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  {t('buttons.createCV')}
-                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-                </>
-              )}
+              {t('buttons.createCV')}
+              <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </motion.div>
 
@@ -99,6 +99,12 @@ export default function CTASection() {
           </motion.p>
         </motion.div>
       </div>
+
+      {/* Language Choice Modal */}
+      <LanguageChoiceModal 
+        open={showLanguageModal} 
+        onOpenChange={setShowLanguageModal} 
+      />
     </section>
   );
 }

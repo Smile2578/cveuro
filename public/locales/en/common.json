@@ -145,6 +145,15 @@
     "error": "You must accept the terms to continue !",
     "english": "Warning: Universities require a CV/Resume in English ! If you see this message make sure to leave the website in English."
   },
+  "languageModal": {
+    "title": "Choose the language of your CV",
+    "description": "European universities generally require a CV written in English.",
+    "recommended": "Recommended",
+    "termsNotice": "By continuing, you accept the",
+    "otherLanguageWarning": "Warning: Most partner universities only accept CVs in English. Are you sure you want to continue in {language}?",
+    "switchToEnglish": "Switch to English",
+    "continueInOther": "Continue in {language}"
+  },
   "accountBenefits": {
     "modalTitle": "Your CV is ready! 🎉",
     "modalSubtitle": "Create a free account to save it",

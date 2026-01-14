@@ -1,19 +1,17 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { useCVStore } from '@/app/store/cvStore';
 import { cn } from '@/lib/utils';
+import { useCVStore } from '@/app/store/cvStore';
+import LanguageChoiceModal from '@/app/components/cvgen/LanguageChoiceModal';
 
 // Animation variants
 const fadeInUp = {
@@ -30,27 +28,22 @@ const staggerContainer = {
 };
 
 export default function HeroSection() {
-  const router = useRouter();
   const t = useTranslations('common');
-  const [isLoading, setIsLoading] = useState(false);
+  const locale = useLocale();
+  const router = useRouter();
   const { resetForm } = useCVStore();
-  const [termsAccepted, setTermsAccepted] = useState(false);
-  const [showError, setShowError] = useState(false);
+  const [showLanguageModal, setShowLanguageModal] = useState(false);
 
   const handleCreateCV = useCallback(() => {
-    if (!termsAccepted) {
-      setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+    // Si déjà en anglais, naviguer directement sans modal
+    if (locale === 'en') {
+      resetForm();
+      router.push('/en/cvgen');
       return;
     }
-    setIsLoading(true);
-    resetForm();
-    router.push('/cvgen');
-  }, [resetForm, router, termsAccepted]);
-
-  const handleTermsClick = useCallback(() => {
-    setTermsAccepted(prev => !prev);
-  }, []);
+    // Sinon, afficher la modal de choix de langue
+    setShowLanguageModal(true);
+  }, [locale, resetForm, router]);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-x-hidden bg-gradient-to-br from-gray-50 via-white to-[hsl(var(--geds-cyan)/0.05)]">
@@ -95,68 +88,18 @@ export default function HeroSection() {
               {t('landing.subtitle')}
             </motion.p>
 
-            {/* Terms checkbox - Clickable entire row */}
-            <motion.div variants={fadeInUp} className="mb-4 sm:mb-6">
-              <div 
-                onClick={handleTermsClick}
-                className="flex items-start gap-2 sm:gap-3 justify-center lg:justify-start cursor-pointer group"
-              >
-                <Checkbox
-                  id="terms"
-                  checked={termsAccepted}
-                  onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                  className="mt-0.5 sm:mt-1 border-geds-blue data-[state=checked]:bg-geds-blue data-[state=checked]:border-geds-blue pointer-events-none flex-shrink-0"
-                />
-                <label className="text-xs sm:text-sm text-gray-600 leading-relaxed cursor-pointer group-hover:text-gray-900 transition-colors text-left">
-                  {t('terms.accept')}{' '}
-                  <Link 
-                    href="/terms" 
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-geds-blue hover:text-geds-cyan underline underline-offset-2"
-                  >
-                    {t('terms.terms')}
-                  </Link>
-                  {' '}{t('terms.and')}{' '}
-                  <Link 
-                    href="/privacy" 
-                    onClick={(e) => e.stopPropagation()}
-                    className="text-geds-blue hover:text-geds-cyan underline underline-offset-2"
-                  >
-                    {t('terms.privacy')}
-                  </Link>
-                </label>
-              </div>
-              
-              <p className="text-xs text-geds-green mt-2 font-medium text-center lg:text-left">
-                {t('terms.english')}
-              </p>
-
-              {showError && (
-                <Alert variant="destructive" className="mt-4 max-w-full sm:max-w-md mx-auto lg:mx-0">
-                  <AlertDescription>{t('terms.error')}</AlertDescription>
-                </Alert>
-              )}
-            </motion.div>
-
             {/* CTA Button */}
             <motion.div variants={fadeInUp} className="w-full sm:w-auto">
               <Button
                 size="lg"
                 onClick={handleCreateCV}
-                disabled={isLoading}
                 className={cn(
                   "group relative overflow-hidden px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg font-semibold w-full sm:w-auto",
                   "btn-geds-primary"
                 )}
               >
-                {isLoading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <>
-                    {t('buttons.createCV')}
-                    <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
-                  </>
-                )}
+                {t('buttons.createCV')}
+                <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
               </Button>
             </motion.div>
           </motion.div>
@@ -202,6 +145,12 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </div>
+
+      {/* Language Choice Modal */}
+      <LanguageChoiceModal 
+        open={showLanguageModal} 
+        onOpenChange={setShowLanguageModal} 
+      />
     </section>
   );
 }

@@ -145,6 +145,15 @@
     "error": "Devi accettare i termini per continuare",
     "english": "Attenzione: Le università richiedono un CV in inglese! Se vedi questo messaggio, assicurati di cambiare la lingua del sito in inglese."
   },
+  "languageModal": {
+    "title": "Scegli la lingua del tuo CV",
+    "description": "Le università europee richiedono generalmente un CV scritto in inglese.",
+    "recommended": "Consigliato",
+    "termsNotice": "Continuando, accetti i",
+    "otherLanguageWarning": "Attenzione: La maggior parte delle università partner accetta solo CV in inglese. Sei sicuro di voler continuare in {language}?",
+    "switchToEnglish": "Passa all'inglese",
+    "continueInOther": "Continua in {language}"
+  },
   "accountBenefits": {
     "modalTitle": "Il tuo CV è pronto! 🎉",
     "modalSubtitle": "Crea un account gratuito per salvarlo",
