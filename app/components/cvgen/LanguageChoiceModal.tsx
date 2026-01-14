@@ -67,8 +67,8 @@ export default function LanguageChoiceModal({ open, onOpenChange }: LanguageChoi
   }, [onOpenChange]);
 
   const selectedLangLabel = selectedNonEnglish 
-    ? languages.find(l => l.code === selectedNonEnglish)?.label 
-    : null;
+    ? languages.find(l => l.code === selectedNonEnglish)?.label ?? ''
+    : '';
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
